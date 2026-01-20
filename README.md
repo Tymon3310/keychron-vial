@@ -11,7 +11,7 @@ This project brings full [Vial](https://get.vial.today/) support to Keychron key
 | [Vial Web (Keychron Edition)](https://vial.tymon3310.dev) | Browser-based configurator |
 | [vial-qmk Firmware](https://github.com/tymon3310/vial-qmk) | QMK firmware with Vial + Keychron support |
 | [vial-gui Desktop App](https://github.com/tymon3310/vial-gui) | Desktop configurator with Keychron tabs |
-| [Keyboard Definitions](https://github.com/tymon3310/vial-qmk/tree/vial-keychon/keyboards/keychron) | Vial JSON files and keymaps |
+| [Keyboard Definitions](https://github.com/tymon3310/vial-qmk/tree/vial-keychon/keyboards/keychron) | Vial keymaps |
 
 ---
 

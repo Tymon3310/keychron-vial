@@ -210,15 +210,21 @@ Configure Simultaneous Opposite Cardinal Direction handling for gaming:
 
 2. Install dependencies:
    ```bash
-   python -m venv .venv
+   uv venv .venv --python 3.12
    source .venv/bin/activate  # Linux/macOS
    # or: .venv\Scripts\activate  # Windows
-   pip install -r requirements.txt
+   uv pip install -r requirements.txt
    ```
 
 3. Run the app:
    ```bash
    python src/main/python/main.py
+   ```
+   OR
+   Compile the app:
+   ```bash
+   pyinstaller misc/Vial.spec --noconfirm
+   ./dist/Vial/Vial
    ```
 
 ### Option 3: Build Custom Firmware

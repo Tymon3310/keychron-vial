@@ -23,10 +23,8 @@ Fork of [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) with Keychron ke
 
 | Branch | Base | Status | Description |
 |--------|------|--------|-------------|
-| [`vial-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-keychron) | Keychron `wls_2025q1` | **Active** | Current stable branch with all keyboards |
-| [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | QMK `2025q3` | WIP | Will become main once Keychron updates upstream |
-
-> **Note:** Currently using `vial-keychron` branch because Keychron hasn't pushed their keyboard definitions to the 2025q3 branch yet.
+| [`vial-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-keychron) | [wls_2025q1](https://github.com/keychron/qmk_firmware/tree/wls_2025q1) | **Active** | Current stable branch with all keyboards |
+| [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | [2025q3](https://github.com/Keychron/qmk_firmware/tree/2025q3) | WIP | Will become main once Keychron updates upstream |
 
 ### vial-gui (Desktop App)
 
@@ -232,16 +230,16 @@ Configure Simultaneous Opposite Cardinal Direction handling for gaming:
 3. Build firmware for your keyboard:
    ```bash
    # Example: Keychron V5 Max ANSI with encoder
-   make keychron/v5_max/ansi_encoder:vial
+   qmk compile keychron/v5_max/ansi_encoder -km vial
    
    # Example: Keychron Q5 HE ANSI with encoder
-   make keychron/q5_he/ansi_encoder:vial
+   qmk compile keychron/q5_he_max/ansi_encoder -km vial
    ```
 
 4. Flash the firmware using QMK Toolbox or:
    ```bash
-   # Put keyboard in bootloader mode first (usually Fn+Esc or reset button)
-   make keychron/v5_max/ansi_encoder:vial:flash
+   # Put keyboard in bootloader mode first (usually Esc when repluing usb cable or reset button)
+   qmk flash -kb keychron/v5_max/ansi_encoder -km vial
    ```
 
 ---
@@ -252,9 +250,8 @@ Configure Simultaneous Opposite Cardinal Direction handling for gaming:
 
 Most Keychron keyboards enter bootloader mode by:
 
-1. **Fn + Esc** while plugged in, OR
-2. **Physical reset button** on the back/bottom of the keyboard, OR
-3. **Fn + J + Z** (4 seconds) on some models
+1. **Esc** while plugging in, OR
+2. **Physical reset button** bellow space key
 
 ### Flashing Tools
 
@@ -329,14 +326,8 @@ Contributions are welcome! Please:
 
 - [QMK Firmware](https://qmk.fm/) - The foundation
 - [Vial](https://get.vial.today/) - Real-time keyboard configuration
-- [Keychron](https://www.keychron.com/) - Original keyboard firmware
+- [Keychron](https://github.com/Keychron/qmk_firmware) - Original keyboard firmware
 - Community contributors
+- Claude Opus for fixing some anoying stuff that for some reson just stopped working on it's own
 
 ---
-
-## Links
-
-- [Vial Documentation](https://get.vial.today/docs/)
-- [QMK Documentation](https://docs.qmk.fm/)
-- [Keychron Official](https://www.keychron.com/)
-- [r/Keychron](https://www.reddit.com/r/Keychron/)

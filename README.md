@@ -27,7 +27,7 @@ Fork of [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) with Keychron ke
 | [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | [2025q3](https://github.com/Keychron/qmk_firmware/tree/2025q3) | **Active** | Newer QMK base. Note: Complitly supports my gui |
 
 
-> **Note:** The `vial-updated-keychron` branch now includes full vial keymaps for all Q HE, K HE, K8 Pro, K9 Max, V1 Max, V6 Max, C Pro series, and X0 keyboards.
+> **Note:** The `vial-updated-keychron` branch now includes ony few keymaps as keychon is still adding keyboards to this branch
 
 ### vial-gui (Desktop App)
 

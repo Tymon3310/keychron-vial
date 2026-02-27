@@ -11,7 +11,7 @@ This project brings full [Vial](https://get.vial.today/) support to Keychron key
 | [Vial Web (Keychron Edition)](https://vial.tymon3310.dev) | Browser-based configurator |
 | [vial-qmk Firmware](https://github.com/tymon3310/vial-qmk) | QMK firmware with Vial + Keychron support |
 | [vial-gui Desktop App](https://github.com/tymon3310/vial-gui) | Desktop configurator with Keychron tabs |
-| [Keyboard Definitions](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron) | Vial keymaps |
+| [Keyboard Definitions](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron) | Vial keymaps |
 
 ---
 
@@ -23,11 +23,10 @@ Fork of [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) with Keychron ke
 
 | Branch | Base | Status | Description |
 |--------|------|--------|-------------|
-| [`vial-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-keychron) | [wls_2025q1](https://github.com/keychron/qmk_firmware/tree/wls_2025q1) | Stable | Older QMK base. Note: Does not complitly supports my gui |
-| [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | [2025q3](https://github.com/Keychron/qmk_firmware/tree/2025q3) | **Active** | Newer QMK base. Note: Complitly supports my gui |
+| [`vial-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-keychron) | [wls_2025q1](https://github.com/keychron/qmk_firmware/tree/wls_2025q1) | Legacy | Older QMK base. Does not fully support the custom GUI. |
+| [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | [2025q3](https://github.com/Keychron/qmk_firmware/tree/2025q3) | **Active** | Newer QMK base. Fully supports the custom GUI. |
 
-
-> **Note:** The `vial-updated-keychron` branch now includes ony few keymaps as keychon is still adding keyboards to this branch
+> **Note:** Not all keyboards have been ported to `vial-updated-keychron` yet. Keyboards still only available on `vial-keychron` are marked accordingly.
 
 ### vial-gui (Desktop App)
 
@@ -151,38 +150,38 @@ All keyboards below have Vial support with full keymap editing. Keychron-specifi
 | Keyboard | Layouts | Branch |
 |----------|---------|--------|
 | [K1 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k1_pro) | iso/rgb | vial-keychron |
-| [K2 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k2_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K3 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k3_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K4 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k4_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
-| [K5 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k5_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K6 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k6_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb | vial-keychron |
-| [K7 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k7_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
+| [K2 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k2_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K3 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k3_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K4 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k4_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
+| [K5 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k5_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K6 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k6_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb | vial-keychron |
+| [K7 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k7_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
 | [K8 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k8_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-updated-keychron |
-| [K9 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k9_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K10 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k10_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K11 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k11_pro) | ansi/rgb, ansi/white, ansi_encoder/rgb, ansi_encoder/white | vial-keychron |
-| [K12 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k12_pro) | ansi/rgb, ansi/white | vial-keychron |
-| [K13 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k13_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
-| [K14 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k14_pro) | ansi/rgb, ansi/white | vial-keychron |
-| [K15 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k15_pro) | ansi_encoder/rgb, ansi_encoder/white | vial-keychron |
-| [K17 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k17_pro) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
+| [K9 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k9_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K10 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k10_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K11 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k11_pro) | ansi/rgb, ansi/white, ansi_encoder/rgb, ansi_encoder/white | vial-keychron |
+| [K12 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k12_pro) | ansi/rgb, ansi/white | vial-keychron |
+| [K13 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k13_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
+| [K14 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k14_pro) | ansi/rgb, ansi/white | vial-keychron |
+| [K15 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k15_pro) | ansi_encoder/rgb, ansi_encoder/white | vial-keychron |
+| [K17 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k17_pro) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
 
 ### K Max Series
 
 | Keyboard | Layouts | Branch |
 |----------|---------|--------|
 | [K1 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k1_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K2 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k2_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K3 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k3_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K5 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k5_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
-| [K7 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k7_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K8 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k8_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K2 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k2_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K3 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k3_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K5 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k5_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
+| [K7 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k7_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K8 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k8_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-updated-keychron |
 | [K9 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k9_max) | ansi/rgb, ansi/white | vial-updated-keychron |
-| [K10 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k10_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
-| [K11 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k11_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
-| [K13 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k13_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
-| [K15 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k15_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
-| [K17 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k17_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white, jis_encoder/rgb, jis_encoder/white | vial-keychron |
+| [K10 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k10_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
+| [K11 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k11_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
+| [K13 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k13_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
+| [K15 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k15_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
+| [K17 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k17_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white, jis_encoder/rgb, jis_encoder/white | vial-keychron |
 
 ### K HE Series
 
@@ -227,7 +226,6 @@ All keyboards below have Vial support with full keymap editing. Keychron-specifi
 
 | Keyboard | Layouts | Branch |
 |----------|---------|--------|
-| [BLUETOOTH](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/bluetooth) | Unknown | vial-keychron |
 | [S1](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/s1) | ansi/rgb, ansi/white | vial-updated-keychron |
 | [X0](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/x0) | red | vial-updated-keychron |
 
@@ -253,9 +251,9 @@ All keyboards below have Vial support with full keymap editing. Keychron-specifi
 - **Wireless Low Power Mode**: Battery optimization for wireless keyboards
 
 #### Snap Click (SOCD)
-Configure Simultaneous Opposite Cardinal Direction handling for gaming:
+Configure Simultaneous Opposite Cardinal Direction handling for non-HE keyboards:
 - Define key pairs (e.g., A+D, W+S)
-- Choose resolution mode (Last input wins, Neutral, etc.)
+- Choose resolution mode: Last Input, First Key, Second Key, or Neutral
 
 #### Keychron RGB
 - **Global RGB Mode**: Select from 40+ RGB effects
@@ -264,11 +262,52 @@ Configure Simultaneous Opposite Cardinal Direction handling for gaming:
 - **OS Indicators**: Customize Caps Lock, Num Lock, Scroll Lock LED colors
 
 #### Analog Matrix (Hall Effect keyboards only)
-- **Multiple Profiles**: Store different actuation configurations
-- **Actuation Point**: Adjust per-key actuation distance (0.1mm - 4.0mm)
-- **Rapid Trigger**: Enable/disable with configurable sensitivity
-- **Response Curves**: Linear, Fast, Slow, or Custom curves
 
+##### Profiles
+- Multiple named profiles, each storing a full independent configuration
+- Switch between profiles on the fly; save or reset per profile
+
+##### Actuation
+- **Multiple Modes** per key:
+  - **Global** — inherit the profile's default settings
+  - **Regular** — fixed actuation point
+  - **Rapid Trigger** — dynamic actuation; re-triggers on direction change
+  - **Dynamic Keystroke (DKS)** — two travel zones (shallow/deep), each triggering up to 4 keycodes with configurable actions (Press, Release, Tap, Re-press)
+  - **Gamepad** — assign key to a joystick axis or button (see below)
+  - **Toggle** — key toggles its held state on each press
+- **Actuation Point**: Per-key or global, 0.1mm–4.0mm
+- **Rapid Trigger**: Separate press and release sensitivity (0.1mm–4.0mm); bottom dead zone prevents false re-triggers near bottom-out
+
+##### SOCD (HE keyboards)
+Configure Simultaneous Opposite Cardinal Direction resolution per key pair:
+- **Deeper Travel Wins** — whichever key is pressed further takes priority
+- **Deeper Travel Wins (Single)** — as above, but holds last state if both fully bottomed out
+- **Last Input Wins** — most recently pressed key takes priority
+- **Key 1 Priority / Key 2 Priority** — one key always wins
+- **Neutral** — both keys cancel each other out
+- Up to 20 configurable pairs per profile
+
+##### Gamepad Mode
+Keys in Gamepad mode can be assigned to standard HID joystick or XInput (Xbox controller) inputs:
+- **HID Joystick**: 6 axes (X, Y, Z, RX, RY, RZ); up to 32 buttons
+- **XInput**: Full Xbox 360 controller emulation — left/right sticks, analog triggers (LT/RT), 16 buttons (A, B, X, Y, LB, RB, Back, Start, L3, R3, D-pad)
+- **Typing + Gaming**: Optional mode where keyboard input stays active alongside gamepad
+- **Circular normalization**: Diagonal stick directions are scaled to stay within the circular input boundary
+- **Response Curve**: 4-point piecewise linear curve maps key travel to analog axis value
+
+##### Calibration
+- **Auto-calibration**: Runs at power-on and monitors for sensor drift
+- **Manual calibration**: Two-phase (zero travel → full travel → save)
+- **Real-time key travel monitor**: Live travel depth readout per key for diagnostics
+- **Read calibrated values**: Inspect per-key zero/full travel and scale factor
+
+#### Firmware Flasher (STM32 DFU)
+Built-in firmware flasher in the GUI — no external tools needed on desktop:
+- **Automatic layout backup**: Saves current keymap, macros and Keychron settings before flashing
+- **One-click flash**: Reboots keyboard into DFU mode, waits for DFU device, flashes `.bin` with `dfu-util`, then restores layout automatically
+- **Progress bar**: Live erase and download progress from `dfu-util`
+- **MCU/firmware info**: Displays detected MCU type and current firmware version before flashing
+- **Web support**: Also available in the browser via WebUSB DfuSe
 ---
 
 ## Getting Started
@@ -309,12 +348,14 @@ Configure Simultaneous Opposite Cardinal Direction handling for gaming:
    ./dist/Vial/Vial
    ```
 
-### Option 3: Build Custom Firmware
+### Option 3: Build and Flash Custom Firmware
 
 1. Clone the vial-qmk repository:
    ```bash
-   git clone --branch vial-keychron https://github.com/tymon3310/vial-qmk.git OR
+   # Active branch (recommended)
    git clone --branch vial-updated-keychron https://github.com/tymon3310/vial-qmk.git
+   # Legacy branch (for keyboards not yet ported)
+   git clone --branch vial-keychron https://github.com/tymon3310/vial-qmk.git
    cd vial-qmk
    ```
 
@@ -323,42 +364,55 @@ Configure Simultaneous Opposite Cardinal Direction handling for gaming:
    qmk git submodule
    ```
 
-3. Build firmware for your keyboard:
+3. Build and flash firmware for your keyboard:
    ```bash
-   # Example: Keychron V5 Max ANSI with encoder
-   qmk compile keychron/v5_max/ansi_encoder -km vial
-   
-   # Example: Keychron Q5 HE ANSI with encoder
-   qmk compile keychron/q5_he_max/ansi_encoder -km vial
-   ```
+   # Compile only
+   qmk compile -kb keychron/v5_max/ansi_encoder -km vial
 
-4. Flash the firmware using QMK Toolbox or:
-   ```bash
-   # Put keyboard in bootloader mode first (usually Esc when repluing usb cable or reset button)
+   # Or compile and flash in one step (puts keyboard in bootloader mode automatically)
    qmk flash -kb keychron/v5_max/ansi_encoder -km vial
    ```
+
+   > `qmk flash` will prompt you to put the keyboard in bootloader mode (hold Esc while plugging in, or press the reset button). For subsequent updates once Vial is running, the GUI flasher is more convenient as it can restore settings — see [Flashing Instructions](#flashing-instructions).
 
 ---
 
 ## Flashing Instructions
 
-### Entering Bootloader Mode
+> **Note:** The GUI Flasher tab requires the keyboard to already be running Vial firmware. For a first-time flash from stock firmware, use the manual method.
 
-Most Keychron keyboards enter bootloader mode by:
+### Option 1: GUI Flasher (Recommended for updates)
 
-1. **Esc** while plugging in, OR
-2. **Physical reset button** bellow space key
+The desktop and web apps have a built-in **DFU Firmware updater** tab — use this to update firmware on a keyboard that is already running Vial:
 
-### Flashing Tools
+1. Open the app and connect your keyboard
+2. Go to the **DFU Firmware updater** tab
+3. Select your compiled `.bin` file
+4. Click **Flash** — the GUI will back up your layout, reboot the keyboard into DFU mode, flash the firmware, and if you selected to restore current layout (on by default), restore your layout automatically
 
-- **QMK Toolbox** (Windows/macOS): [Download](https://github.com/qmk/qmk_toolbox/releases)
-- **dfu-util** (Linux): `sudo apt install dfu-util`
+> The GUI flasher on desktop calls `dfu-util` under the hood and works on Windows, Linux, and macOS — as long as `dfu-util` is installed and on PATH.
+> - **Linux:** use your's system package manager (ex, `sudo pacman -S dfu-util`)
+> - **Windows:** `scoop install dfu-util` (via [scoop](https://scoop.sh/)), or download from [dfu-util.sourceforge.net](https://dfu-util.sourceforge.net/) and add to PATH
+> - **macOS:** `brew install dfu-util`
+>
+> The web app flasher does not require `dfu-util`, but on Windows you need to install additional drivers. You can download the driver installer from [QMK Toolbox](https://github.com/qmk/qmk_toolbox/blob/master/windows/QMK%20Toolbox/Resources/qmk_driver_installer.exe) repo.
+> 
 
-### Flash Command Example
-```bash
-# STM32 (most Keychron keyboards)
-dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D keychron_v5_max_ansi_encoder_vial.bin
-```
+### Option 2: Manual Flash (dfu-util)
+
+Use this for a first-time flash from stock firmware, or any time the GUI flasher is not available:
+
+1. Enter bootloader mode:
+   - Hold **Esc** while plugging in the USB cable, OR
+   - Press the **reset button** under the spacebar
+
+2. Flash with dfu-util:
+   ```bash
+   # STM32 (most Keychron keyboards)
+   dfu-util -a 0 -d 0483:DF11 -s 0x8000000:leave -D <firmware.bin>
+   ```
+
+3. The keyboard reboots automatically after flashing (`:leave` flag).
 
 ---
 
@@ -370,8 +424,7 @@ dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D keychron_v5_max_ansi_encoder_v
 2. Check that the keyboard is in wired mode (not Bluetooth)
 3. On Linux, add udev rules:
    ```bash
-   echo 'KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3434", MODE="0666"' | sudo tee /etc/udev/rules.d/99-keychron.rules
-   sudo udevadm control --reload-rules
+   export USER_GID=`id -g`; sudo --preserve-env=USER_GID sh -c 'echo "KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", ATTRS{serial}==\"*vial:f64c2b3c*\", MODE=\"0660\", GROUP=\"$USER_GID\", TAG+=\"uaccess\", TAG+=\"udev-acl\"" > /etc/udev/rules.d/59-vial.rules && udevadm control --reload && udevadm trigger'
    ```
 
 ### Keychron tabs not showing

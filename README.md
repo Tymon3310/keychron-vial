@@ -244,6 +244,15 @@ All keyboards below have Vial support with full keymap editing. Keychron-specifi
 
 ### Keychron-Specific Features (Custom GUI Required)
 
+#### Wireless Configuration (2.4 GHz Bridge)
+Configure your wireless Keychron keyboard through the 2.4 GHz USB dongle (Keychron Link) — no USB cable needed:
+- **Transparent VIA/Vial tunneling**: All standard and Keychron-specific features work wirelessly, exactly as they do over USB
+- **Supported dongles**: Keychron Link USB-A (`3434:D030`) and USB-C (`3434:D031`)
+- **Automatic detection**: The GUI detects the bridge dongle and wirelessly-connected keyboard automatically
+- **USB+dongle deduplication**: When the same keyboard is connected via both USB and dongle, the USB connection is preferred
+- **Non-blocking connection**: The GUI stays responsive while establishing the wireless link
+- **Requires firmware support**: The keyboard must be running the Vial firmware from the `vial-updated-keychron` branch with the wireless XOR encoding patch (required to work around a hardware limitation in the LKBT51 wireless module)
+
 #### Keychron Settings Tab
 - **Debounce**: Adjust key debounce time (1-20ms)
 - **NKRO**: Toggle N-Key Rollover

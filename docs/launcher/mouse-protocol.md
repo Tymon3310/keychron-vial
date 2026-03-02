@@ -151,6 +151,18 @@ to keyboard analog matrix profiles.
 
 ---
 
+## Dongle Version Command
+
+Mice can be paired to a dongle, and the Launcher queries the dongle version directly. The request uses `data[0] = 0x00`, `data[2] = 0x81 (129)`, `data[3] = 0x00`.
+
+```
+Request:  [0x00, 0x00, 0x81, 0x00]
+Response: Filters for data[0] == 0x00 && data[3] == 0x00
+          Byte 8: Version Minor/Patch (Minor = (data[8] & 240) >> 4, Patch = data[8] & 15)
+          Byte 9: Version Major (Major = data[9])
+          Result string: `${Major}.${Minor}.${Patch}`
+```
+
 ## Mouse State Packet Parsing
 
 When a mouse connects (direct USB or via dongle), the Launcher parses a
@@ -167,13 +179,30 @@ state packet containing system parameters:
 | `dpiIndex`            | Active DPI profile |
 | `dpiX` / `dpiY`       | Current DPI values |
 | `reportRate`          | Current polling rate |
-| `systemSleepTime`     | Idle sleep timeout |
-| `bleSystemSleepTime`  | BLE idle sleep timeout |
-| `debounceTime`        | Button debounce (ms) |
-| `quickResponse`       | Quick response mode |
-| `buttonWakeupEnable`  | Wake on button press |
-| `moveWakeupEnable`    | Wake on mouse movement |
-| `wheelWakeup`         | Wake on scroll wheel |
+
+### Base Info (Device Data)
+
+Mice have an extensive settings object for system properties, acquired using a
+request containing `[0x04, 0, 0x83, 0x03]`:
+
+| Offset | Field                 | Description |
+|--------|-----------------------|-------------|
+| 0-1    | `systemSleepTime`     | Idle sleep timeout (LE16, seconds) |
+| 2-3    | `bleSystemSleepTime`  | BLE idle sleep timeout (LE16, seconds) |
+| 4      | `reportRate`          | Current polling rate |
+| 5      | `debounceTime`        | Button debounce (ms) |
+| 6      | `quickResponse`       | Quick response mode |
+| 7      | `buttonWakeupEnable`  | Wake on button press |
+| 8      | `moveWakeupEnable`    | Wake on mouse movement |
+| 9      | `wheelWakeupEnable`   | Wake on scroll wheel |
+| 10     | `wheelReverse`        | Invert scroll wheel direction |
+| 11     | `irButtonMode`        | IR button mode |
+| 12     | `mouseLeftKeyMode`    | Left click mode |
+| 13     | `mouseRightKeyMode`   | Right click mode |
+| 14     | `rfPowerMode`         | RF transmission power |
+| 15     | `bleNum`              | Bluetooth host slot number |
+| 16     | `rptFlag`             | Supported polling rates flag |
+| 17-22  | `rptTable`            | 6-byte array of available polling rates |
 
 ### Polling Rate
 

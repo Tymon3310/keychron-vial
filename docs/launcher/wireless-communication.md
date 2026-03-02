@@ -92,9 +92,9 @@ The `Support_Rf` flag gates all wireless-specific settings in the Launcher UI.
 ## Sleep / Power Management (Keyboards)
 
 Wireless keyboards have configurable sleep behavior to conserve battery. These
-commands use `KC_MISC_CMD_GROUP` (`0xA7`) sub-commands 11 and 12.
+commands use `KC_MISC_CMD_GROUP` (`0xA7`) sub-commands `0x0B` (11) and `0x0C` (12).
 
-### Get Sleep (sub-command 11)
+### Get Sleep (sub-command 0x0B)
 
 #### Request
 
@@ -102,7 +102,7 @@ commands use `KC_MISC_CMD_GROUP` (`0xA7`) sub-commands 11 and 12.
 Byte  Value
 ----  -----
  0    0xA7     KC_MISC_CMD_GROUP
- 1    11       Get_Sleep
+ 1    0x0B     Get_Sleep (11)
 ```
 
 #### Response
@@ -111,7 +111,7 @@ Byte  Value
 Byte  Field           Description
 ----  -----           -----------
  0    0xA7            Echo
- 1    11              Echo
+ 1    0x0B            Echo
  3-4  backlight       Backlight timeout (LE16, seconds)
  5-6  sleep           Sleep timeout (LE16, seconds)
  7-8  magnetScan      Magnet scan interval (LE16, seconds, HE keyboards only)
@@ -124,7 +124,7 @@ sleep      = report[6] << 8 | report[5]
 magnetScan = report[8] << 8 | report[7]
 ```
 
-### Set Sleep (sub-command 12)
+### Set Sleep (sub-command 0x0C)
 
 #### Request
 
@@ -132,7 +132,7 @@ magnetScan = report[8] << 8 | report[7]
 Byte  Value
 ----  -----
  0    0xA7     KC_MISC_CMD_GROUP
- 1    12       Set_Sleep
+ 1    0x0C     Set_Sleep (12)
  2-3  backlight    Backlight timeout (LE16, seconds)
  4-5  sleep        Sleep timeout (LE16, seconds)
  6-7  magnetScan   Magnet scan interval (LE16, seconds)

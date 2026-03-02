@@ -364,8 +364,10 @@ The `getBluetoothDfuVersion` response spans multiple HID reports:
 1. **First packet**: Check `data[0] == 0xAA && data[1] == 0x57`. Extract
    total length from `data[2]`. Read payload from `data[5..]`.
 2. **Subsequent packets**: Append raw bytes until `remaining == 0`.
-3. **Parse assembled buffer**: Extract model name, firmware version,
-   hardware version.
+3. **Parse assembled buffer**:
+   - `moduleModel` (ASCII): bytes `4` to `13`
+   - `fwVersion` (ASCII): bytes `16` to `24`
+   - `hwVersion` (ASCII): bytes `26` to `35`
 
 ### Nordic Patch Version (0x6E)
 

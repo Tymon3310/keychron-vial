@@ -47,10 +47,14 @@ Additionally, the Launcher contains explicit support for **ZMK-based** firmware 
 
 ## WebHID Transport
 
-The Launcher uses the WebHID API (`navigator.hid`) for all device
-communication. It never uses WebBluetooth -- the word "bluetooth" in the
-codebase refers exclusively to updating the Bluetooth module's firmware
-*over the USB HID connection*.
+### Communication Channels
+
+The Launcher uses the WebHID API (`navigator.hid`) for all device communication. It does **not** use the WebBluetooth API. 
+
+It can communicate with wireless keyboards in three ways:
+1. **Wired USB:** Direct communication over standard QMK Raw HID endpoint (`0xFF60`/`0x61`).
+2. **2.4 GHz Dongle (Bridge Tunneling):** If the keyboard is connected via a 2.4 GHz dongle, the Launcher connects to the dongle's HID endpoint (`0x8C`/`0x01`). It queries the dongle to see what devices are paired, and then sends standard VIA 32-byte payloads to the dongle. The dongle acts as a "bridge" and tunnels these VIA commands over the air to the keyboard, returning the responses back to the Launcher.
+3. **Bluetooth Firmware Updating:** The word "bluetooth" in the codebase refers exclusively to updating the separate Bluetooth module's firmware. This is also done *over the wired USB HID connection* by tunneling DFU packets through the main MCU to the Bluetooth IC.
 
 ### HID Collections
 

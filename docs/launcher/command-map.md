@@ -157,6 +157,17 @@ The Launcher uses simplified names for some RGB sub-commands:
 | 9     | `0x09` | `PER_KEY_RGB_GET_COLOR`         | `GetLedColor`  |
 | 10    | `0x0A` | `PER_KEY_RGB_SET_COLOR`         | `SetLedColor`  |
 
+## Miscellaneous Keycodes
+
+The Launcher embeds a hardcoded list of basic QMK keycodes and their corresponding numerical values. Notably, it contains specific references to:
+
+| Keycode | Value | Description |
+|---------|-------|-------------|
+| `KC_HAEN` | 136 (`0x88`) | HanYeong (Korean) |
+| `KC_HANJ` | 137 (`0x89`) | Hanja (Korean) |
+| `KC_HENK` | 138 (`0x8A`) | JIS Henkan (Convert) |
+| `KC_MHEN` | 139 (`0x8B`) | JIS Muhenkan (Non-convert) |
+
 ## State Notification (0xBC)
 
 The Launcher listens for asynchronous state change notifications from the

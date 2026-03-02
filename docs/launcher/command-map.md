@@ -45,7 +45,7 @@ historical rename of these commands.
 | 161   | `0xA1` | `KC_GET_FIRMWARE_VERSION`| `KC_FIRMWARE_VERSION`      | "GET_" dropped |
 | 162   | `0xA2` | `KC_GET_SUPPORT_FEATURE` | `KC_GET_SUPPORT_FEATURE`   | Same |
 | 163   | `0xA3` | `KC_GET_DEFAULT_LAYER`   | `KC_GET_CURRENT_LAYER`     | "DEFAULT" → "CURRENT" |
-| 167   | `0xA7` | `KC_MISC_CMD_GROUP`      | `KC_OTHER_SETTING_VERSION` | Completely different name |
+| 167   | `0xA7` | `KC_MISC_CMD_GROUP`      | `KC_MISC_CMD_GROUP`          | Same |
 | 168   | `0xA8` | `KC_KEYCHRON_RGB`        | `KC_RGB`                   | Simplified |
 | 169   | `0xA9` | `KC_ANALOG_MATRIX`       | `KC_HE`                    | "Analog Matrix" → "Hall Effect" |
 | 170   | `0xAA` | `KC_WIRELESS_DFU`        | *(not in enum)*            | Handled via separate DFU classes |
@@ -54,11 +54,7 @@ historical rename of these commands.
 
 ### Key Observations
 
-1. **`KC_OTHER_SETTING_VERSION` (0xA7)**: The Launcher uses this name for what
-   the firmware calls `KC_MISC_CMD_GROUP`. Both refer to the same byte value
-   and the same sub-command dispatch. The Launcher name hints that the command
-   was originally for querying the "other settings" protocol version (sub-cmd
-   `0x01`), and the misc sub-commands were added later.
+1. **`KC_MISC_CMD_GROUP` (0xA7)**: The Launcher and firmware now use the same name `KC_MISC_CMD_GROUP`. In older versions, the Launcher called this `KC_OTHER_SETTING_VERSION`, which hints that the command was originally for querying the "other settings" protocol version (sub-cmd `0x01`), and the misc sub-commands were added later.
 
 2. **`KC_HE` (0xA9)**: The Launcher calls this "Hall Effect" (`HE`), while the
    firmware uses "Analog Matrix" (`ANALOG_MATRIX`). Both refer to the same
@@ -91,6 +87,8 @@ historical rename of these commands.
 | 31    | `0x1F` | `AMC_SAVE_PROFILE`   | `AMC_SAVE_PROFILE_BUFFER`  | Added "BUFFER" |
 | 32    | `0x20` | `AMC_GET_CURVE`      | `AMC_GET_CURVE`            | Same |
 | 33    | `0x21` | `AMC_SET_CURVE`      | `AMC_SET_CURVE`            | Same |
+| 34    | `0x22` | `AMC_GET_GAME_CONTROLLER_MODE` | *(hardcoded as 34)* | Launcher calls it `getJoyKeyboard` |
+| 35    | `0x23` | `AMC_SET_GAME_CONTROLLER_MODE` | *(hardcoded as 35)* | Launcher calls it `enableJoyKeyboard` |
 | 48    | `0x30` | `AMC_GET_REALTIME_TRAVEL` | `AMC_GET_REALTIME_TRAVEL` | Same |
 | 64    | `0x40` | `AMC_CALIBRATE`      | `AMC_CALIBRATE`            | Same |
 | 65    | `0x41` | `AMC_GET_CALIBRATE_STATE` | `AMC_GET_CALIBRATE_STATE` | Same |
@@ -118,7 +116,7 @@ See [bridge-dongle-protocol.md](bridge-dongle-protocol.md).
 
 ## NAPE (Mouse/Trackball) Sub-Commands
 
-Sent under `KC_OTHER_SETTING_VERSION` (0xA7) with sub-command values
+Sent under `KC_MISC_CMD_GROUP` (0xA7) with sub-command values
 `0x20`--`0x34`. Not present in our firmware fork:
 
 | Value | Hex    | Launcher Name                    |
@@ -141,6 +139,8 @@ Sent under `KC_OTHER_SETTING_VERSION` (0xA7) with sub-command values
 | 47    | `0x2F` | `KC_USER_CMD_NAPE_DEL_TAPHOLDS`  |
 | 48    | `0x30` | `KC_USER_CMD_NAPE_BAT_REPORT`    |
 | 49    | `0x31` | `KC_USER_CMD_NAPE_GET_BAT_REPORT`|
+| 50    | `0x32` | `Set_Force_Gesture_Scroll`       |
+| 51    | `0x33` | `Get_Force_Gesture_Scroll`       |
 | 52    | `0x34` | `KC_USER_CMD_NAPE_SET_ORI`       |
 
 See [mouse-protocol.md](mouse-protocol.md).

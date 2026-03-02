@@ -82,6 +82,8 @@ For reference, here is the complete AMC enum as defined in the Launcher:
 | `AMC_SAVE_PROFILE_BUFFER`    | 31  | `0x1F` | Yes* | Save profile (different name) |
 | `AMC_GET_CURVE`              | 32  | `0x20` | Yes | Joystick response curve |
 | `AMC_SET_CURVE`              | 33  | `0x21` | Yes | Set response curve |
+| `AMC_GET_GAME_CONTROLLER_MODE` | 34  | `0x22` | **Yes** | Get game controller mode |
+| `AMC_SET_GAME_CONTROLLER_MODE` | 35  | `0x23` | **Yes** | Set game controller mode |
 | `AMC_GET_REALTIME_TRAVEL`    | 48  | `0x30` | Yes | Live key travel value |
 | `AMC_CALIBRATE`              | 64  | `0x40` | Yes | Start calibration |
 | `AMC_GET_CALIBRATE_STATE`    | 65  | `0x41` | Yes | Calibration state |

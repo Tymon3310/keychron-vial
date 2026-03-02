@@ -61,7 +61,7 @@ The constant 161 (`0xA1`) is the checksum seed.
 ## NAPE Command Set
 
 The "NAPE" commands configure trackball and mouse features. They are sent
-under the `KC_OTHER_SETTING_VERSION` (0xA7) command with sub-command values
+under the `KC_MISC_CMD_GROUP` (0xA7) command with sub-command values
 in the `0x20`--`0x34` range.
 
 > **Note:** These sub-commands share the same top-level command byte (0xA7)

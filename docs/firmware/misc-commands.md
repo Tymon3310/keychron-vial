@@ -239,15 +239,28 @@ Controls the USB polling rate.
 
 ### Get (0x0D)
 
+**Version 1 (Single Rate)**:
 ```
 Request:  [0xA7] [0x0D]
 Response: data[2]=status, data[3]=rate_index, data[4]=supported_mask
 ```
 
+**Version 2 (Dual Rate)**:
+```
+Request:  [0xA7] [0x0D]
+Response: data[2]=status, data[3]=usb_rate_index, data[4]=usb_supported_mask, data[5]=fr_supported_mask, data[6]=fr_rate_index
+```
+
 ### Set (0x0E)
 
+**Version 1 (Single Rate)**:
 ```
 Request:  [0xA7] [0x0E] [rate_index]
+```
+
+**Version 2 (Dual Rate)**:
+```
+Request:  [0xA7] [0x0E] [usb_rate_index] [fr_rate_index]
 ```
 
 ### Rate Index Values

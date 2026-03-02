@@ -8,6 +8,25 @@ reverse-engineered from the Launcher JavaScript bundle.
 > only implements one of these (STM32 DFU via `dfu-util`); see
 > [firmware/wireless-dfu-factory.md](../firmware/wireless-dfu-factory.md).
 
+## Firmware Payload Acquisition
+
+Before any flashing can occur, the Launcher requests the firmware binaries from the Keychron API.
+
+The primary API endpoint used to query firmware updates is:
+```
+GET https://launcher.keychron.com/api/merchandise/product/vpId/{vpId}
+Headers:
+  Client: launcher
+  Env: Prod
+```
+
+The `vpId` is an integer calculated by combining the Vendor ID and Product ID:
+`vpId = (vendorId * 65536) + productId`
+
+For example, a Keychron device with `VID 0x3434` (13364) and `PID 0x0437` (1079) has a `vpId` of `875824183`.
+
+If an update is available, the API returns a JSON response containing a download URL for the firmware binary (usually hosted on `cdn.shopify.com` or `sysmgr.keychron.cn`). The Launcher downloads this binary and then routes it to one of the five DFU paths below based on the device's hardware type.
+
 ## DFU Path Summary
 
 | # | Class | Target Hardware | Transport | Trigger |

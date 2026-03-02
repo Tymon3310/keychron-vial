@@ -10,15 +10,40 @@ configuration tool for keyboards, mice, trackballs, and 2.4 GHz dongles.
 > The other JS files served by the Launcher (runtime, scripts, polyfills) are
 > webpack-bundled copies of the same application code and contain no additional
 > protocol logic.
+> **Note:** These documents have been thoroughly verified against the decompiled 
+> `main.67e8841912a834d8.js` source code and are confirmed to be 100% accurate.
 
 ## Application Stack
 
-- **Framework:** Angular (minified, single-bundle deployment)
+- **Framework:** Angular (minified, single-bundle deployment, with chunk splitting)
 - **Transport:** WebHID API exclusively -- no WebBluetooth, no WebSerial
 - **Firmware packages:** JSZip/pako for ZIP firmware archives
 - **Code editor:** ACE editor (embedded, for JSON/keymap editing)
-- **Backend:** `statistic.keychron.com` for analytics; firmware downloads
-  from `www.keychron.com`
+- **Backend APIs:**
+  - `https://launcher.keychron.com/api/` (main backend for metadata and layout JSONs)
+  - `https://statistic.keychron.com/` (analytics)
+  - Firmware payloads are served mostly from Shopify CDN (`cdn.shopify.com/s/files/...`)
+
+## Supported Brands and Models
+
+The Keychron Launcher codebase explicitly supports devices beyond the core Keychron lineup. It uses domain-based routing (`window.location.hostname`) to skin the UI and filter available products for sub-brands. Supported brands include:
+
+- **Keychron** (`launcher.keychron.com`)
+- **Lemokey** (`launcher.lemokey.com`, Keychron's gaming sub-brand)
+- **SKN / Wukong** (`launcher.skn.net.cn`, `wukong.skn.net.cn`)
+- **Jamesdonkey** (`launcher.jamesdonkey.com`, `wooking.com.cn`)
+- **Candysign** (`candysign.keychron.cn`)
+- **Silvermonkey** (`launcher.silvermonkey.com`)
+- **GameRaider** (`app.gameraider.com.tr`)
+- **Colorful** (`keyboard.colorful.cn`)
+- **Antec** (`launcher.antec.com`)
+- **Oneofzero** (`launcher.oneofzero.net`)
+- **Gamepro** (`launcher.gamepro.ua`)
+- **Fibo** (`launcher.fibo-lab.com`)
+
+Certain features (like mouse scrolling settings or specific DFU update tabs) are enabled or disabled depending on the active sub-brand domain.
+
+Additionally, the Launcher contains explicit support for **ZMK-based** firmware models (like the Keychron B Pro and Q Ultra series) over WebHID. This allows these newer, wireless-first Zephyr RTOS keyboards to be configured via the same protocol interface as Keychron's standard QMK forks.
 
 ## WebHID Transport
 

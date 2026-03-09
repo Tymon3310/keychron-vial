@@ -9,8 +9,9 @@ This project brings full [Vial](https://get.vial.today/) support to Keychron key
 | Resource | Description |
 |----------|-------------|
 | [Vial Web (Keychron Edition)](https://vial.tymon3310.dev) | Browser-based configurator |
+| [Pipette Desktop (Alternative)](https://github.com/tymon3310/pipette-desktop) | Modern Electron-based configurator (Recommended) |
+| [vial-gui Desktop App](https://github.com/tymon3310/vial-gui) | Legacy Python-based desktop configurator |
 | [vial-qmk Firmware](https://github.com/tymon3310/vial-qmk) | QMK firmware with Vial + Keychron support |
-| [vial-gui Desktop App](https://github.com/tymon3310/vial-gui) | Desktop configurator with Keychron tabs |
 | [Keyboard Definitions](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron) | Vial keymaps |
 
 ---
@@ -28,7 +29,15 @@ Fork of [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) with Keychron ke
 
 > **Note:** Not all keyboards have been ported to `vial-updated-keychron` yet. Keyboards still only available on `vial-keychron` are marked accordingly.
 
-### vial-gui (Desktop App)
+### pipette-desktop (Alternative Desktop App)
+
+Fork of [darakuneko/pipette-desktop](https://github.com/darakuneko/pipette-desktop) with a refined UI and built-in Pipette Hub for sharing layouts.
+
+| Branch | Description |
+|--------|-------------|
+| [`vial-keychron`](https://github.com/tymon3310/pipette-desktop/tree/vial-keychron) | **Active** — Main repository with Keychron support |
+
+### vial-gui (Legacy Desktop App)
 
 Fork of [vial-kb/vial-gui](https://github.com/vial-kb/vial-gui) with Keychron-specific configuration tabs.
 
@@ -328,9 +337,78 @@ Built-in firmware flasher in the GUI — no external tools needed on desktop:
 3. Select your keyboard from the WebHID prompt
 4. Configure your keyboard
 
-> **Note:** Keychron-specific tabs may not be fully functional in web version.
+> **Note:** Keychron-specific tabs may not be fully functional in the web version.
 
-### Option 2: Desktop App
+### Option 2: Arch Linux (AUR)
+
+If you are using Arch Linux, you can install the GUI via the AUR.
+
+**Recommended (Pipette):**
+- [`pipette-desktop-keychron-bin`](https://aur.archlinux.org/packages/pipette-desktop-keychron-bin) (Pre-compiled)
+- [`pipette-desktop-keychron-git`](https://aur.archlinux.org/packages/pipette-desktop-keychron-git) (Build from source)
+
+**Legacy (vial-gui):**
+- [`vial-keychron-bin`](https://aur.archlinux.org/packages/vial-keychron-bin) (Pre-compiled)
+- [`vial-keychron-git`](https://aur.archlinux.org/packages/vial-keychron-git) (Build from source)
+
+```bash
+# Example using yay
+# Recommended (Pipette)
+yay -S pipette-desktop-keychron-bin
+
+# Legacy (vial-gui)
+yay -S vial-keychron-bin
+```
+
+### Option 3: Pipette Desktop (Recommended)
+
+Pipette is the modern, Electron-based alternative to the original Vial GUI. It features a cleaner UI and faster performance.
+
+1. Download the latest release from the [Pipette GitHub Releases](https://github.com/tymon3310/pipette-desktop/releases/latest).
+2. For Linux, download the `.AppImage`, make it executable, and run:
+   ```bash
+   chmod +x Pipette-linux-x86_64.AppImage
+   ./Pipette-linux-x86_64.AppImage
+   ```
+3. For Windows/macOS, use the provided installers.
+
+#### Build from source
+
+1. Clone the repository:
+   ```bash
+   git clone --branch vial-keychron https://github.com/tymon3310/pipette-desktop.git
+   cd pipette-desktop
+   ```
+
+2. Install dependencies (requires [pnpm](https://pnpm.io/)):
+   ```bash
+   pnpm install
+   ```
+
+3. Run the app:
+   ```bash
+   pnpm dev
+   ```
+
+   OR build the production app:
+   ```bash
+   pnpm build
+   pnpm dist:linux  # or dist:win, dist:mac
+   ```
+
+### Option 4: Legacy Desktop App (vial-gui)
+
+Use this if you prefer the original Python-based interface or encounter issues with Pipette.
+
+1. Download the latest release from the [vial-gui GitHub Releases](https://github.com/tymon3310/vial-gui/releases/latest).
+2. For Linux, download the `.AppImage`, make it executable, and run:
+   ```bash
+   chmod +x Vial-*.AppImage
+   ./Vial-*.AppImage
+   ```
+3. For Windows/macOS, use the provided installers.
+
+#### Build from source
 
 1. Clone the vial-gui repository:
    ```bash
@@ -357,7 +435,7 @@ Built-in firmware flasher in the GUI — no external tools needed on desktop:
    ./dist/Vial/Vial
    ```
 
-### Option 3: Build and Flash Custom Firmware
+### Option 5: Build and Flash Custom Firmware
 
 1. Clone the vial-qmk repository:
    ```bash
@@ -439,7 +517,7 @@ Use this for a first-time flash from stock firmware, or any time the GUI flasher
 ### Keychron tabs not showing
 
 The Keychron-specific tabs only appear when:
-1. Using the custom vial-gui fork
+1. Using a compatible GUI (Pipette or custom vial-gui fork)
 2. Keyboard firmware has Keychron features enabled
 3. Keyboard supports the specific feature (e.g., Analog Matrix only on HE keyboards)
 
@@ -447,7 +525,7 @@ The Keychron-specific tabs only appear when:
 
 1. Ensure VialRGB is enabled in firmware
 2. Check that the keyboard declares `"lighting": "vialrgb"` in vial.json
-3. Use the custom GUI - stock Vial GUI may not support all effects
+3. Use a compatible GUI (Pipette or custom vial-gui fork) - stock Vial GUI may not support all effects
 
 ---
 
@@ -485,6 +563,7 @@ Contributions are welcome! Please:
 - [QMK Firmware](https://qmk.fm/) - The foundation
 - [Vial](https://get.vial.today/) - Real-time keyboard configuration
 - [Keychron](https://github.com/Keychron/qmk_firmware) - Original keyboard firmware
+- [Pipette](https://github.com/darakuneko/pipette-desktop) - Modern Electron-based GUI
 - Community contributors
 - Claude Opus for fixing some annoying stuff that for some reason just stopped working on it's own
 

@@ -6,7 +6,7 @@ intermediary, forwarding HID commands between the host computer and wirelessly
 connected Keychron devices.
 
 > **Source:** Reverse-engineered from the Keychron Launcher JavaScript bundle.
-> This protocol is not implemented in our Vial GUI fork.
+> This protocol is implemented in our Vial GUI fork.
 
 ## Overview
 

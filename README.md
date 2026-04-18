@@ -85,35 +85,35 @@ All keyboards below have Vial support with full keymap editing. Keychron-specifi
 
 | Keyboard | Layouts | Branch |
 |----------|---------|--------|
-| [Q1 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q1_pro) | ansi_knob, iso_knob, jis_encoder | vial-keychron |
-| [Q2 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q2_pro) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q3 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q3_pro) | ansi_encoder, ansi_encoder_se, iso_encoder, iso_encoder_se, jis_encoder_se | vial-keychron |
-| [Q4 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q4_pro) | ansi, iso | vial-keychron |
-| [Q5 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q5_pro) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q6 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q6_pro) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q8 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q8_pro) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q10 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q10_pro) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q13 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q13_pro) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q14 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q14_pro) | ansi_encoder, iso_encoder | vial-keychron |
+| [Q1 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q1_pro) | ansi_knob, iso_knob, jis_encoder | vial-keychron |
+| [Q2 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q2_pro) | ansi_encoder, iso_encoder | vial-keychron |
+| [Q3 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q3_pro) | ansi_encoder, ansi_encoder_se, iso_encoder, iso_encoder_se, jis_encoder_se | vial-keychron |
+| [Q4 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q4_pro) | ansi, iso | vial-keychron |
+| [Q5 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q5_pro) | ansi_encoder, iso_encoder | vial-keychron |
+| [Q6 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q6_pro) | ansi_encoder, iso_encoder | vial-keychron |
+| [Q8 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q8_pro) | ansi_encoder, iso_encoder | vial-keychron |
+| [Q10 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q10_pro) | ansi_encoder, iso_encoder | vial-keychron |
+| [Q13 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q13_pro) | ansi_encoder, iso_encoder | vial-keychron |
+| [Q14 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q14_pro) | ansi_encoder, iso_encoder | vial-keychron |
 
 ### Q Max Series
 
 | Keyboard | Layouts | Branch |
 |----------|---------|--------|
-| [Q0 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q0_max) | encoder | vial-keychron |
+| [Q0 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q0_max) | encoder | vial-updated-keychron |
 | [Q1 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q1_max) | ansi_encoder, iso_encoder, jis_encoder | vial-updated-keychron |
-| [Q2 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q2_max) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q3 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q3_max) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q5 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q5_max) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q6 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q6_max) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q8 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q8_max) | ansi_encoder | vial-keychron |
-| [Q10 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q10_max) | ansi_encoder, iso_encoder | vial-keychron |
-| [Q12 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q12_max) | ansi_encoder | vial-keychron |
-| [Q13 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q13_max) | ansi_encoder | vial-keychron |
-| [Q14 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q14_max) | ansi_encoder | vial-keychron |
-| [Q15 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q15_max) | ansi_encoder | vial-keychron |
-| [Q60 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q60_max) | ansi | vial-keychron |
-| [Q65 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/q65_max) | ansi_encoder | vial-keychron |
+| [Q2 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q2_max) | ansi_encoder, iso_encoder | vial-updated-keychron |
+| [Q3 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q3_max) | ansi_encoder, iso_encoder | vial-updated-keychron |
+| [Q5 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q5_max) | ansi_encoder, iso_encoder | vial-updated-keychron |
+| [Q6 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q6_max) | ansi_encoder, iso_encoder | vial-updated-keychron |
+| [Q8 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q8_max) | ansi_encoder | vial-updated-keychron |
+| [Q10 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q10_max) | ansi_encoder, iso_encoder | vial-updated-keychron |
+| [Q12 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q12_max) | ansi_encoder | vial-updated-keychron |
+| [Q13 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q13_max) | ansi_encoder | vial-updated-keychron |
+| [Q14 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q14_max) | ansi_encoder | vial-updated-keychron |
+| [Q15 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q15_max) | ansi_encoder | vial-updated-keychron |
+| [Q60 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q60_max) | ansi | vial-updated-keychron |
+| [Q65 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/q65_max) | ansi_encoder | vial-updated-keychron |
 
 ### Q HE Series
 
@@ -147,52 +147,52 @@ All keyboards below have Vial support with full keymap editing. Keychron-specifi
 | Keyboard | Layouts | Branch |
 |----------|---------|--------|
 | [V1 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v1_max) | ansi_encoder, iso_encoder, jis_encoder | vial-updated-keychron |
-| [V2 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/v2_max) | ansi_encoder, iso_encoder | vial-keychron |
-| [V3 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/v3_max) | ansi_encoder, iso_encoder | vial-keychron |
-| [V4 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/v4_max) | ansi | vial-keychron |
+| [V2 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v2_max) | ansi_encoder, iso_encoder | vial-updated-keychron |
+| [V3 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v3_max) | ansi_encoder, iso_encoder | vial-updated-keychron |
+| [V4 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v4_max) | ansi | vial-updated-keychron |
 | [V5 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v5_max) | ansi_encoder, iso_encoder, jis_encoder | vial-updated-keychron |
 | [V6 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v6_max) | ansi_encoder, iso_encoder, jis_encoder | vial-updated-keychron |
-| [V8 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/v8_max) | ansi_encoder | vial-keychron |
-| [V10 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/v10_max) | ansi_encoder | vial-keychron |
+| [V8 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v8_max) | ansi_encoder | vial-updated-keychron |
+| [V10 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v10_max) | ansi_encoder | vial-updated-keychron |
 
 ### K Pro Series
 
 | Keyboard | Layouts | Branch |
 |----------|---------|--------|
 | [K1 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k1_pro) | iso/rgb | vial-updated-keychron |
-| [K2 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k2_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K3 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k3_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K4 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k4_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
-| [K5 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k5_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K6 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k6_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb | vial-keychron |
-| [K7 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k7_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
+| [K2 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k2_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K3 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k3_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K4 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k4_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
+| [K5 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k5_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K6 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k6_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb | vial-keychron |
+| [K7 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k7_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
 | [K8 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k8_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-updated-keychron |
-| [K9 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k9_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K10 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k10_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K11 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k11_pro) | ansi/rgb, ansi/white, ansi_encoder/rgb, ansi_encoder/white | vial-keychron |
-| [K12 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k12_pro) | ansi/rgb, ansi/white | vial-keychron |
-| [K13 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k13_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
-| [K14 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k14_pro) | ansi/rgb, ansi/white | vial-keychron |
-| [K15 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k15_pro) | ansi_encoder/rgb, ansi_encoder/white | vial-keychron |
-| [K17 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k17_pro) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
+| [K9 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k9_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K10 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k10_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K11 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k11_pro) | ansi/rgb, ansi/white, ansi_encoder/rgb, ansi_encoder/white | vial-keychron |
+| [K12 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k12_pro) | ansi/rgb, ansi/white | vial-keychron |
+| [K13 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k13_pro) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
+| [K14 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k14_pro) | ansi/rgb, ansi/white | vial-keychron |
+| [K15 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k15_pro) | ansi_encoder/rgb, ansi_encoder/white | vial-keychron |
+| [K17 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k17_pro) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
 
 ### K Max Series
 
 | Keyboard | Layouts | Branch |
 |----------|---------|--------|
-| [K1 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k1_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K2 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k2_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
-| [K3 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k3_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K1 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k1_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-updated-keychron |
+| [K2 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k2_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-updated-keychron |
+| [K3 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k3_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-updated-keychron |
 | [K4 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k4_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-updated-keychron |
-| [K5 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k5_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
-| [K7 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k7_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K5 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k5_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-updated-keychron |
+| [K7 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k7_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
 | [K8 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k8_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-updated-keychron |
 | [K9 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k9_max) | ansi/rgb, ansi/white | vial-updated-keychron |
 | [K10 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k10_max) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-updated-keychron |
-| [K11 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k11_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
-| [K13 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k13_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-keychron |
-| [K15 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k15_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-keychron |
-| [K17 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k17_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white, jis_encoder/rgb, jis_encoder/white | vial-keychron |
+| [K11 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k11_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-updated-keychron |
+| [K13 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k13_max) | ansi/rgb, ansi/white, iso/rgb, iso/white | vial-updated-keychron |
+| [K15 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k15_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white | vial-updated-keychron |
+| [K17 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k17_max) | ansi_encoder/rgb, ansi_encoder/white, iso_encoder/rgb, iso_encoder/white, jis_encoder/rgb, jis_encoder/white | vial-keychron |
 
 ### K HE Series
 
@@ -208,7 +208,7 @@ All keyboards below have Vial support with full keymap editing. Keychron-specifi
 
 | Keyboard | Layouts | Branch |
 |----------|---------|--------|
-| [K3 VERSION 3](https://github.com/tymon3310/vial-qmk/tree/vial-keychron/keyboards/keychron/k3_version_3) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
+| [K3 VERSION 3](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/k3_version_3) | ansi/rgb, ansi/white, iso/rgb, iso/white, jis/rgb, jis/white | vial-keychron |
 
 ### C Pro Series
 

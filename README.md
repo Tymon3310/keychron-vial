@@ -1,43 +1,56 @@
 # Keychron Vial
 
-Vial firmware and GUI support for Keychron keyboards.
+Vial support for Keychron keyboards, with the missing Keychron-specific pieces wired back in.
 
-This project brings full [Vial](https://get.vial.today/) support to Keychron keyboards, including advanced features like Keychron-specific settings, RGB control, and Hall Effect (HE) analog configuration.
+This repo is the front door for the Keychron Vial ecosystem: firmware, GUI forks, web access, and the current keyboard support matrix. If you just want to remap a board, start with Pipette or Vial Web. If you need Keychron settings, RGB controls, wireless bridge support, or Hall Effect tuning, the custom firmware and GUI stack here is what enables that.
 
-## Quick Links
+## Start Here
 
-| Resource | Description |
-|----------|-------------|
-| [Vial Web (Keychron Edition)](https://vial.tymon3310.dev) | Browser-based configurator |
-| [Pipette Desktop (Alternative)](https://github.com/tymon3310/pipette-desktop) | Modern Electron-based configurator (Recommended) |
-| [vial-gui Desktop App](https://github.com/tymon3310/vial-gui) | Legacy Python-based desktop configurator |
-| [vial-qmk Firmware](https://github.com/tymon3310/vial-qmk) | QMK firmware with Vial + Keychron support |
-| [Keyboard Definitions](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron) | Vial keymaps |
+| If you want to... | Use this |
+|-------------------|----------|
+| Remap a keyboard in the browser | [Vial Web](https://vial.tymon3310.dev) |
+| Use the best desktop app | [Pipette Desktop](https://github.com/tymon3310/pipette-desktop) |
+| Use the older Python app | [vial-gui](https://github.com/tymon3310/vial-gui) |
+| Build or flash firmware | [vial-qmk](https://github.com/tymon3310/vial-qmk) |
+| Check whether your board is supported | [Supported Keyboards](#supported-keyboards) |
 
----
+## What Lives Where
 
-## Repositories
+### `vial-qmk` (Firmware)
 
-### vial-qmk (Firmware)
+Hybrid fork of [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) and [Keychron/qmk_firmware](https://github.com/Keychron/qmk_firmware).
 
-Fork of [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) with Keychron keyboard ports.
+In practice:
+- Vial protocol, unlock flow, and core configurator logic come from Vial
+- Keyboard definitions, layout variants, and most wireless-specific behavior come from Keychron
+- This fork is where those two sides get stitched together for actual Keychron board support
 
 | Branch | Base | Status | Description |
 |--------|------|--------|-------------|
 | [`vial-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-keychron) | [wls_2025q1](https://github.com/keychron/qmk_firmware/tree/wls_2025q1) | Legacy | Older QMK base. Does not fully support the custom GUI. |
 | [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | [2025q3](https://github.com/Keychron/qmk_firmware/tree/2025q3) | **Active** | Newer QMK base. Fully supports the custom GUI. |
 
-> **Note:** Not all keyboards have been ported to `vial-updated-keychron` yet. Keyboards still only available on `vial-keychron` are marked accordingly.
+`vial-updated-keychron` is the branch to prefer unless your board is still marked as legacy-only below.
 
-### pipette-desktop (Alternative Desktop App)
+### `pipette-desktop` (Recommended Desktop App)
 
 Fork of [darakuneko/pipette-desktop](https://github.com/darakuneko/pipette-desktop) with a refined UI and built-in Pipette Hub for sharing layouts.
 
 | Branch | Description |
 |--------|-------------|
-| [`vial-keychron`](https://github.com/tymon3310/pipette-desktop/tree/vial-keychron) | **Active** — Main repository with Keychron support |
+| [`vial-keychron`](https://github.com/tymon3310/pipette-desktop/tree/vial-keychron) | **Active** - Main desktop app with Keychron support |
 
-### vial-gui (Legacy Desktop App)
+This is the GUI to use if you want the full feature set from `vial-updated-keychron`, including the newer Keychron tabs and device-specific behavior.
+
+Pipette includes support for:
+- Keychron Settings
+- Snap Click (SOCD)
+- Keychron RGB / per-key RGB / mixed RGB
+- Analog Matrix for HE boards, including DKS, SOCD, gamepad mode, calibration, and response curve editing
+- 2.4 GHz bridge support, battery reporting, and wireless power management
+- DFU flashing and layout/settings restore flow
+
+### `vial-gui` (Legacy Desktop App)
 
 Fork of [vial-kb/vial-gui](https://github.com/vial-kb/vial-gui) with Keychron-specific configuration tabs.
 
@@ -45,19 +58,52 @@ Fork of [vial-kb/vial-gui](https://github.com/vial-kb/vial-gui) with Keychron-sp
 |--------|-------------|
 | [`vial-keychron`](https://github.com/tymon3310/vial-gui/tree/vial-keychron) | Adds Keychron settings tabs |
 
-### vial-web (Browser App)
+This still matters for compatibility, but Pipette is the primary GUI target now.
+
+`vial-gui` also includes dedicated editors and protocol support for:
+- Keychron Settings
+- Keychron RGB
+- Snap Click
+- Analog Matrix
+- 2.4 GHz bridge support
+- DFU Firmware updater
+
+### `vial-web` (Browser App)
 
 Fork of [vial-kb/vial-web](https://github.com/vial-kb/vial-web) configured to use the Keychron-enabled GUI.
 
-| URL | Description |
-|-----|-------------|
+| Resource | Description |
+|----------|-------------|
 | [vial.tymon3310.dev](https://vial.tymon3310.dev) | Live deployment |
-
----
+| [tymon3310/vial-web](https://github.com/tymon3310/vial-web) | Source repository |
 
 ## Supported Keyboards
 
-All keyboards below have Vial support with full keymap editing. Keychron-specific features (RGB, settings) require the custom GUI.
+All keyboards below support Vial keymap editing. Keychron-specific tabs such as RGB, wireless settings, SOCD, or Hall Effect tuning require the custom GUI stack from this project.
+
+Most newer ports live on `vial-updated-keychron`. Boards that still depend on `vial-keychron` are marked that way in the branch column.
+
+Board support lives in `vial-qmk`. Feature support is split between `vial-qmk` and the GUIs:
+- Firmware decides whether a board exposes Vial, Keychron settings, RGB, wireless bridge support, or Hall Effect controls
+- Pipette and the custom `vial-gui` decide whether those features are actually surfaced well in the UI
+- `vial-web` covers the common path, but desktop is still the safer choice for the more Keychron-specific or newer features
+
+Support currently covers Keychron and Lemokey boards across:
+- Q / Q Max / Q HE
+- V / V Max / V 8K
+- K Pro / K Max / K HE
+- C Pro / C Pro V2 / C Pro 8K
+- S / X / Lemokey HE
+
+### Quick Navigation
+
+Q family: [Q Series](#q-series), [Q Pro](#q-pro-series), [Q Max](#q-max-series), [Q HE](#q-he-series)
+
+V family: [V Series](#v-series), [V Max](#v-max-series)
+
+K family: [K Pro](#k-pro-series), [K Max](#k-max-series), [K HE](#k-he-series), [K Version](#k-version-series)
+
+Other: [C Pro](#c-pro-series), [C Pro V2](#c-pro-v2-series), [C Pro 8K](#c-pro-8k-series), [Other](#other), [Lemokey](#lemokey-keychron-sub-brand)
 
 ### Q Series
 
@@ -261,10 +307,13 @@ All keyboards below have Vial support with full keymap editing. Keychron-specifi
 - Key overrides
 - QMK Settings
 
-### Keychron-Specific Features (Custom GUI Required)
+### Keychron-Specific Features
+
+These are the parts stock Vial does not cover well for Keychron boards.
 
 #### Wireless Configuration (2.4 GHz Bridge)
-Configure your wireless Keychron keyboard through the 2.4 GHz USB dongle (Keychron Link) — no USB cable needed:
+
+Configure supported wireless Keychron boards through the 2.4 GHz USB dongle (Keychron Link), without switching back to a cable:
 - **Transparent VIA/Vial tunneling**: All standard and Keychron-specific features work wirelessly, exactly as they do over USB
 - **Supported dongles**: Keychron Link USB-A (`3434:D030`) and USB-C (`3434:D031`)
 - **Automatic detection**: The GUI detects the bridge dongle and wirelessly-connected keyboard automatically
@@ -330,57 +379,44 @@ Keys in Gamepad mode can be assigned to standard HID joystick or XInput (Xbox co
 - **Read calibrated values**: Inspect per-key zero/full travel and scale factor
 
 #### Firmware Flasher (STM32 DFU)
-Built-in firmware flasher in the GUI — no external tools needed on desktop:
+
+The desktop GUI includes a built-in flasher, so routine firmware updates do not need a separate tool:
 - **Automatic layout backup**: Saves current keymap, macros and Keychron settings before flashing
 - **One-click flash**: Reboots keyboard into DFU mode, waits for DFU device, flashes `.bin` with `dfu-util`, then restores layout automatically
 - **Progress bar**: Live erase and download progress from `dfu-util`
 - **MCU/firmware info**: Displays detected MCU type and current firmware version before flashing
 - **Web support**: Also available in the browser via WebUSB DfuSe
----
 
 ## Getting Started
 
-### Option 1: Use Vial Web (Easiest)
+Choose the path that matches how much control you need.
+
+### Option 1: Use Vial Web (Fastest)
 
 1. Visit [vial.tymon3310.dev](https://vial.tymon3310.dev)
 2. Click "Start Vial"
 3. Select your keyboard from the WebHID prompt
 4. Configure your keyboard
 
-> **Note:** Keychron-specific tabs may not be fully functional in the web version.
+> The web app is the easiest place to start, but some Keychron-specific tabs are still better served by the desktop apps.
 
-### Option 2: Arch Linux (AUR)
+### Option 2: Pipette Desktop (Recommended)
 
-If you are using Arch Linux, you can install the GUI via the AUR.
-
-**Recommended (Pipette):**
-- [`pipette-desktop-keychron-bin`](https://aur.archlinux.org/packages/pipette-desktop-keychron-bin) (Pre-compiled)
-- [`pipette-desktop-keychron-git`](https://aur.archlinux.org/packages/pipette-desktop-keychron-git) (Build from source)
-
-**Legacy (vial-gui):**
-- [`vial-keychron-bin`](https://aur.archlinux.org/packages/vial-keychron-bin) (Pre-compiled)
-- [`vial-keychron-git`](https://aur.archlinux.org/packages/vial-keychron-git) (Build from source)
-
-```bash
-# Example using yay
-# Recommended (Pipette)
-yay -S pipette-desktop-keychron-bin
-
-# Legacy (vial-gui)
-yay -S vial-keychron-bin
-```
-
-### Option 3: Pipette Desktop (Recommended)
-
-Pipette is the modern, Electron-based alternative to the original Vial GUI. It features a cleaner UI and faster performance.
+Pipette is the main desktop app for this project. It is the best fit if you want the full Keychron feature set without fighting the older GUI.
 
 1. Download the latest release from the [Pipette GitHub Releases](https://github.com/tymon3310/pipette-desktop/releases/latest).
-2. For Linux, download the `.AppImage`, make it executable, and run:
+2. On Linux, download the `.AppImage`, make it executable, and run:
    ```bash
    chmod +x Pipette-linux-x86_64.AppImage
    ./Pipette-linux-x86_64.AppImage
    ```
-3. For Windows/macOS, use the provided installers.
+   On Arch Linux, you can use the AUR instead:
+   - [`pipette-desktop-keychron-bin`](https://aur.archlinux.org/packages/pipette-desktop-keychron-bin) (Pre-compiled)
+   - [`pipette-desktop-keychron-git`](https://aur.archlinux.org/packages/pipette-desktop-keychron-git) (Build from source)
+   ```bash
+   yay -S pipette-desktop-keychron-bin
+   ```
+3. On Windows or macOS, use the release installers.
 
 #### Build from source
 
@@ -400,23 +436,29 @@ Pipette is the modern, Electron-based alternative to the original Vial GUI. It f
    pnpm dev
    ```
 
-   OR build the production app:
+   Or build the production app:
    ```bash
    pnpm build
    pnpm dist:linux  # or dist:win, dist:mac
    ```
 
-### Option 4: Legacy Desktop App (vial-gui)
+### Option 3: Legacy Desktop App (`vial-gui`)
 
-Use this if you prefer the original Python-based interface or encounter issues with Pipette.
+Use this if you specifically want the original Python-based Vial interface, or if Pipette does not behave correctly on your setup.
 
 1. Download the latest release from the [vial-gui GitHub Releases](https://github.com/tymon3310/vial-gui/releases/latest).
-2. For Linux, download the `.AppImage`, make it executable, and run:
+2. On Linux, download the `.AppImage`, make it executable, and run:
    ```bash
    chmod +x Vial-*.AppImage
    ./Vial-*.AppImage
    ```
-3. For Windows/macOS, use the provided installers.
+   On Arch Linux, you can use the AUR instead:
+   - [`vial-keychron-bin`](https://aur.archlinux.org/packages/vial-keychron-bin) (Pre-compiled)
+   - [`vial-keychron-git`](https://aur.archlinux.org/packages/vial-keychron-git) (Build from source)
+   ```bash
+   yay -S vial-keychron-bin
+   ```
+3. On Windows or macOS, use the provided installers.
 
 #### Build from source
 
@@ -438,66 +480,65 @@ Use this if you prefer the original Python-based interface or encounter issues w
    ```bash
    python src/main/python/main.py
    ```
-   OR
-   Compile the app:
+   Or build the packaged app:
    ```bash
    pyinstaller misc/Vial.spec --noconfirm
    ./dist/Vial/Vial
    ```
 
-### Option 5: Build and Flash Custom Firmware
+### Option 4: Build and Flash Custom Firmware
 
 1. Clone the vial-qmk repository:
    ```bash
-   # Active branch (recommended)
+   # Current branch for most boards
    git clone --branch vial-updated-keychron https://github.com/tymon3310/vial-qmk.git
-   # Legacy branch (for keyboards not yet ported)
+   # Older branch for boards not yet ported
    git clone --branch vial-keychron https://github.com/tymon3310/vial-qmk.git
    cd vial-qmk
    ```
 
-2. Set up QMK:
+2. Set up QMK CLI and submodules:
    ```bash
+   pipx install qmk
+   qmk setup -H .
    qmk git submodule
    ```
 
-3. Build and flash firmware for your keyboard:
+3. Build firmware for your keyboard:
    ```bash
-   # Compile only
    qmk compile -kb keychron/v5_max/ansi_encoder -km vial
+   ```
 
-   # Or compile and flash in one step (puts keyboard in bootloader mode automatically)
+4. Flash it with QMK CLI:
+   ```bash
    qmk flash -kb keychron/v5_max/ansi_encoder -km vial
    ```
 
-   > `qmk flash` will prompt you to put the keyboard in bootloader mode (hold Esc while plugging in, or press the reset button). For subsequent updates once Vial is running, the GUI flasher is more convenient as it can restore settings — see [Flashing Instructions](#flashing-instructions).
-
----
+   > `qmk flash` is the recommended command-line path. Once Vial is already installed, the GUI flasher is often more convenient for routine updates because it can preserve and restore your layout and Keychron settings.
 
 ## Flashing Instructions
 
-> **Note:** The GUI Flasher tab requires the keyboard to already be running Vial firmware. For a first-time flash from stock firmware, use the manual method.
+For a first flash from stock firmware, QMK CLI is usually the cleanest route. For later updates, the GUI flasher is often more convenient.
 
 ### Option 1: GUI Flasher (Recommended for updates)
 
-The desktop and web apps have a built-in **DFU Firmware updater** tab — use this to update firmware on a keyboard that is already running Vial:
+The desktop and web apps include a **DFU Firmware updater** tab for boards that are already running Vial firmware:
 
 1. Open the app and connect your keyboard
 2. Go to the **DFU Firmware updater** tab
 3. Select your compiled `.bin` file
 4. Click **Flash** — the GUI will back up your layout, reboot the keyboard into DFU mode, flash the firmware, and if you selected to restore current layout (on by default), restore your layout automatically
 
-> The GUI flasher on desktop calls `dfu-util` under the hood and works on Windows, Linux, and macOS — as long as `dfu-util` is installed and on PATH.
-> - **Linux:** use your's system package manager (ex, `sudo pacman -S dfu-util`)
+> The desktop flasher uses `dfu-util` under the hood and works on Windows, Linux, and macOS as long as `dfu-util` is installed and available on `PATH`.
+> - **Linux:** install it through your package manager, for example `sudo pacman -S dfu-util`
 > - **Windows:** `scoop install dfu-util` (via [scoop](https://scoop.sh/)), or download from [dfu-util.sourceforge.net](https://dfu-util.sourceforge.net/) and add to PATH
 > - **macOS:** `brew install dfu-util`
 >
-> The web app flasher does not require `dfu-util`, but on Windows you need to install additional drivers. You can download the driver installer from [QMK Toolbox](https://github.com/qmk/qmk_toolbox/blob/master/windows/QMK%20Toolbox/Resources/qmk_driver_installer.exe) repo.
-> 
+> The web flasher does not require `dfu-util`, but on Windows you still need the additional drivers. The driver installer is available from the [QMK Toolbox repository](https://github.com/qmk/qmk_toolbox/blob/master/windows/QMK%20Toolbox/Resources/qmk_driver_installer.exe).
 
-### Option 2: Manual Flash (dfu-util)
+### Option 2: Manual Flash (`dfu-util`)
 
-Use this for a first-time flash from stock firmware, or any time the GUI flasher is not available:
+Use this if you want the direct STM32 DFU command, or if QMK CLI is not available on your system:
 
 1. Enter bootloader mode:
    - Hold **Esc** while plugging in the USB cable, OR
@@ -537,11 +578,9 @@ The Keychron-specific tabs only appear when:
 2. Check that the keyboard declares `"lighting": "vialrgb"` in vial.json
 3. Use a compatible GUI (Pipette or custom vial-gui fork) - stock Vial GUI may not support all effects
 
----
-
 ## Contributing
 
-Contributions are welcome! Please:
+If you want to add support for another board or fix something rough around the edges, send a PR to the relevant repo:
 
 1. Fork the relevant repository
 2. Create a feature branch
@@ -550,23 +589,19 @@ Contributions are welcome! Please:
 ### Adding a New Keyboard
 
 1. Create the keyboard folder in `keyboards/keychron/<keyboard_name>/`
-2. Add `keymaps/vial/` with:
+2. Add `keymaps/vial/` containing:
    - `keymap.c`
    - `config.h` (with unique `VIAL_KEYBOARD_UID`)
    - `vial.json` (keyboard layout definition)
    - `rules.mk`
 3. Generate a unique UID: `python3 util/vial_generate_keyboard_uid.py`
-4. Test the build and flash
-
----
+4. Verify that it builds and flashes cleanly
 
 ## License
 
 - vial-qmk: GPL-2.0 (inherited from QMK)
 - vial-gui: GPL-2.0 (inherited from Vial)
 - This documentation: MIT
-
----
 
 ## Credits
 
@@ -575,6 +610,10 @@ Contributions are welcome! Please:
 - [Keychron](https://github.com/Keychron/qmk_firmware) - Original keyboard firmware
 - [Pipette](https://github.com/darakuneko/pipette-desktop) - Modern Electron-based GUI
 - Community contributors
-- Claude Opus for fixing some annoying stuff that for some reason just stopped working on it's own
+- People who kept testing weird boards, reporting regressions, and making this less fragile over time
 
----
+## Hardware Note
+
+My own hands-on testing is limited. I only have a V5 Max ANSI encoder, so anything outside that board usually depends on user reports, external testing, and whether the firmware or GUI behavior lines up with the upstream Keychron implementation.
+
+So if a board or feature is listed here because it exists in `vial-qmk`, read that as "implemented in the tree" first, and only sometimes "personally verified on hardware."

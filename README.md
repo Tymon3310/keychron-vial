@@ -286,6 +286,22 @@ Other: [C Pro](#c-pro-series), [C Pro V2](#c-pro-v2-series), [C Pro 8K](#c-pro-8
 | [S1](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/s1) | ansi/rgb, ansi/white | vial-updated-keychron |
 | [X0](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/x0) | red | vial-updated-keychron |
 
+### R Series
+
+| Keyboard | Layouts | Branch |
+|----------|---------|--------|
+| [R3](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/r3) | ansi, jis, th | vial-updated-keychron |
+| [R5](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/r5) | ansi | vial-updated-keychron |
+| [R6](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/r6) | ansi, th | vial-updated-keychron |
+
+### 8K Series
+
+| Keyboard | Layouts | Branch |
+|----------|---------|--------|
+| [V1 8K](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v1_8k) | ansi_encoder | vial-updated-keychron |
+| [V3 8K](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v3_8k) | ansi_encoder, iso_encoder | vial-updated-keychron |
+| [V6 8K](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v6_8k) | ansi_encoder, iso_encoder | vial-updated-keychron |
+
 ### Lemokey (Keychron Sub-brand)
 
 | Keyboard | Layouts | Branch |
@@ -293,8 +309,10 @@ Other: [C Pro](#c-pro-series), [C Pro V2](#c-pro-v2-series), [C Pro 8K](#c-pro-8
 | [L1 HE](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/lemokey/l1_he) | ansi | vial-updated-keychron |
 | [P1 HE](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/lemokey/p1_he) | ansi, iso, jis | vial-updated-keychron |
 | [P2 HE](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/lemokey/p2_he) | ansi | vial-updated-keychron |
+| [P3 HE](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/lemokey/p3_he) | ansi | vial-updated-keychron |
 
 ---
+
 
 ## Features
 

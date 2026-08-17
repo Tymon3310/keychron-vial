@@ -2,7 +2,7 @@
 
 Vial support for Keychron and Lemokey keyboards, bringing real-time Vial configuration, 2.4 GHz wireless bridge access, Hall Effect analog switch tuning, RGB customization, and hardware settings to supported models.
 
-> **Important Prerequisite:** Stock Keychron factory firmware only supports VIA and Keychron's proprietary web app (`launcher.keychron.com`) for advanced features like SOCD, per-key RGB, and Hall Effect tuning. To unlock open-source Vial configurability—including real-time remapping, tap dance, combos, dynamic macros, and offline desktop GUI support alongside all Keychron hardware features—you **must flash the custom firmware from `vial-qmk` onto your keyboard**.
+> **Important Prerequisite:** Stock Keychron factory firmware only supports VIA and Keychron's proprietary web app (`launcher.keychron.com`) for advanced features like SOCD, per-key RGB, and Hall Effect tuning. To unlock open-source Vial configurability—including real-time remapping, tap dance, combos, dynamic macros, in-app flashing with settings restore and offline desktop GUI support alongside all Keychron hardware features—you **must flash the custom firmware from `vial-qmk` onto your keyboard**.
 
 ---
 
@@ -26,7 +26,7 @@ A hybrid fork combining [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) 
 
 - **Vial runtime engine**: Real-time layout remapping, unlock flow, macros, tap dance, and combo configuration.
 - **Keychron hardware layer**: Matrix drivers, wireless subsystems, RGB controls, and Hall Effect analog sensing.
-- **Wireless XOR protocol**: Custom tunneling patch allowing full VIA/Vial configuration over the 2.4 GHz Keychron Link dongle.
+- **Wireless XOR protocol**: Custom tunneling patch allowing full Vial configuration over the 2.4 GHz Keychron Link dongle.
 
 | Branch | Base | Status | Description |
 |---|---|---|---|
@@ -49,7 +49,7 @@ Both desktop GUIs ([Pipette Desktop](https://github.com/tymon3310/pipette-deskto
 |---|---|---|---|
 | [**Pipette Desktop**](https://github.com/tymon3310/pipette-desktop) | Linux, Windows, macOS | TypeScript / Electron | **Recommended GUI.** Modern interface with Pipette Hub layout sharing. |
 | [**vial-gui**](https://github.com/tymon3310/vial-gui) | Linux, Windows, macOS | Python / Qt | Classic Vial interface with full Keychron protocol support. |
-| [**Vial Web**](https://vial.tymon3310.dev) | Chromium browsers | WebAssembly / WebHID | Quick browser configurator ([Source](https://github.com/tymon3310/vial-web)). |
+| [**Vial Web**](https://vial.tymon3310.dev) | Chromium browsers | WebAssembly / WebHID | Quick browser configurator based on Vial-gui ([Source](https://github.com/tymon3310/vial-web)). |
 
 ---
 
@@ -71,7 +71,7 @@ Support covers Keychron and Lemokey models across:
 
 Q Family: [Q Series](#q-series), [Q Pro](#q-pro-series), [Q Max](#q-max-series), [Q HE](#q-he-series)
 
-V Family: [V Series](#v-series), [V Max](#v-max-series), [8K Series (V 8K)](#8k-series)
+V Family: [V Series](#v-series), [V Max](#v-max-series), [V 8K](#v-8k-series)
 
 K Family: [K Pro](#k-pro-series), [K Max](#k-max-series), [K HE](#k-he-series), [K Version](#k-version-series)
 
@@ -173,7 +173,7 @@ Other: [C Pro](#c-pro-series), [C Pro V2](#c-pro-v2-series), [C Pro 8K](#c-pro-8
 | [V8 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v8_max) | ansi_encoder, iso_encoder | vial-updated-keychron |
 | [V10 MAX](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/v10_max) | ansi_encoder, iso_encoder | vial-updated-keychron |
 
-### 8K Series
+### V 8K Series
 
 | Keyboard | Layouts | Branch |
 |---|---|---|
@@ -375,40 +375,64 @@ While stock factory firmware supports features like SOCD and Hall Effect tuning 
 
 ### Step 2: Configure Your Keyboard
 
-Once custom firmware is running on your board:
+Once custom firmware is running on your board, choose your preferred configurator:
 
 #### Option A: Pipette Desktop (Recommended)
-1. Download the latest installer or package from [Pipette GitHub Releases](https://github.com/tymon3310/pipette-desktop/releases/latest).
-   - **Linux AppImage**:
+
+Modern Electron/TypeScript desktop configurator with Pipette Hub layout sharing.
+
+1. **Pre-built Releases:**
+   - **Linux (AppImage):** Download `Pipette-linux-x86_64.AppImage` from [GitHub Releases](https://github.com/tymon3310/pipette-desktop/releases/latest):
      ```bash
      chmod +x Pipette-linux-x86_64.AppImage
      ./Pipette-linux-x86_64.AppImage
      ```
-   - **Arch Linux (AUR)**:
+   - **Arch Linux (AUR):**
      ```bash
-     yay -S pipette-desktop-keychron-bin
+     yay -S pipette-desktop-keychron-bin   # Pre-compiled binary
+     # or: yay -S pipette-desktop-keychron-git  # Build from source
      ```
-   - **Windows / macOS**: Download and run the release installers.
+   - **Windows / macOS:** Download and run the installer from [GitHub Releases](https://github.com/tymon3310/pipette-desktop/releases/latest).
+
+2. **Build from Source (Optional):**
+   ```bash
+   git clone --branch vial-keychron https://github.com/tymon3310/pipette-desktop.git
+   cd pipette-desktop
+   pnpm install
+   pnpm dev
+   ```
 
 #### Option B: vial-gui (Python Desktop)
-1. Download from [vial-gui GitHub Releases](https://github.com/tymon3310/vial-gui/releases/latest).
-   - **Arch Linux (AUR)**:
+
+Classic Python/Qt desktop configurator with full Keychron protocol feature parity.
+
+1. **Pre-built Releases:**
+   - **Linux (AppImage):** Download `Vial-*.AppImage` from [GitHub Releases](https://github.com/tymon3310/vial-gui/releases/latest):
      ```bash
-     yay -S vial-keychron-bin
+     chmod +x Vial-*.AppImage
+     ./Vial-*.AppImage
      ```
-   - **Linux AppImage / Windows / macOS**: Use the release packages or run from source:
+   - **Arch Linux (AUR):**
      ```bash
-     git clone --branch vial-keychron https://github.com/tymon3310/vial-gui.git
-     cd vial-gui
-     uv venv .venv --python 3.12
-     source .venv/bin/activate
-     uv pip install -r requirements.txt
-     python src/main/python/main.py
+     yay -S vial-keychron-bin   # Pre-compiled binary
+     # or: yay -S vial-keychron-git  # Build from source
      ```
+   - **Windows / macOS:** Download and run the installer from [GitHub Releases](https://github.com/tymon3310/vial-gui/releases/latest).
+
+2. **Build from Source (Optional):**
+   ```bash
+   git clone --branch vial-keychron https://github.com/tymon3310/vial-gui.git
+   cd vial-gui
+   uv venv .venv --python 3.12
+   source .venv/bin/activate  # Linux/macOS (or .venv\Scripts\activate on Windows)
+   uv pip install -r requirements.txt
+   python src/main/python/main.py
+   ```
 
 #### Option C: Vial Web (Browser)
-1. Open [vial.tymon3310.dev](https://vial.tymon3310.dev) in any Chromium-based browser.
-2. Click **Start Vial** and select your keyboard from the WebHID prompt.
+
+1. Open [vial.tymon3310.dev](https://vial.tymon3310.dev) in any Chromium-based browser (Chrome, Edge, Brave, Chromium).
+2. Click **Start Vial** and select your keyboard from the WebHID device prompt.
 
 ---
 
@@ -481,4 +505,4 @@ Contributions and ports for additional keyboard models are welcome:
 
 ## Hardware Testing Note
 
-Daily development and hardware verification are conducted on a **Keychron V5 Max (ANSI Encoder)**. Other targets in the tree are maintained against Keychron upstream firmware source definitions and community pull requests. If you notice any model-specific anomalies, please open an issue or pull request.
+Daily development and hardware verification are conducted on a **Keychron V5 Max (ANSI Encoder)**. Other targets in the tree are maintained against Keychron upstream firmware source definitions and community pull requests. If you notice any model-specific anomalies, please open an issue or pull request (or message me on official [Keychron Discord server](https://discord.com/invite/HAYbRrTsjN)).

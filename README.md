@@ -12,9 +12,10 @@ Vial support for Keychron and Lemokey keyboards, bringing real-time Vial configu
 |---|---|---|
 | **Build or flash firmware** | [`vial-qmk`](https://github.com/tymon3310/vial-qmk) | Required: keyboard must run this custom firmware for Vial support |
 | **Check keyboard support** | [Supported Keyboards](#supported-keyboards) | Full list of supported boards, layouts, and branches |
-| **Use modern desktop GUI** | [Pipette Desktop](https://github.com/tymon3310/pipette-desktop) | Recommended: TypeScript/Electron GUI with full Keychron tab support |
-| **Use Python desktop GUI** | [vial-gui](https://github.com/tymon3310/vial-gui) | Python/Qt GUI with identical Keychron protocol feature parity |
-| **Configure in browser** | [Vial Web](https://vial.tymon3310.dev) | Instant WebHID access without installing software |
+| **Configure in browser (Modern)** | [**Pipette Web**](https://pipette.tymon3310.dev) | **Recommended Web:** Modern WebHID configurator with 2.4GHz wireless dongle & WebUSB flasher |
+| **Use modern desktop GUI** | [Pipette Desktop](https://github.com/tymon3310/pipette-desktop) | **Recommended Desktop:** TypeScript/Electron GUI with full Keychron tab support |
+| **Configure in browser (Classic)** | [Vial Web](https://vial.tymon3310.dev) | Classic WebAssembly / WebHID browser configurator based on vial-gui |
+| **Use Python desktop GUI** | [vial-gui](https://github.com/tymon3310/vial-gui) | Python / Qt GUI with identical Keychron protocol feature parity |
 
 ---
 
@@ -37,19 +38,20 @@ A hybrid fork combining [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) 
 
 ### Desktop and Web Configurators
 
-Both desktop GUIs ([Pipette Desktop](https://github.com/tymon3310/pipette-desktop) and [vial-gui](https://github.com/tymon3310/vial-gui)) share identical Keychron feature support and protocol capabilities:
-- Keychron Settings (Debounce, NKRO, 8K report rates, Wireless Low Power Mode)
-- Snap Click (SOCD for standard mechanical switches)
-- Keychron RGB (Effects, per-key RGB, mixed RGB, OS indicator colors)
-- Analog Matrix (Hall Effect profiles, Rapid Trigger, DKS, Gamepad/XInput mode, calibration, and live travel monitor)
-- 2.4 GHz Wireless Bridge support (automatic discovery via Keychron Link USB dongles)
-- Built-in STM32 DFU Firmware flasher with layout backup and restore
+Both desktop GUIs and web configurators share identical Keychron feature support and protocol capabilities:
+- **Keychron Settings**: Debounce, NKRO, 8K report rates, Wireless Low Power Mode, and battery status.
+- **Snap Click (SOCD)**: Hardware-level SOCD for standard mechanical switches.
+- **Keychron RGB**: Effects, per-key RGB, mixed RGB, and OS indicator colors.
+- **Analog Matrix (Hall Effect)**: Profiles, Rapid Trigger, DKS, Gamepad/XInput mode, calibration, and live travel monitor.
+- **2.4 GHz Wireless Bridge Support**: Direct wireless configuration over Keychron Link USB dongles via XOR 0x28 tunneling.
+- **Built-in STM32 DFU Firmware Flasher**: One-click in-app flashing with automatic layout backup and restore (via WebUSB / DfuSe in browser and desktop).
 
 | Configurator | Platform | Tech Stack | Notes |
 |---|---|---|---|
-| [**Pipette Desktop**](https://github.com/tymon3310/pipette-desktop) | Linux, Windows, macOS | TypeScript / Electron | **Recommended GUI.** Modern interface with Pipette Hub layout sharing. |
+| [**Pipette Web**](https://pipette.tymon3310.dev) | Chromium browsers | TypeScript / React / WebHID | **Recommended Web App.** Zero install, full Keychron features, 2.4GHz bridge, and WebUSB flasher. |
+| [**Pipette Desktop**](https://github.com/tymon3310/pipette-desktop) | Linux, Windows, macOS | TypeScript / Electron | **Recommended Desktop App.** Modern interface with typing analytics and Pipette Hub. |
 | [**vial-gui**](https://github.com/tymon3310/vial-gui) | Linux, Windows, macOS | Python / Qt | Classic Vial interface with full Keychron protocol support. |
-| [**Vial Web**](https://vial.tymon3310.dev) | Chromium browsers | WebAssembly / WebHID | Quick browser configurator based on Vial-gui ([Source](https://github.com/tymon3310/vial-web)). |
+| [**Vial Web**](https://vial.tymon3310.dev) | Chromium browsers | WebAssembly / WebHID | Classic browser configurator based on Vial-gui ([Source](https://github.com/tymon3310/vial-web)). |
 
 ---
 
@@ -463,7 +465,7 @@ Once your keyboard is running Vial firmware, routine updates can be flashed dire
 
 ### Keychron Tabs Not Appearing in GUI
 Keychron-specific tabs appear when:
-1. You are using our custom configurator ([Pipette Desktop](https://github.com/tymon3310/pipette-desktop), custom [vial-gui](https://github.com/tymon3310/vial-gui), or [vial-web](https://vial.tymon3310.dev)). Stock upstream Vial GUI does not include Keychron tabs.
+1. You are using our custom configurator ([Pipette Web](https://pipette.tymon3310.dev), [Pipette Desktop](https://github.com/tymon3310/pipette-desktop), custom [vial-gui](https://github.com/tymon3310/vial-gui), or [vial-web](https://vial.tymon3310.dev)). Stock upstream Vial GUI does not include Keychron tabs.
 2. The keyboard is running custom firmware built with Keychron extensions enabled.
 3. The keyboard model supports the specific hardware feature (for instance, the Analog Matrix tab requires a Hall Effect model).
 

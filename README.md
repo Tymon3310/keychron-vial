@@ -2,7 +2,7 @@
 
 Vial support for Keychron and Lemokey keyboards, bringing real-time Vial configuration, 2.4 GHz wireless bridge access, Hall Effect analog switch tuning, RGB customization, and hardware settings to supported models.
 
-> **Important Prerequisite:** Stock Keychron factory firmware only supports VIA. To use Vial and any of the Keychron-specific features listed below, you **must flash the custom firmware from `vial-qmk` onto your keyboard**.
+> **Important Prerequisite:** Stock Keychron factory firmware only supports VIA and Keychron's proprietary web app (`launcher.keychron.com`) for advanced features like SOCD, per-key RGB, and Hall Effect tuning. To unlock open-source Vial configurability—including real-time remapping, tap dance, combos, dynamic macros, and offline desktop GUI support alongside all Keychron hardware features—you **must flash the custom firmware from `vial-qmk` onto your keyboard**.
 
 ---
 
@@ -345,7 +345,7 @@ Integrated directly into Pipette Desktop and vial-gui:
 
 ### Step 1: Flash Custom Firmware (Prerequisite)
 
-Because stock Keychron firmware only supports VIA, your keyboard must first be flashed with our custom `vial-qmk` firmware.
+While stock factory firmware supports features like SOCD and Hall Effect tuning exclusively through Keychron's web launcher (`launcher.keychron.com`), it does not support Vial. To configure your keyboard with Vial (desktop or web) while retaining full control over Keychron hardware features, you must first flash our custom `vial-qmk` firmware.
 
 1. **Build from source**:
    ```bash
@@ -430,7 +430,7 @@ Once your keyboard is running Vial firmware, routine updates can be flashed dire
 ## Troubleshooting
 
 ### Keyboard Not Detected in Vial
-1. Ensure the keyboard has been flashed with custom `vial-qmk` firmware (stock Keychron firmware is VIA-only and will not be detected by Vial).
+1. Ensure the keyboard has been flashed with custom `vial-qmk` firmware (stock Keychron firmware only works with VIA / `launcher.keychron.com` and will not be detected by Vial).
 2. Ensure the physical mode switch is set to **Cable** (or connect via the Keychron Link 2.4 GHz wireless dongle). Bluetooth connection does not support raw HID configuration.
 3. On Linux, configure udev permissions:
    ```bash

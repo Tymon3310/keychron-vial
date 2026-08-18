@@ -12,8 +12,8 @@ Vial support for Keychron and Lemokey keyboards, bringing real-time Vial configu
 |---|---|---|
 | **Build or flash firmware** | [`vial-qmk`](https://github.com/tymon3310/vial-qmk) | Required: keyboard must run this custom firmware for Vial support |
 | **Check keyboard support** | [Supported Keyboards](#supported-keyboards) | Full list of supported boards, layouts, and branches |
-| **Configure in browser (Modern)** | [**Pipette Web**](https://pipette.tymon3310.dev) | **Recommended Web:** Modern WebHID configurator with 2.4GHz wireless dongle & WebUSB flasher |
 | **Use modern desktop GUI** | [Pipette Desktop](https://github.com/tymon3310/pipette-desktop) | **Recommended Desktop:** TypeScript/Electron GUI with full Keychron tab support |
+| **Configure in browser (Modern)** | [**Pipette Web**](https://pipette.tymon3310.dev) | **Recommended Web:** Modern WebHID configurator with 2.4GHz wireless dongle & WebUSB flasher |
 | **Configure in browser (Classic)** | [Vial Web](https://vial.tymon3310.dev) | Classic WebAssembly / WebHID browser configurator based on vial-gui |
 | **Use Python desktop GUI** | [vial-gui](https://github.com/tymon3310/vial-gui) | Python / Qt GUI with identical Keychron protocol feature parity |
 
@@ -48,8 +48,8 @@ Both desktop GUIs and web configurators share identical Keychron feature support
 
 | Configurator | Platform | Tech Stack | Notes |
 |---|---|---|---|
-| [**Pipette Web**](https://pipette.tymon3310.dev) | Chromium browsers | TypeScript / React / WebHID | **Recommended Web App.** Zero install, full Keychron features, 2.4GHz bridge, and WebUSB flasher. |
 | [**Pipette Desktop**](https://github.com/tymon3310/pipette-desktop) | Linux, Windows, macOS | TypeScript / Electron | **Recommended Desktop App.** Modern interface with typing analytics and Pipette Hub. |
+| [**Pipette Web**](https://pipette.tymon3310.dev) | Chromium browsers | TypeScript / React / WebHID | **Recommended Web App.** Zero install, full Keychron features, 2.4GHz bridge, and WebUSB flasher. |
 | [**vial-gui**](https://github.com/tymon3310/vial-gui) | Linux, Windows, macOS | Python / Qt | Classic Vial interface with full Keychron protocol support. |
 | [**Vial Web**](https://vial.tymon3310.dev) | Chromium browsers | WebAssembly / WebHID | Classic browser configurator based on Vial-gui ([Source](https://github.com/tymon3310/vial-web)). |
 
@@ -431,7 +431,11 @@ Classic Python/Qt desktop configurator with full Keychron protocol feature parit
    python src/main/python/main.py
    ```
 
-#### Option C: Vial Web (Browser)
+#### Option C: Pipette Web (Browser)
+1. Open [pipette.tymon3310.dev](https://pipette.tymon3310.dev) in any Chromium-based browser (Chrome, Edge, Brave, Chromium).
+2. Click **Connect/Authorize Keyboard** and select your keyboard from the WebHID device prompt.
+
+#### Option D: Vial Web (Browser)
 
 1. Open [vial.tymon3310.dev](https://vial.tymon3310.dev) in any Chromium-based browser (Chrome, Edge, Brave, Chromium).
 2. Click **Start Vial** and select your keyboard from the WebHID device prompt.
@@ -440,8 +444,19 @@ Classic Python/Qt desktop configurator with full Keychron protocol feature parit
 
 ## Subsequent Firmware Updates
 
-Once your keyboard is running Vial firmware, routine updates can be flashed directly from the **DFU Firmware updater** tab in Pipette Desktop or vial-gui:
-1. Open Pipette Desktop or vial-gui.
+Once your keyboard is running Vial firmware, routine updates can be flashed directly from the **DFU Firmware updater** tab in Pipette Desktop or vial-gui. Flashing is also supported on web apps, although it is not recommended way:
+
+### Pipette Desktop/Web Flashing Steps:
+
+1. Open Pipette Desktop or Pipette Web.
+2. Navigate to the **System** tab.
+3. At the bottom, click **Keychron flasher**.
+4. Select your updated `.bin` file.
+5. Click **Flash**. The application will automatically back up your keymap and settings, reboot into DFU mode, flash the update, and restore your configuration.
+
+### Vial-gui/web Flashing Steps:
+
+1. Open vial-gui or vial-web.
 2. Navigate to the **DFU Firmware updater** tab.
 3. Select your updated `.bin` file.
 4. Click **Flash**. The application will automatically back up your keymap and settings, reboot into DFU mode, flash the update, and restore your configuration.
@@ -474,7 +489,7 @@ Keychron-specific tabs appear when:
 ## Contributing
 
 Contributions and ports for additional keyboard models are welcome:
-1. Fork the target repository ([vial-qmk](https://github.com/tymon3310/vial-qmk), [pipette-desktop](https://github.com/tymon3310/pipette-desktop), or [vial-gui](https://github.com/tymon3310/vial-gui)).
+1. Fork the target repository ([vial-qmk](https://github.com/tymon3310/vial-qmk), [pipette-desktop](https://github.com/tymon3310/pipette-desktop), or [vial-gui](https://github.com/tymon3310/vial-gui)) or [pipette-desktop](https://github.com/tymon3310/pipette-desktop).
 2. Create a feature branch.
 3. Submit a pull request.
 

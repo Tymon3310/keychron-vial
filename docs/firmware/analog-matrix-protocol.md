@@ -55,6 +55,16 @@ Response: data[2] = version_byte (LSB of KC_ANALOG_MATRIX_VERSION)
 The full firmware version constant is `0x34340004`; only the lowest byte (`0x04`)
 is transmitted.
 
+> **Fork status:** The official Launcher additionally reads a
+> feature bitmap from `data[4]` of this response (bits: switchAxis,
+> resetSingleKey, dkr, turbo, gamepadDisable, supportMechanical) and
+> dispatches per-version command classes for HE versions 1--5. Our fork
+> currently leaves `data[4] = 0` (all features off) and reports version `4`.
+> It also does not implement the Launcher-only sub-commands `0x1D`
+> (reset single key), `0x50`/`0x51` (axis type), or `0x52` (mechanical/
+> magnetic switch bitmap). See
+> [launcher/analog-matrix-extras.md](../launcher/analog-matrix-extras.md).
+
 ---
 
 ## 0x10 -- Get Profiles Info

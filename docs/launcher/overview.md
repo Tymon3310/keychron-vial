@@ -6,21 +6,24 @@ its minified JavaScript bundles. The Launcher is Keychron's official
 configuration tool for keyboards, mice, trackballs, and 2.4 GHz dongles.
 
 > **Source:** All findings in the `launcher/` docs are derived from the
-> Angular application bundle `main.67e8841912a834d8.js` (~3.9 MB minified).
+> Angular application bundle
 > The other JS files served by the Launcher (runtime, scripts, polyfills) are
 > webpack-bundled copies of the same application code and contain no additional
 > protocol logic.
-> **Note:** These documents have been thoroughly verified against the decompiled 
-> `main.67e8841912a834d8.js` source code and are confirmed to be 100% accurate.
+> **Note:** These documents have been verified against the decompiled 
+> source code and are *NOT* confirmed to be 100% accurate.
 
 ## Application Stack
 
 - **Framework:** Angular (minified, single-bundle deployment, with chunk splitting)
 - **Transport:** WebHID API exclusively -- no WebBluetooth, no WebSerial
+- **AI assistant:** LangChain tool-calling agent (see [ai-assistant.md](ai-assistant.md))
+- **Companion app:** "Keychron Assistant" desktop helper over WebSocket `ws://localhost:40003`
 - **Firmware packages:** JSZip/pako for ZIP firmware archives
 - **Code editor:** ACE editor (embedded, for JSON/keymap editing)
 - **Backend APIs:**
   - `https://launcher.keychron.com/api/` (main backend for metadata and layout JSONs)
+  - `https://launcher.keychron.cn/api` (CN backend + AI model proxy)
   - `https://statistic.keychron.com/` (analytics)
   - Firmware payloads are served mostly from Shopify CDN (`cdn.shopify.com/s/files/...`)
 
@@ -30,9 +33,9 @@ The Keychron Launcher codebase explicitly supports devices beyond the core Keych
 
 - **Keychron** (`launcher.keychron.com`)
 - **Lemokey** (`launcher.lemokey.com`, Keychron's gaming sub-brand)
-- **SKN / Wukong** (`launcher.skn.net.cn`, `wukong.skn.net.cn`)
-- **Jamesdonkey** (`launcher.jamesdonkey.com`, `wooking.com.cn`)
-- **Candysign** (`candysign.keychron.cn`)
+- **SKN / Wukong** (`launcher.skn.net.cn`, `wukong.skn.net.cn`, `wukong.jd.com`)
+- **Jamesdonkey** (`launcher.jamesdonkey.com`, `launcher.jamesdonkey.com.cn`, `wooking.com.cn`)
+- **Candysign** (`candysign.keychron.cn`, `k-launcher.thecandysign.com`)
 - **Silvermonkey** (`launcher.silvermonkey.com`)
 - **GameRaider** (`app.gameraider.com.tr`)
 - **Colorful** (`keyboard.colorful.cn`)
@@ -40,10 +43,16 @@ The Keychron Launcher codebase explicitly supports devices beyond the core Keych
 - **Oneofzero** (`launcher.oneofzero.net`)
 - **Gamepro** (`launcher.gamepro.ua`)
 - **Fibo** (`launcher.fibo-lab.com`)
+- **XG** (`launcher.xgtech.pro`, "XG Launcher")
 
 Certain features (like mouse scrolling settings or specific DFU update tabs) are enabled or disabled depending on the active sub-brand domain.
 
-Additionally, the Launcher contains explicit support for **ZMK-based** firmware models (like the Keychron B Pro and Q Ultra series) over WebHID. This allows these newer, wireless-first Zephyr RTOS keyboards to be configured via the same protocol interface as Keychron's standard QMK forks.
+Additionally, the Launcher contains explicit support for **ZMK-based** firmware models over WebHID:
+
+- **Keychron Ultra Series** (e.g. `Q Ultra`, `V Ultra`): Next-generation wireless custom mechanical keyboards featuring 8K wireless polling rates and extended battery life.
+- **Keychron B Pro Series** (e.g. `B1 Pro`, `B6 Pro`): Ultra-slim / low-profile wireless models.
+
+See [zmk-support.md](zmk-support.md) for full details on instruction set detection and ZMK protocol offsets.
 
 ## WebHID Transport
 
@@ -217,6 +226,9 @@ The Launcher distinguishes firmware protocol versions:
 - `protocol >= 11` → "v3" (different keycode ranges, different QMK enums)
 - `protocol >= 12` → different packet parsing offsets
 - `protocol < 11` → "v2" (legacy keycode ranges)
+- `protocol > 3` (KC protocol version in `KC_GET_PROTOCOL_VERSION`) → "V4"
+  support-feature bitmap layout (16-bit + 8-bit feature words) --
+  see [command-map.md](command-map.md)
 
 Three complete QMK keycode enum variants are embedded in the Launcher to
 support both v2 and v3 firmware builds.
@@ -242,9 +254,11 @@ support both v2 and v3 firmware builds.
 - [Screen Protocol](screen-protocol.md) -- 0xAC flash filesystem and RTC
 - [Bridge / Dongle Protocol](bridge-dongle-protocol.md) -- FR commands, VIA tunneling
 - [DFU Protocols](dfu-protocols.md) -- all 5 firmware update paths
-- [Mouse / Trackball Protocol](mouse-protocol.md) -- NAPE commands, polling rates
+- [Mouse / Trackball Protocol](mouse-protocol.md) -- NAPE commands, polling rates, kc_lite, haptic motor
 - [Analog Matrix Extras](analog-matrix-extras.md) -- Launcher-only AMC commands
 - [Wireless Communication](wireless-communication.md) -- sleep, battery, performance modes, dual polling rates, monitor events
+- [AI Assistant](ai-assistant.md) -- LangChain agent, tool catalog, Assistant companion app
+- [ZMK Support](zmk-support.md) -- Instruction set detection, Zephyr RTOS adaptations (Ultra and B Pro series)
 
 ### Firmware Protocol Docs
 - [Firmware Protocol Overview](../firmware/protocol-overview.md)

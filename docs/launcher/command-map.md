@@ -49,8 +49,47 @@ historical rename of these commands.
 | 168   | `0xA8` | `KC_KEYCHRON_RGB`        | `KC_RGB`                   | Simplified |
 | 169   | `0xA9` | `KC_ANALOG_MATRIX`       | `KC_HE`                    | "Analog Matrix" → "Hall Effect" |
 | 170   | `0xAA` | `KC_WIRELESS_DFU`        | *(not in enum)*            | Handled via separate DFU classes |
-| 171   | `0xAB` | `KC_FACTORY_TEST`        | *(not in enum)*            | Factory-only |
+| 171   | `0xAB` | `KC_FACTORY_TEST`        | `KC_FACTORY`               | In Launcher enum; see below |
 | 172   | `0xAC` | *(not in firmware)*      | `KC_SCREEN`                | **Launcher only** -- see [screen-protocol.md](screen-protocol.md) |
+
+### KC_FACTORY (0xAB) Sub-Commands
+
+The Launcher names command `0xAB` as `KC_FACTORY` and defines a
+`FACTORY_TEST_CMD_*` sub-command enum. Two of these are actively used by the
+Launcher UI; the rest are defined but not referenced:
+
+| Value | Hex    | Launcher Name                      | Used | Notes |
+|-------|--------|------------------------------------|------|-------|
+| 1     | `0x01` | `FACTORY_TEST_CMD_BACKLIGHT`       | no   | |
+| 2     | `0x02` | `FACTORY_TEST_CMD_OS_SWITCH`       | no   | |
+| 3     | `0x03` | `FACTORY_TEST_CMD_JUMP_TO_BL`      | no   | |
+| 4     | `0x04` | `FACTORY_TEST_CMD_INT_PIN`         | no   | |
+| 5     | `0x05` | `FACTORY_TEST_CMD_GET_TRANSPORT`   | **yes** | DIP/transport detection, see below |
+| 6     | `0x06` | `FACTORY_TEST_CMD_CHARGING_ADC`    | no   | |
+| 7     | `0x07` | `FACTORY_TEST_CMD_RADIO_CARRIER`   | no   | |
+| 8     | `0x08` | `FACTORY_TEST_CMD_GET_BUILD_TIME`  | no   | |
+| 9     | `0x09` | `FACTORY_TEST_CMD_GET_DEVICE_ID`   | **yes** | Chip ID readout (trackball profile storage) |
+
+**GET_TRANSPORT (5)** -- detects the physical mode-switch position:
+
+```
+Request : [0xAB, 0x05, ..., data[30] = 0x05, data[31] = 0x00]
+          (byte 30 is the additive-checksum low byte; for this empty
+           payload the sum is just data[1] = 5, so it doubles as an
+           echo of the sub-command)
+Response: [0xAB, cmd, transport, usb_power_sense, ...]
+          data[2] = 1 → USB, 2 → BT, 4 → G (2.4 GHz)
+```
+
+**GET_DEVICE_ID (9)** -- returns a device-unique chip ID string (firmware
+sends the 12-byte MCU UUID from `UID_BASE` prefixed by its length):
+
+```
+Request : [0xAB, 0x09, ..., data[30] = 0x09]
+Response: data[1] = 9, data[2] = 12 (UUID length),
+          data[3..14] = UUID bytes
+          Launcher concatenates decimal values of data[3..13] (11 bytes)
+```
 
 ### Key Observations
 
@@ -65,10 +104,11 @@ historical rename of these commands.
    and RTC clock for keyboards with built-in screens/displays. See
    [screen-protocol.md](screen-protocol.md).
 
-4. **`0xAA` and `0xAB`**: These are not in the Launcher's VIA command enum.
-   The Launcher handles Bluetooth DFU and factory test through dedicated
-   classes that construct packets independently, not through the VIA command
-   dispatcher.
+4. **`0xAA` and `0xAB`**: These are not dispatched through the Launcher's VIA
+    command dispatcher; the Launcher handles Bluetooth DFU and factory test
+    through dedicated classes that construct packets independently.
+    `0xAB` is present in the enum as `KC_FACTORY` with a `FACTORY_TEST_CMD_*`
+    sub-command enum (see table above).
 
 ## Analog Matrix (HE) Sub-Commands
 
@@ -99,6 +139,39 @@ historical rename of these commands.
 See [analog-matrix-extras.md](analog-matrix-extras.md) for details on the
 Launcher-only commands.
 
+### AMC_GET_VERSION Feature Bits
+
+The `AMC_GET_VERSION` (0xA9 / 0x01) response carries the HE command-set
+version in `data[2]` and a feature bitmap in `data[4]`. The Launcher
+checks six bits:
+
+| Bit | Feature              | Introduced |
+|-----|----------------------|------------|
+| 0   | `switchAxis`         | earlier    |
+| 1   | `resetSingleKey`     | earlier    |
+| 2   | `dkr`                | earlier    |
+| 3   | `turbo`              |            |
+| 4   | `gamepadDisable`     |            |
+| 5   | `supportMechanical`  |            |
+
+`supportMechanical` enables an additional "HE mechanical" query
+(sub-command **82 / `0x52`**, see below). The Launcher also dispatches
+per-version command classes for HE versions 1--5.
+
+### HE Mechanical/Magnetic Axis Bitmap
+
+Sub-command **82 (`0x52`)** under `KC_HE` (0xA9) returns the per-key switch
+technology map for hybrid HE/mechanical boards:
+
+```
+Request : [0xA9, 82]
+Response: data[2] = row count
+          data[3] = col count
+          data[4 + 3*row .. +2] = 24-bit LE bitmap for that row
+                                  bit set   → mechanical switch
+                                  bit clear → magnetic (HE) switch
+```
+
 ## FR (Forza Receiver / Dongle) Commands
 
 These commands exist only in the Launcher -- there is no corresponding
@@ -117,7 +190,7 @@ See [bridge-dongle-protocol.md](bridge-dongle-protocol.md).
 ## NAPE (Mouse/Trackball) Sub-Commands
 
 Sent under `KC_MISC_CMD_GROUP` (0xA7) with sub-command values
-`0x20`--`0x34`. Not present in our firmware fork:
+`0x20`--`0x39`. Not present in our firmware fork:
 
 | Value | Hex    | Launcher Name                    |
 |-------|--------|----------------------------------|
@@ -142,8 +215,66 @@ Sent under `KC_MISC_CMD_GROUP` (0xA7) with sub-command values
 | 50    | `0x32` | `Set_Force_Gesture_Scroll`       |
 | 51    | `0x33` | `Get_Force_Gesture_Scroll`       |
 | 52    | `0x34` | `KC_USER_CMD_NAPE_SET_ORI`       |
+| 56    | `0x38` | `KC_USER_CMD_NAPE_GET_LAYER_ORI` |
+| 57    | `0x39` | `KC_USER_CMD_NAPE_SET_LAYER_ORI` |
+
+The two new layer-orientation commands read/write the trackball rotation
+angle **per mouse layer** (the global commands 32/52 remain for the default
+angle):
+
+```
+GET_LAYER_ORI : [0xA7, 56, layer]           → data[2] = angle / 45
+SET_LAYER_ORI : [0xA7, 57, layer, angle/45]
+```
 
 See [mouse-protocol.md](mouse-protocol.md).
+
+## New Keyboard Misc (0xA7) Sub-Commands
+
+The Keychron Launcher exercises several `KC_MISC_CMD_GROUP` sub-commands above
+`0x13` that are not yet implemented in our firmware fork:
+
+| Value | Hex    | Name                | Packet | Description |
+|-------|--------|---------------------|--------|-------------|
+| 20 | `0x14` | Reset keymap single key | `[0xA7, 20, 2^layer, row, keycode_hi, keycode_lo, ...]` | Restore one key's keymap entry to default, then re-read the keymap buffer |
+| 21 | `0x15` | Jump bootloader | `[0xA7, 21]`, response `data[3]` = status | Soft reboot into bootloader (gated on feature bit + instruction set 2/4) |
+| 22 | `0x16` | Latch GetCount | `[0xA7, 22]` → `data[3]` = count, `data[4]` = limit | Latch-key slot usage/limit |
+| 23 | `0x17` | Latch GetToggle | `[0xA7, 23, offset, count≤5]` → records at `data[5..]`, 5 bytes each: `[layer, row, col, type, repeat]` | Read latch keys (paged, ≤5 per request; filter `type != 0` and matching layer) |
+| 24 | `0x18` | Latch SetToggle | `[0xA7, 24, 1, layer, row, col, type, repeat]` | Set one latch key; sent per key with ~50 ms spacing. Type: 0=DELETE, 1=KEY, 2=TURBO, 3=MACRO |
+| 27 | `0x1B` | Macro repeat Get | `[0xA7, 27, 0, macro_count]` → `data[5 .. 5+count)` = repeat counts | Per-macro repeat count (1--100), gated on `Support_Macro_Repeat` |
+| 28 | `0x1C` | Macro repeat Set | `[0xA7, 28, 1, macro_index, times]` | Set one macro's repeat count |
+
+Latch keys ("toggle keys", marketed as *Magnet toggle*) let a key latch
+on/off like Caps Lock: types are regular key latches (`KEY`), macro latches
+(`MACRO`), and turbo/repeat latches (`TURBO` with a repeat count). The
+feature is advertised via bit 18 of the V4 support-feature bitmap.
+
+### V4 Support-Feature Bitmap
+
+For keyboards reporting protocol version > 3 in `KC_GET_PROTOCOL_VERSION`
+(`data[1]`; `data[3]` holds the "instruction set"), `KC_GET_SUPPORT_FEATURE`
+(0xA2) switches from the legacy single-byte bitmap to a wide format:
+
+```
+data[3..4] (LE 16-bit) → binary string, reversed → bits:
+  bit 0  Support_Le
+  bit 1  Support_Rf
+  bit 2  Support_Keychron_Rgb
+  bit 6  Support_DEBOUNCE
+  bit 7  Support_Snap          (Snap Tap / SOCD keyset)
+  bit 8  Support_Sleep
+  bit 9  Support_PollRate
+  bit 12 Upload_Default_Layer
+  bit 16 Bootloader_Jump
+  bit 17 Performance_Mode
+  bit 18 Support_Latch         (latch/toggle keys)
+  bit 20 Support_Macro_Repeat
+data[6..8] (LE 24-bit) → second word:
+  bit 0  Get_Default_Layer
+```
+
+Legacy (protocol ≤ 3) devices keep the old byte-wide layout documented in
+[firmware/misc-commands.md](../firmware/misc-commands.md).
 
 ## RGB Sub-Commands (Launcher names)
 

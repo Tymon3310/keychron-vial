@@ -28,8 +28,26 @@ firmware updates of the Bluetooth/2.4 GHz wireless module (lkbt51 or ckbt51).
 
 ## 0xAB -- Factory Test
 
-The Factory Test command (`KC_FACTORY_TEST = 0xAB`) enables a special test
-mode used during keyboard manufacturing.
+The Factory Test command (`KC_FACTORY_TEST = 0xAB`, Launcher name
+`KC_FACTORY`) enables a special test mode used during keyboard
+manufacturing.
+
+### Packet Framing (verified in `factory_test.c`)
+
+Both directions use the full 32-byte raw-HID report with a 16-bit additive
+checksum in the last two bytes:
+
+```
+data[0]     = 0xAB
+data[1]     = sub-command (FACTORY_TEST_CMD_*)
+data[2..28] = payload
+data[29]    = unused (excluded from checksum)
+data[30]    = checksum low byte   } checksum = sum(data[1..28]) & 0xFFFF
+data[31]    = checksum high byte  }
+```
+
+Requests failing the checksum are silently dropped. Sub-commands ≤
+`FACTORY_TEST_CMD_RADIO_CARRIER` (7) are accepted only over wired USB.
 
 ### Firmware Handler
 
@@ -38,18 +56,46 @@ It handles:
 
 - Key matrix scanning verification
 - LED testing (individual and full-board)
-- Wireless module connectivity checks
-- DIP switch verification
-- ADC calibration for analog keyboards
+- Wireless module connectivity checks (`INT_PIN` test: LKBT51/CKBT51)
+- DIP switch verification (`GET_TRANSPORT`)
+- ADC calibration for analog keyboards (`CHARGING_ADC`)
 
 ### Notes
 
 - Factory test mode is typically only accessible via a specific key combination
   or firmware flag.
-- The GUI does not expose factory test commands in the user interface.
 - Commands in this group are not intended for end-user use and may cause
   unexpected behavior if sent to a production keyboard outside of factory
   test mode.
+- The official Keychron Launcher actively uses `0xAB`: it names the command
+  `KC_FACTORY`, defines the same `FACTORY_TEST_CMD_*` enum (values 1--9), and
+  uses two sub-commands:
+  - **`GET_TRANSPORT` (5)** to detect the DIP/mode-switch position.
+    Firmware replies `[0xAB, 5, transport, usb_power_sense, ... cksum]`,
+    where transport = `get_transport()`. The Launcher reads byte `[2]`:
+    **1=USB, 2=BT, 4=G (2.4 GHz)**. Its request only sets `data[30]=5`
+    with `data[31]=0`, which happens to satisfy the checksum for an
+    otherwise-empty payload (sum = 5).
+  - **`GET_DEVICE_ID` (9)**: firmware replies
+    `[0xAB, 9, 12, <12-byte UUID from UID_BASE>, ... cksum]`; the Launcher
+    concatenates bytes `[3..13]` (11 of the 12 UUID bytes) as decimal
+    digits into a chip-ID string used e.g. for per-device profile storage.
+
+### Sub-Command Reference
+
+| Value | Name | Handled by firmware? |
+|-------|------|----------------------|
+| `0x01` | `BACKLIGHT` | yes (test backlight mode) |
+| `0x02` | `OS_SWITCH` | yes (report OS switch state) |
+| `0x03` | `JUMP_TO_BL` | stubbed out (commented) |
+| `0x04` | `INT_PIN` | yes (wireless builds) |
+| `0x05` | `GET_TRANSPORT` | yes (used by Launcher) |
+| `0x06` | `CHARGING_ADC` | yes (`BATTERY_CHARGE_DONE_DETECT_ADC`) |
+| `0x07` | `RADIO_CARRIER` | yes (wireless builds) |
+| `0x08` | `GET_BUILD_TIME` | yes (returns QMK_BUILDDATE) |
+| `0x09` | `GET_DEVICE_ID` | yes (12-byte MCU UUID; used by Launcher) |
+
+See also [launcher/command-map.md](../launcher/command-map.md).
 
 ---
 

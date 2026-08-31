@@ -5,6 +5,12 @@ displays. It provides raw flash memory access, a simple filesystem, and
 RTC (real-time clock) control. This command is **only found in the Launcher**
 and does not exist in our firmware fork.
 
+> **Command-ID conflict:** This fork repurposes `0xAC` as a custom
+> `KC_GET_BATTERY_LEVEL` command on wireless builds (see
+> [firmware/core-commands.md](../firmware/core-commands.md)). Stock screen-equipped
+> Keychron keyboards use `0xAC` exclusively for the screen filesystem and RTC
+> protocol documented here.
+
 > **Source:** Reverse-engineered from the Keychron Launcher JavaScript bundle.
 > Command names are from the `GUIF_CTL_OPCODE` enum.
 

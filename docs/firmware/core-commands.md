@@ -141,3 +141,23 @@ Byte  Field              Description
 - Returns `-1` on the GUI side if the response is invalid.
 - The default layer determines which base keymap is active (e.g., layer 0 =
   Mac, layer 2 = Windows on many Keychron boards).
+
+---
+
+## Fork Extension: 0xAC -- Get Battery Level
+
+> **Custom addition in this fork** (not in upstream Keychron firmware).
+
+```
+Request:  [0xAC] [0x00 ...]
+Response: data[1] = battery percentage (0 when on USB / not connected)
+```
+
+Only answers on wireless builds (`LK_WIRELESS_ENABLE` / `KC_BLUETOOTH_ENABLE`)
+and only reports a real value while the wireless module is connected.
+
+> **Command-ID conflict:** the official Launcher assigns
+> `0xAC` to `KC_SCREEN` (screen flash-filesystem + RTC protocol, see
+> [launcher/screen-protocol.md](../launcher/screen-protocol.md)). A board
+> running this fork will misinterpret Launcher screen commands as battery
+> queries and vice versa. Keep this in mind if screen support is ever ported.

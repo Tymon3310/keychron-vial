@@ -90,8 +90,41 @@ For reference, here is the complete AMC enum as defined in the Launcher:
 | `AMC_GET_CALIBRATED_VALUE`   | 66  | `0x42` | Yes | Per-key calibration data |
 | `AMC_GET_AXIS_TYPE`          | 80  | `0x50` | **No** | Get axis type config |
 | `AMC_SET_AXIS_TYPE`          | 81  | `0x51` | **No** | Set axis type config |
+| *(axis technology bitmap)*   | 82  | `0x52` | **No** | Get mechanical/magnetic switch map (hybrid boards) |
 
 \* Same byte value, different constant name.
+
+### 0x52 -- Mechanical/Magnetic Switch Bitmap
+
+Gated on the `supportMechanical` feature bit (bit 5 of the `AMC_GET_VERSION`
+response). Returns a per-key switch technology map for hybrid HE/mechanical
+boards:
+
+```
+Request : [0xA9] [0x52]
+Response: data[2] = row count
+          data[3] = col count
+          data[4 + 3*row .. +2] = 24-bit LE bitmap per row
+                                  bit set   → mechanical switch
+                                  bit clear → magnetic (HE) switch
+```
+
+### AMC_GET_VERSION Feature Bits
+
+`data[4]` of the `AMC_GET_VERSION` response is a feature bitmap. The
+Launcher checks six bits:
+
+| Bit | Feature             |
+|-----|---------------------|
+| 0   | `switchAxis`        |
+| 1   | `resetSingleKey`    |
+| 2   | `dkr`               |
+| 3   | `turbo`             |
+| 4   | `gamepadDisable`    |
+| 5   | `supportMechanical` |
+
+The Launcher selects between command-class variants for HE command-set
+versions 1--5 (`data[2]`). Snap Tap via the AI tools requires HE version >= 3.
 
 ---
 

@@ -37,14 +37,43 @@ If response[6,7] == [0x2D, 0x36] → "8k_nordic"
 Otherwise                         → "4k"
 ```
 
-Detected protocol values: `"1k"`, `"4k"`, `"8k_nordic"`
+Detected protocol values: `"1k"`, `"4k"`, `"8k_nordic"`, and `"kc_lite"`.
+
+### kc_lite Protocol Variant
+
+A fourth protocol family (`kc_lite`) exists for budget mice. It uses 63-byte
+payloads on report ID **179 (`0xB3`)** with single-letter command bytes:
+
+| Cmd byte | Operation | Payload | ACK |
+|----------|-----------|---------|-----|
+| 65 (`0x41`) | DPI / rate level set | `[65, level, level, values[0..5], min(levelNum,3)]` | `data[0]==228 (0xE4)` or `65` |
+| 66 (`0x42`) | Advance params | `[66, lod, sensor_wave, sensor_line, sensor_motion, _, scrollDir+1, _, fps20k+1]` | `data[0]==228 && data[2]==66` |
+| 67 (`0x43`) | Debounce | `[67, ms]` (+ per-key: `[2]=17, [3]=key_index, [4]=ms`) | `data[0]==228 && data[2]==67` |
+
+Macros use their own 4-byte step encoding:
+`[0, kind<<7 | type, value, 0]`; delay steps are `[0, 15, ms_lo, ms_hi]`;
+modifier keys are flagged with type `2` and bit masks 1/2/4/8/16/32/64/128
+for Ctrl/Shift/Alt/Gui.
+
+Its asynchronous monitor reports differ from the other protocols:
+
+```
+data[0] = 231 (0xE7):
+  data[1] = 1 → light event: mode=data[2], speed=data[4],
+                brightness=data[5], rgb=data[6..8]
+  data[1] = 2 → base event: workMode=data[2], connect=data[3],
+                power state/value=data[4..5], dpi level/levelNum=data[6]/data[8],
+                pollingRate level=data[7]
+data[0] = 229 (0xE5): profile change, current = data[1]
+```
 
 ## Mouse Report IDs
 
 | Report ID | Hex    | Usage |
 |-----------|--------|-------|
 | 0         | `0x00` | Standard keyboard-style reports |
-| 181       | `0xB5` | Mouse reports |
+| 179       | `0xB3` | kc_lite protocol commands |
+| 181       | `0xB5` | Mouse reports (incl. 8K haptic motor) |
 
 ## Packet Checksum (8K Protocol)
 
@@ -62,10 +91,10 @@ The constant 161 (`0xA1`) is the checksum seed.
 
 The "NAPE" commands configure trackball and mouse features. They are sent
 under the `KC_MISC_CMD_GROUP` (0xA7) command with sub-command values
-in the `0x20`--`0x34` range.
+in the `0x20`--`0x39` range.
 
 > **Note:** These sub-commands share the same top-level command byte (0xA7)
-> as the keyboard misc commands (0x01--0x13), but target mouse/trackball
+> as the keyboard misc commands (0x01--0x1C), but target mouse/trackball
 > firmware. The name "NAPE" appears to be an internal Keychron codename
 > for the trackball product line.
 
@@ -92,6 +121,8 @@ in the `0x20`--`0x34` range.
 | `KC_USER_CMD_NAPE_BAT_REPORT`     | `0x30` | Write | Send battery report config |
 | `KC_USER_CMD_NAPE_GET_BAT_REPORT` | `0x31` | Read  | Get battery report |
 | `KC_USER_CMD_NAPE_SET_ORI`        | `0x34` | Write | Set trackball orientation |
+| `KC_USER_CMD_NAPE_GET_LAYER_ORI`  | `0x38` | Read  | Get per-layer orientation |
+| `KC_USER_CMD_NAPE_SET_LAYER_ORI`  | `0x39` | Write | Set per-layer orientation |
 
 ### Additional Mouse Sub-Commands
 
@@ -116,6 +147,57 @@ independent X and Y DPI values. The Launcher shows:
 
 The trackball sensor orientation can be rotated to match the physical
 mounting angle. Get/set via `NAPE_GET_ORI` / `NAPE_SET_ORI`.
+
+Angles are quantised in 45° steps: the wire value is `angle / 45`
+(0=0°, 1=45°, ... 7=315°).
+
+**Per-layer orientation:** sub-commands 56/57 (`0x38`/`0x39`) extend
+this with per-layer angles:
+
+```
+GET_LAYER_ORI : [0xA7, 56, layer]            → data[2] = angle / 45
+SET_LAYER_ORI : [0xA7, 57, layer, angle/45]
+```
+
+The global commands (32/52) still apply when no layer is selected; the UI
+falls back to them for the "default" angle.
+
+### Trackball State Monitor
+
+Trackballs push asynchronous state using `KC_GET_CURRENT_LAYER` (0xA3) as
+the report marker:
+
+```
+data[0] = 0xA3
+data[1] = active layer
+data[2] = orientation units (angle = 45 * value)
+data[3] = current DPI index/value
+```
+
+The Launcher diffs this stream to emit `LAYER_CHANGE`, `ANGLE_CHANGE`, and
+`DPI_CHANGE` monitor events (see [wireless-communication.md](wireless-communication.md)).
+
+### Haptic Motor (8K Mice)
+
+8K-protocol mice expose a haptic motor configuration sent as 20-byte
+reports on report ID **181 (`0xB5`)**:
+
+```
+Get:
+  Request : data[0] = 105 (0x69)
+  Response: data[0] = 105
+            data[1] = levelTotal
+            data[2] = levelCount (defaults to levelTotal)
+            data[3..4] = level pair 1 [strength, duration]
+            data[5..6] = level pair 2 [strength, duration]
+Set:
+  Request : data[0] = 89 (0x59)
+            data[1] = levelCount (default 6)
+            data[2..5] = two [strength, duration] pairs
+  ACK     : report with data[0] == 228 (0xE4) && data[2] == 89
+```
+
+Not supported on `1k`/`4k` protocols.
 
 ### Tap-Hold
 
@@ -234,3 +316,4 @@ pollingRate.level: [current_level, ...]
 - [Launcher Overview](overview.md) -- transceiver classes, buffer construction
 - [Bridge / Dongle Protocol](bridge-dongle-protocol.md) -- mouse receiver slots
 - [Command Map Comparison](command-map.md) -- NAPE command enum
+- [AI Assistant](ai-assistant.md) -- mouse tool catalog built on these commands

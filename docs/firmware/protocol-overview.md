@@ -171,3 +171,5 @@ set in the primary flags **or** `MISC_DEBOUNCE` is set in the misc flags.
 - [DFU Protocols](../launcher/dfu-protocols.md) -- all 5 firmware update paths
 - [Mouse / Trackball Protocol](../launcher/mouse-protocol.md) -- NAPE commands
 - [Analog Matrix Extras](../launcher/analog-matrix-extras.md) -- Launcher-only AMC commands
+- [Wireless Communication](../launcher/wireless-communication.md) -- sleep, battery, performance modes, monitor events
+- [AI Assistant](../launcher/ai-assistant.md) -- LangChain agent, tool catalog, Assistant companion app

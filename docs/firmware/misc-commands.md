@@ -45,6 +45,36 @@ Byte  Field           Description
 | `NKRO_GET`               | `0x12` | Read  | Get NKRO state            |
 | `NKRO_SET`               | `0x13` | Write | Set NKRO enabled/disabled |
 
+> **Dispatch status (verified against `keychron_raw_hid.c` on
+> `vial-updated-keychron`):** the enum defines values up to `0x13`, but the
+> dispatcher only handles 0x01--0x0E and 0x12--0x13. **`DIP_SWITCH_GET/SET`
+> (0x0F/0x10) and `FACTORY_RESET` (0x11) are not dispatched** and fall
+> through to the default error reply (`data[0] = 0xFF`). The official
+> Launcher instead detects transport via factory command `0xAB / 0x05`
+> (see [wireless-dfu-factory.md](wireless-dfu-factory.md)).
+
+### Sub-Commands Used by the Official Launcher but Not Implemented
+
+The Keychron Launcher exercises additional `0xA7` sub-commands
+that our fork does not implement (all verified in the JS bundle, see
+[launcher/command-map.md](../launcher/command-map.md)):
+
+| Value | Name                    | Purpose |
+|-------|-------------------------|---------|
+| `0x14`| Reset keymap single key | Restore one key's keymap entry to default |
+| `0x15`| Jump bootloader         | Soft reboot to bootloader (reply via `data[3]`) |
+| `0x16`| Latch GetCount          | Latch ("toggle") key count + limit |
+| `0x17`| Latch GetToggle         | Paged read of latch entries (`[layer,row,col,type,repeat]`, ≤5/request) |
+| `0x18`| Latch SetToggle         | Set one latch key; type 0=DELETE, 1=KEY, 2=TURBO, 3=MACRO |
+| `0x1B`| Macro repeat Get        | Per-macro repeat counts (1--100) |
+| `0x1C`| Macro repeat Set        | Set one macro's repeat count |
+
+Feature gating: the Launcher advertises Latch/Macro-repeat support through
+the extended "V4" support-feature bitmap (bits 18 and 20 of the 16-bit
+word in the `KC_GET_SUPPORT_FEATURE` response) which requires reporting a
+Keychron protocol version > 3 -- see
+[launcher/command-map.md](../launcher/command-map.md#v4-support-feature-bitmap-new).
+
 ---
 
 ## 0x01 -- Get Misc Protocol Version

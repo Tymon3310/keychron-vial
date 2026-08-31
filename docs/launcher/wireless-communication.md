@@ -320,6 +320,30 @@ The Launcher subscribes to continuous battery updates via the
 - `power.state`: 0 = discharging, non-zero = charging
 - Battery bar color: `#11C468` (green)
 
+### Device Monitor Event Enum
+
+The internal monitor-event enum (dispatched from device state streams) uses
+the following layout:
+
+| Value | Event                      | Notes                      |
+|-------|----------------------------|----------------------------|
+| 0     | `WATCH`                    |                            |
+| 1     | `SELECT_KEY_CHANGE`        |                            |
+| 2     | `KEYS_CHANGE`              |                            |
+| 3     | `POLL_RATE_CHANGE`         |                            |
+| 4     | `BATTERY_CHANGE`           |                            |
+| 5     | `LAYER_CHANGE`             |                            |
+| 6     | `ANGLE_CHANGE`             |                            |
+| 7     | `DPI_CHANGE`               |                            |
+| 8     | `MOD_KEY_CLEAR_ALL`        |                            |
+| 9     | `KEYS_RESET`               |                            |
+| 10    | `I18N_CHANGE`              |                            |
+
+The `LAYER_CHANGE`, `ANGLE_CHANGE`, and `DPI_CHANGE` events are emitted by
+diffing the trackball/mouse state monitor stream (`0xA3`-marked reports
+carrying layer, orientation units, and DPI; see [mouse-protocol.md](mouse-protocol.md)).
+`I18N_CHANGE` signals a language change on the device.
+
 ---
 
 ## Mouse Wireless System Parameters (8K Nordic)

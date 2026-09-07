@@ -19,6 +19,8 @@ Vial support for Keychron and Lemokey keyboards, bringing real-time Vial configu
 
 ---
 
+> Jump to [Getting started](#getting-started)
+
 ## Ecosystem Overview
 
 ### Firmware (`vial-qmk`)
@@ -68,6 +70,7 @@ Support covers Keychron and Lemokey models across:
 - C Pro / C Pro V2 / C Pro 8K
 - R Series
 - S / X / Lemokey HE
+
 
 ### Quick Navigation
 
@@ -352,19 +355,17 @@ Integrated directly into Pipette Desktop and vial-gui:
 
 While stock factory firmware supports features like SOCD and Hall Effect tuning exclusively through Keychron's web launcher (`launcher.keychron.com`), it does not support Vial. To configure your keyboard with Vial (desktop or web) while retaining full control over Keychron hardware features, you must first flash our custom `vial-qmk` firmware.
 
+# NOTE FOR WINDOWS USERS: You must install the [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) and a Linux distribution (Ubuntu recommended) to build QMK firmware. The following instructions assume you are using a Linux/macOS environment.
+
 1. **Build from source**:
+
    ```bash
-   # Clone the active repository
-   git clone --branch vial-updated-keychron https://github.com/tymon3310/vial-qmk.git
-   cd vial-qmk
-
-   # Set up QMK CLI environment
+   # Download the qmk cli using your package manager or pipx:
    pipx install qmk
-   qmk setup -H .
-   qmk git submodule
-
-   # Compile firmware for your model and layout (example: V5 Max ANSI Encoder)
-   qmk compile -kb keychron/v5_max/ansi_encoder -km vial
+   qmk setup https://github.com/tymon3310/vial-qmk.git -b vial-updated-keychron
+   
+   # Compile and flash firmware for your model and layout (example: V5 Max ANSI Encoder)
+   qmk flash -kb keychron/v5_max/ansi_encoder -km vial # (you can use qmk compile to build the firmware first and flash later)
    ```
 
 2. **Flash to keyboard**:
@@ -372,6 +373,13 @@ While stock factory firmware supports features like SOCD and Hall Effect tuning 
      ```bash
      qmk flash -kb keychron/v5_max/ansi_encoder -km vial
      ```
+
+   - **Using QMK Toolbox**:
+     1. Download and install [QMK Toolbox](https://github.com/tzarc/qmk_toolbox/releases/tag/beta-xplat).
+     2. Open QMK Toolbox, click **Open** to load the compiled `.bin` firmware file.
+     3. Put your keyboard into bootloader mode (hold `Esc` while plugging in the USB cable, or press the reset button under the spacebar).
+     4. Click **Flash** to upload the firmware.
+
    - **Using `dfu-util` directly**:
      Put the keyboard into bootloader mode (hold `Esc` while plugging in the USB cable, or press the reset button under the spacebar):
      ```bash
@@ -475,7 +483,7 @@ Once your keyboard is running Vial firmware, routine updates can be flashed dire
 
 ### Keyboard Not Detected in Vial
 1. Ensure the keyboard has been flashed with custom `vial-qmk` firmware (stock Keychron firmware only works with VIA / `launcher.keychron.com` and will not be detected by Vial).
-2. Ensure the physical mode switch is set to **Cable** (or connect via the Keychron Link 2.4 GHz wireless dongle). Bluetooth connection does not support raw HID configuration.
+2. Ensure the physical mode switch is set to **Cable** or connect via the Keychron Link **2.4 GHz** wireless dongle. Bluetooth connection does not support raw HID configuration.
 3. On Linux, configure udev permissions:
    ```bash
    export USER_GID=`id -g`; sudo --preserve-env=USER_GID sh -c 'echo "KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{serial}=="*vial:f64c2b3c*", MODE="0660", GROUP="$USER_GID", TAG+="uaccess", TAG+="udev-acl"" > /etc/udev/rules.d/59-vial.rules && udevadm control --reload && udevadm trigger'
@@ -483,7 +491,7 @@ Once your keyboard is running Vial firmware, routine updates can be flashed dire
 
 ### Keychron Tabs Not Appearing in GUI
 Keychron-specific tabs appear when:
-1. You are using our custom configurator ([Pipette Web](https://pipette.tymon3310.dev), [Pipette Desktop](https://github.com/tymon3310/pipette-desktop), custom [vial-gui](https://github.com/tymon3310/vial-gui), or [vial-web](https://vial.tymon3310.dev)). Stock upstream Vial GUI does not include Keychron tabs.
+1. You are using our custom configurator ([Pipette Web](https://pipette.tymon3310.dev), d[Pipette Desktop](https://github.com/tymon3310/pipette-desktop), custom [vial-gui](https://github.com/tymon3310/vial-gui), or [vial-web](https://vial.tymon3310.dev)). Stock upstream Vial GUI does not include Keychron tabs.
 2. The keyboard is running custom firmware built with Keychron extensions enabled.
 3. The keyboard model supports the specific hardware feature (for instance, the Analog Matrix tab requires a Hall Effect model).
 

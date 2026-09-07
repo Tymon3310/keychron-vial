@@ -1,86 +1,68 @@
 # Keychron Vial
 
-Vial support for Keychron and Lemokey keyboards, bringing real-time Vial configuration, 2.4 GHz wireless bridge access, Hall Effect analog switch tuning, RGB customization, and hardware settings to supported models.
+Stock Keychron firmware locks you into VIA and their web launcher (`launcher.keychron.com`) for anything interesting — SOCD, per-key RGB, Hall Effect tuning. Fine if that's all you want, but it means no real Vial: no tap dance, no combos, no dynamic macros, no offline desktop GUI.
 
-> **Important Prerequisite:** Stock Keychron factory firmware only supports VIA and Keychron's proprietary web app (`launcher.keychron.com`) for advanced features like SOCD, per-key RGB, and Hall Effect tuning. To unlock open-source Vial configurability—including real-time remapping, tap dance, combos, dynamic macros, in-app flashing with settings restore and offline desktop GUI support alongside all Keychron hardware features—you **must flash the custom firmware from `vial-qmk` onto your keyboard**.
+Most stock Keychron boards can't run Vial natively — the exception is wired-only models, which can actually run upstream `vial-qmk` as-is. Everything else (wireless boards, and anyone who wants the Keychron-specific tabs — RGB, SOCD, Hall Effect, the wireless bridge) needs this fork.
+
+This project gets you actual Vial on Keychron and Lemokey boards — full remapping, macros, tap dance, combos, 2.4 GHz wireless bridge support, RGB, and Hall Effect switch tuning, all together.
+
+## What to expect
+
+- **Time:** 15–30 minutes if your board's already on the supported list and you're comfortable with a terminal. Longer if you're setting up QMK/WSL for the first time.
+- **Reversible:** yes. You can flash back to stock Keychron firmware later if you want the official launcher back — nothing here is one-way.
+- **Risk:** low, if you follow the flashing steps as written. The main way to actually cause trouble is interrupting a flash mid-write — don't unplug during that step.
+- **Not required:** you don't need to know QMK or C. Compiling firmware is copy-paste; everyday use is all GUI.
+
+> **Disclaimer:** This is a community project, not affiliated with or endorsed by Keychron. Flashing is straightforward and reversible, but as with any firmware change, it's done at your own risk — I'm not responsible for any damage to your keyboard. If in doubt, ask in an issue before flashing.
+
+If that sounds fine, here's where to go:
+
+| If you want to... | Use this |
+|---|---|
+| **Just get flashing** | Skip to [Getting Started](#getting-started) |
+| **Check if your board is supported** | [Supported Keyboards](#supported-keyboards) |
+| **See what each configurator does** | [Configurators](#configurators) |
+| **Something's not working** | [Troubleshooting](#troubleshooting) / [FAQ](#faq) |
 
 ---
 
-## Start Here
+## Firmware (`vial-qmk`)
 
-| If you want to... | Use this | Notes |
-|---|---|---|
-| **Build or flash firmware** | [`vial-qmk`](https://github.com/tymon3310/vial-qmk) | Required: keyboard must run this custom firmware for Vial support |
-| **Check keyboard support** | [Supported Keyboards](#supported-keyboards) | Full list of supported boards, layouts, and branches |
-| **Use modern desktop GUI** | [Pipette Desktop](https://github.com/tymon3310/pipette-desktop) | **Recommended Desktop:** TypeScript/Electron GUI with full Keychron tab support |
-| **Configure in browser (Modern)** | [**Pipette Web**](https://pipette.tymon3310.dev) | **Recommended Web:** Modern WebHID configurator with 2.4GHz wireless dongle & WebUSB flasher |
-| **Configure in browser (Classic)** | [Vial Web](https://vial.tymon3310.dev) | Classic WebAssembly / WebHID browser configurator based on vial-gui |
-| **Use Python desktop GUI** | [vial-gui](https://github.com/tymon3310/vial-gui) | Python / Qt GUI with identical Keychron protocol feature parity |
+A hybrid fork — [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) merged with [Keychron/qmk_firmware](https://github.com/Keychron/qmk_firmware). It combines:
+
+- **Vial's runtime engine**: live remapping, unlock flow, macros, tap dance, combos.
+- **Keychron's hardware layer**: matrix drivers, wireless subsystems, RGB, Hall Effect sensing.
+- **A custom wireless protocol patch**: tunnels full Vial configuration over the 2.4 GHz Keychron Link dongle, which upstream Vial has no idea how to talk to.
+
+| Branch | Base | Status | Use it if... |
+|---|---|---|---|
+| [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | [2025q3](https://github.com/Keychron/qmk_firmware/tree/2025q3) | **Active, default** | Your board is on the list below under this branch |
+| [`vial-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-keychron) | [wls_2025q1](https://github.com/keychron/qmk_firmware/tree/wls_2025q1) | Legacy | Your board hasn't been ported to the newer base yet |
+
+Boards migrate from the legacy branch to the updated one as Keychron pushes changes upstream — keeps things from turning into a merge-conflict nightmare.
 
 ---
 
-> Jump to [Getting started](#getting-started)
+## Configurators
 
-## Ecosystem Overview
+All of these talk the same protocol and support the same Keychron-specific features (RGB, SOCD, Hall Effect tuning, wireless bridge, built-in flashing — details on the [full feature list](docs/features.md)). Pick based on how you like to work, not which one has more buttons:
 
-### Firmware (`vial-qmk`)
-
-A hybrid fork combining [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) and [Keychron/qmk_firmware](https://github.com/Keychron/qmk_firmware).
-
-- **Vial runtime engine**: Real-time layout remapping, unlock flow, macros, tap dance, and combo configuration.
-- **Keychron hardware layer**: Matrix drivers, wireless subsystems, RGB controls, and Hall Effect analog sensing.
-- **Wireless XOR protocol**: Custom tunneling patch allowing full Vial configuration over the 2.4 GHz Keychron Link dongle.
-
-| Branch | Base | Status | Description |
+| Configurator | Platform | Stack | Notes |
 |---|---|---|---|
-| [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | [2025q3](https://github.com/Keychron/qmk_firmware/tree/2025q3) | **Active (Default)** | Newer QMK base. Full feature parity with custom GUIs. |
-| [`vial-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-keychron) | [wls_2025q1](https://github.com/keychron/qmk_firmware/tree/wls_2025q1) | Legacy | Older QMK base for boards not yet updated in Keychron upstream. |
-
-> **Note on Branch Migration:** Keyboards remaining on the legacy branch (`vial-keychron`) are ported to `vial-updated-keychron` as Keychron updates their official upstream repository, avoiding upstream merge conflicts and keeping the codebase clean.
-
-### Desktop and Web Configurators
-
-Both desktop GUIs and web configurators share identical Keychron feature support and protocol capabilities:
-- **Keychron Settings**: Debounce, NKRO, 8K report rates, Wireless Low Power Mode, and battery status.
-- **Snap Click (SOCD)**: Hardware-level SOCD for standard mechanical switches.
-- **Keychron RGB**: Effects, per-key RGB, mixed RGB, and OS indicator colors.
-- **Analog Matrix (Hall Effect)**: Profiles, Rapid Trigger, DKS, Gamepad/XInput mode, calibration, and live travel monitor.
-- **2.4 GHz Wireless Bridge Support**: Direct wireless configuration over Keychron Link USB dongles via XOR 0x28 tunneling.
-- **Built-in STM32 DFU Firmware Flasher**: One-click in-app flashing with automatic layout backup and restore (via WebUSB / DfuSe in browser and desktop).
-
-| Configurator | Platform | Tech Stack | Notes |
-|---|---|---|---|
-| [**Pipette Desktop**](https://github.com/tymon3310/pipette-desktop) | Linux, Windows, macOS | TypeScript / Electron | **Recommended Desktop App.** Modern interface with typing analytics and Pipette Hub. |
-| [**Pipette Web**](https://pipette.tymon3310.dev) | Chromium browsers | TypeScript / React / WebHID | **Recommended Web App.** Zero install, full Keychron features, 2.4GHz bridge, and WebUSB flasher. |
-| [**vial-gui**](https://github.com/tymon3310/vial-gui) | Linux, Windows, macOS | Python / Qt | Classic Vial interface with full Keychron protocol support. |
-| [**Vial Web**](https://vial.tymon3310.dev) | Chromium browsers | WebAssembly / WebHID | Classic browser configurator based on Vial-gui ([Source](https://github.com/tymon3310/vial-web)). |
+| [**Pipette Desktop**](https://github.com/tymon3310/pipette-desktop) | Linux, Windows, macOS | TypeScript/Electron | Recommended — what I actually use day-to-day. Has typing analytics and Pipette Hub for sharing layouts |
+| [**Pipette Web**](https://pipette.tymon3310.dev) | Chromium browsers | TypeScript/React/WebHID | Zero install, does everything Desktop does |
+| [**vial-gui**](https://github.com/tymon3310/vial-gui) | Linux, Windows, macOS | Python/Qt | The OG — rock solid, same feature parity |
+| [**Vial Web**](https://vial.tymon3310.dev) | Chromium browsers | WebAssembly/WebHID | Classic browser version, based on vial-gui ([source](https://github.com/tymon3310/vial-web)) |
 
 ---
 
 ## Supported Keyboards
 
-All keyboards below support Vial keymap editing once flashed with our custom firmware. Keychron-specific tabs (wireless dongle bridge, custom RGB, SOCD, Hall Effect tuning) require using either Pipette Desktop or the custom `vial-gui` fork.
+Every board below works with Vial once it's flashed. The Keychron-specific tabs (wireless bridge, RGB, SOCD, Hall Effect) only show up if you're using Pipette or the custom `vial-gui` — upstream Vial won't have them.
 
-Most active boards live on the `vial-updated-keychron` branch. Boards still on `vial-keychron` are indicated in the branch column.
+Covers Q / Q Pro / Q Max / Q HE, V / V Max / V 8K, K Pro / K Max / K HE / K Version, C Pro / C Pro V2 / C Pro 8K, R Series, S / X, and Lemokey HE.
 
-Support covers Keychron and Lemokey models across:
-- Q / Q Pro / Q Max / Q HE
-- V / V Max / V 8K
-- K Pro / K Max / K HE / K Version
-- C Pro / C Pro V2 / C Pro 8K
-- R Series
-- S / X / Lemokey HE
-
-
-### Quick Navigation
-
-Q Family: [Q Series](#q-series), [Q Pro](#q-pro-series), [Q Max](#q-max-series), [Q HE](#q-he-series)
-
-V Family: [V Series](#v-series), [V Max](#v-max-series), [V 8K](#v-8k-series)
-
-K Family: [K Pro](#k-pro-series), [K Max](#k-max-series), [K HE](#k-he-series), [K Version](#k-version-series)
-
-Other: [C Pro](#c-pro-series), [C Pro V2](#c-pro-v2-series), [C Pro 8K](#c-pro-8k-series), [R Series](#r-series), [Other (S/X)](#other), [Lemokey](#lemokey-keychron-sub-brand)
+**Jump to:** [Q Series](#q-series) · [Q Pro](#q-pro-series) · [Q Max](#q-max-series) · [Q HE](#q-he-series) · [V Series](#v-series) · [V Max](#v-max-series) · [V 8K](#v-8k-series) · [K Pro](#k-pro-series) · [K Max](#k-max-series) · [K HE](#k-he-series) · [K Version](#k-version-series) · [C Pro](#c-pro-series) · [C Pro V2](#c-pro-v2-series) · [C Pro 8K](#c-pro-8k-series) · [R Series](#r-series) · [Other](#other) · [Lemokey](#lemokey-keychron-sub-brand)
 
 ### Q Series
 
@@ -293,244 +275,156 @@ Other: [C Pro](#c-pro-series), [C Pro V2](#c-pro-v2-series), [C Pro 8K](#c-pro-8
 
 ---
 
-## Features
-
-### Standard Vial Capabilities
-- Real-time on-the-fly keymap and layer remapping (up to 4+ layers)
-- Macro programming and key combinations
-- Tap dance actions and combo keys
-- Key overrides and core QMK settings
-
-### Keychron-Specific Capabilities
-
-#### 1. Wireless 2.4 GHz Bridge Configuration
-Configure supported wireless Keychron keyboards through the Keychron Link 2.4 GHz USB dongle without plugging in a physical cable:
-- **Transparent VIA/Vial tunneling**: All standard keymap edits and Keychron-specific configuration commands work identically over wireless 2.4 GHz as they do over wired USB.
-- **Supported dongles**: Keychron Link USB-A (`3434:D030`) and USB-C (`3434:D031`).
-- **Automatic device detection**: The GUI detects the bridge dongle and paired keyboard automatically.
-- **Smart connection deduplication**: If a keyboard is connected simultaneously via USB and 2.4 GHz dongle, the wired USB connection is cleanly prioritized.
-- **Requires custom firmware**: The keyboard must run firmware from `vial-updated-keychron` with the wireless XOR encoding patch (working around internal buffer handling in the LKBT51 module).
-
-#### 2. Keychron Settings
-- **Debounce**: Adjust hardware key debounce filter (1ms to 20ms).
-- **NKRO**: Toggle N-Key Rollover mode on or off.
-- **Report Rate**: Switch polling rates between 125Hz, 250Hz, 500Hz, 1000Hz (and 8000Hz on 8K supported models).
-- **Wireless Low Power Mode**: Fine-tune sleep timers and power-saving behavior for wireless operation.
-
-#### 3. Snap Click (SOCD)
-Configure Simultaneous Opposite Cardinal Direction handling for mechanical keyboards:
-- Define opposing key pairs (e.g. A+D for strafing, W+S for pitch).
-- Select resolution modes: Last Input Priority, First Key Priority, Second Key Priority, or Neutral (cancellation).
-
-#### 4. Keychron RGB Lighting
-- **Global RGB Modes**: Select and customize 40+ onboard lighting animations.
-- **Per-Key RGB**: Set distinct custom colors for individual keys.
-- **Mixed RGB**: Overlay per-key color overrides on top of active background animations.
-- **OS Indicator Colors**: Customize LED indicator colors for Caps Lock, Num Lock, and Scroll Lock states.
-
-#### 5. Analog Matrix (Hall Effect Keyboards Only)
-- **Profiles**: Store multiple independent analog profiles; switch, save, and reset configurations per game or workflow.
-- **Actuation & Travel Modes**:
-  - **Global**: Inherit default profile actuation parameters.
-  - **Regular**: Custom static actuation point from 0.1mm to 4.0mm.
-  - **Rapid Trigger**: Dynamic press and release thresholds (0.1mm to 4.0mm) with bottom deadzone filtering.
-  - **Dynamic Keystroke (DKS)**: Two distinct travel zones (shallow and deep), each triggering up to 4 key actions (Press, Release, Tap, Re-press).
-  - **Gamepad / XInput**: Assign analog switches to HID joystick axes or Xbox 360 controller inputs (triggers, analog sticks, and buttons) with custom 4-point response curves.
-  - **Toggle**: Key toggles held state upon each press.
-- **HE SOCD**: Hall Effect-specific resolution including Deeper Travel Wins, Last Input Wins, or Neutral cancellation across up to 20 pairs.
-- **Calibration & Live Monitor**: Real-time per-key travel depth monitor with manual and power-on auto-calibration.
-
-#### 6. STM32 DFU Firmware Flasher
-Integrated directly into Pipette Desktop and vial-gui:
-- **Automatic Layout Backup**: Backs up your current keymaps, macros, and Keychron settings before flashing.
-- **One-Click Flash**: Reboots keyboard into DFU mode, flashes compiled `.bin` firmware using `dfu-util`, and restores your layout automatically.
-- **Live Progress & MCU Detection**: Reports real-time erase/write progress and detected MCU type.
-- **WebUSB Flashing**: Also available directly in the browser via WebUSB DfuSe.
-
----
-
 ## Getting Started
 
-### Step 1: Flash Custom Firmware (Prerequisite)
+### Step 1: Flash the custom firmware
 
-While stock factory firmware supports features like SOCD and Hall Effect tuning exclusively through Keychron's web launcher (`launcher.keychron.com`), it does not support Vial. To configure your keyboard with Vial (desktop or web) while retaining full control over Keychron hardware features, you must first flash our custom `vial-qmk` firmware.
+This is the part you can't skip — stock firmware just doesn't speak Vial.
 
-# NOTE FOR WINDOWS USERS: You must install the [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) and a Linux distribution (Ubuntu recommended) to build QMK firmware. The following instructions assume you are using a Linux/macOS environment.
+> **Windows users:** you'll need [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) with a Linux distro (Ubuntu's the easy choice) to build QMK firmware. The steps below assume a Linux/macOS shell either way.
 
-1. **Build from source**:
+Set up QMK and pull the firmware in one go:
 
-   ```bash
-   # Download the qmk cli using your package manager or pipx:
-   pipx install qmk
-   qmk setup https://github.com/tymon3310/vial-qmk.git -b vial-updated-keychron
-   
-   # Compile and flash firmware for your model and layout (example: V5 Max ANSI Encoder)
-   qmk flash -kb keychron/v5_max/ansi_encoder -km vial # (you can use qmk compile to build the firmware first and flash later)
-   ```
+```bash
+# Install the qmk cli (via your package manager, or pipx)
+pipx install qmk
+qmk setup https://github.com/tymon3310/vial-qmk.git -b vial-updated-keychron # swap the branch for vial-keychron if needed
+```
 
-2. **Flash to keyboard**:
-   - **Using QMK CLI**:
-     ```bash
-     qmk flash -kb keychron/v5_max/ansi_encoder -km vial
-     ```
+Then compile and flash for your board (example: V5 Max, ANSI Encoder) — this one command does both:
 
-   - **Using QMK Toolbox**:
-     1. Download and install [QMK Toolbox](https://github.com/tzarc/qmk_toolbox/releases/tag/beta-xplat).
-     2. Open QMK Toolbox, click **Open** to load the compiled `.bin` firmware file.
-     3. Put your keyboard into bootloader mode (hold `Esc` while plugging in the USB cable, or press the reset button under the spacebar).
-     4. Click **Flash** to upload the firmware.
+```bash
+qmk flash -kb keychron/v5_max/ansi_encoder -km vial
+```
 
-   - **Using `dfu-util` directly**:
-     Put the keyboard into bootloader mode (hold `Esc` while plugging in the USB cable, or press the reset button under the spacebar):
-     ```bash
-     dfu-util -a 0 -d 0483:DF11 -s 0x8000000:leave -D <firmware.bin>
-     ```
+If you just want the `.bin` without flashing yet, swap `qmk flash` for `qmk compile`.
 
-### Step 2: Configure Your Keyboard
+**Flashing options, if `qmk flash` doesn't work for you:**
 
-Once custom firmware is running on your board, choose your preferred configurator:
+- **QMK Toolbox** — download it [here](https://github.com/tzarc/qmk_toolbox/releases/tag/beta-xplat), open your compiled `.bin`, put the keyboard into bootloader mode (hold `Esc` while plugging in, or hit the reset button under the spacebar), then hit Flash.
+- **`dfu-util` directly:**
+  ```bash
+  dfu-util -a 0 -d 0483:DF11 -s 0x8000000:leave -D <firmware.bin>
+  ```
 
-#### Option A: Pipette Desktop (Recommended)
+### Step 2: Pick a configurator
 
-Modern Electron/TypeScript desktop configurator with Pipette Hub layout sharing.
+**Pipette Desktop (recommended)** — pre-built releases on [GitHub](https://github.com/tymon3310/pipette-desktop/releases/latest) for Linux (AppImage), Windows, and macOS.
 
-1. **Pre-built Releases:**
-   - **Linux (AppImage):** Download `Pipette-linux-x86_64.AppImage` from [GitHub Releases](https://github.com/tymon3310/pipette-desktop/releases/latest):
-     ```bash
-     chmod +x Pipette-linux-x86_64.AppImage
-     ./Pipette-linux-x86_64.AppImage
-     ```
-   - **Arch Linux (AUR):**
-     ```bash
-     yay -S pipette-desktop-keychron-bin   # Pre-compiled binary
-     # or: yay -S pipette-desktop-keychron-git  # Build from source
-     ```
-   - **Windows / macOS:** Download and run the installer from [GitHub Releases](https://github.com/tymon3310/pipette-desktop/releases/latest).
+On Arch:
+```bash
+yay -S pipette-desktop-keychron-bin   # prebuilt
+# or
+yay -S pipette-desktop-keychron-git   # build from source
+```
 
-2. **Build from Source (Optional):**
-   ```bash
-   git clone --branch vial-keychron https://github.com/tymon3310/pipette-desktop.git
-   cd pipette-desktop
-   pnpm install
-   pnpm dev
-   ```
+Building it yourself:
+```bash
+git clone --branch vial-keychron https://github.com/tymon3310/pipette-desktop.git
+cd pipette-desktop
+pnpm install
+pnpm dev
+```
 
-#### Option B: vial-gui (Python Desktop)
+**vial-gui** — same deal, Python/Qt instead. Releases [here](https://github.com/tymon3310/vial-gui/releases/latest).
 
-Classic Python/Qt desktop configurator with full Keychron protocol feature parity.
+```bash
+yay -S vial-keychron-bin   # prebuilt (Arch)
+# or
+git clone --branch vial-keychron https://github.com/tymon3310/vial-gui.git
+cd vial-gui
+uv venv .venv --python 3.12
+source .venv/bin/activate
+uv pip install -r requirements.txt
+python src/main/python/main.py
+```
 
-1. **Pre-built Releases:**
-   - **Linux (AppImage):** Download `Vial-*.AppImage` from [GitHub Releases](https://github.com/tymon3310/vial-gui/releases/latest):
-     ```bash
-     chmod +x Vial-*.AppImage
-     ./Vial-*.AppImage
-     ```
-   - **Arch Linux (AUR):**
-     ```bash
-     yay -S vial-keychron-bin   # Pre-compiled binary
-     # or: yay -S vial-keychron-git  # Build from source
-     ```
-   - **Windows / macOS:** Download and run the installer from [GitHub Releases](https://github.com/tymon3310/vial-gui/releases/latest).
+**Pipette Web** — go to [pipette.tymon3310.dev](https://pipette.tymon3310.dev) in a Chromium browser, click Connect, pick your keyboard from the WebHID prompt. That's it.
 
-2. **Build from Source (Optional):**
-   ```bash
-   git clone --branch vial-keychron https://github.com/tymon3310/vial-gui.git
-   cd vial-gui
-   uv venv .venv --python 3.12
-   source .venv/bin/activate  # Linux/macOS (or .venv\Scripts\activate on Windows)
-   uv pip install -r requirements.txt
-   python src/main/python/main.py
-   ```
-
-#### Option C: Pipette Web (Browser)
-1. Open [pipette.tymon3310.dev](https://pipette.tymon3310.dev) in any Chromium-based browser (Chrome, Edge, Brave, Chromium).
-2. Click **Connect/Authorize Keyboard** and select your keyboard from the WebHID device prompt.
-
-#### Option D: Vial Web (Browser)
-
-1. Open [vial.tymon3310.dev](https://vial.tymon3310.dev) in any Chromium-based browser (Chrome, Edge, Brave, Chromium).
-2. Click **Start Vial** and select your keyboard from the WebHID device prompt.
+**Vial Web** — same idea, at [vial.tymon3310.dev](https://vial.tymon3310.dev), click Start Vial.
 
 ---
 
-## Subsequent Firmware Updates
+## Updating firmware later
 
-Once your keyboard is running Vial firmware, routine updates can be flashed directly from the **DFU Firmware updater** tab in Pipette Desktop or vial-gui. Flashing is also supported on web apps, although it is not recommended way:
+Once you're on Vial firmware, updates are painless — no need to redo Step 1 from scratch.
 
-### Pipette Desktop/Web Flashing Steps:
+**Pipette (Desktop or Web):** System tab → Keychron flasher (bottom) → pick your new `.bin` → Flash. It backs up and restores your layout automatically.
 
-1. Open Pipette Desktop or Pipette Web.
-2. Navigate to the **System** tab.
-3. At the bottom, click **Keychron flasher**.
-4. Select your updated `.bin` file.
-5. Click **Flash**. The application will automatically back up your keymap and settings, reboot into DFU mode, flash the update, and restore your configuration.
+**vial-gui / vial-web:** DFU Firmware updater tab → pick your `.bin` → Flash. Same auto-backup behavior.
 
-### Vial-gui/web Flashing Steps:
-
-1. Open vial-gui or vial-web.
-2. Navigate to the **DFU Firmware updater** tab.
-3. Select your updated `.bin` file.
-4. Click **Flash**. The application will automatically back up your keymap and settings, reboot into DFU mode, flash the update, and restore your configuration.
-
-> **Flashing Requirements:**
-> - **Linux:** Install `dfu-util` via package manager (e.g. `sudo pacman -S dfu-util` or `sudo apt install dfu-util`).
-> - **Windows:** Install `dfu-util` via [Scoop](https://scoop.sh/) (`scoop install dfu-util`) or ensure it is on your `PATH`. For browser WebUSB flashing, install the STM32 DFU drivers from [QMK Toolbox](https://github.com/qmk/qmk_toolbox/blob/master/windows/QMK%20Toolbox/Resources/qmk_driver_installer.exe).
-> - **macOS:** Install `dfu-util` via Homebrew (`brew install dfu-util`).
+You'll need `dfu-util` installed:
+- Linux: `sudo pacman -S dfu-util` (or `apt install dfu-util`)
+- macOS: `brew install dfu-util`
+- Windows: `scoop install dfu-util`, or install the STM32 DFU drivers from [QMK Toolbox](https://github.com/qmk/qmk_toolbox/blob/master/windows/QMK%20Toolbox/Resources/qmk_driver_installer.exe) if you're flashing via browser
 
 ---
 
 ## Troubleshooting
 
-### Keyboard Not Detected in Vial
-1. Ensure the keyboard has been flashed with custom `vial-qmk` firmware (stock Keychron firmware only works with VIA / `launcher.keychron.com` and will not be detected by Vial).
-2. Ensure the physical mode switch is set to **Cable** or connect via the Keychron Link **2.4 GHz** wireless dongle. Bluetooth connection does not support raw HID configuration.
-3. On Linux, configure udev permissions:
+**Keyboard not showing up in Vial?** 90% of the time it's one of these:
+
+1. It's still running stock firmware. Unless you're on a wired-only board using pure upstream `vial-qmk`, stock only works with VIA / the Keychron web launcher — Vial won't see it at all until you flash the firmware from this fork.
+2. The physical switch on the board isn't set to **Cable**, or you're not connected via the Keychron Link **2.4 GHz** dongle. Bluetooth doesn't support raw HID, so it won't work for configuration either way.
+3. On Linux, you probably need udev permissions:
    ```bash
-   export USER_GID=`id -g`; sudo --preserve-env=USER_GID sh -c 'echo "KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{serial}=="*vial:f64c2b3c*", MODE="0660", GROUP="$USER_GID", TAG+="uaccess", TAG+="udev-acl"" > /etc/udev/rules.d/59-vial.rules && udevadm control --reload && udevadm trigger'
+   export USER_GID=`id -g`; sudo --preserve-env=USER_GID sh -c 'echo "KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", ATTRS{serial}==\"*vial:f64c2b3c*\", MODE=\"0660\", GROUP=\"$USER_GID\", TAG+=\"uaccess\", TAG+=\"udev-acl\"" > /etc/udev/rules.d/59-vial.rules && udevadm control --reload && udevadm trigger'
    ```
 
-### Keychron Tabs Not Appearing in GUI
-Keychron-specific tabs appear when:
-1. You are using our custom configurator ([Pipette Web](https://pipette.tymon3310.dev), d[Pipette Desktop](https://github.com/tymon3310/pipette-desktop), custom [vial-gui](https://github.com/tymon3310/vial-gui), or [vial-web](https://vial.tymon3310.dev)). Stock upstream Vial GUI does not include Keychron tabs.
-2. The keyboard is running custom firmware built with Keychron extensions enabled.
-3. The keyboard model supports the specific hardware feature (for instance, the Analog Matrix tab requires a Hall Effect model).
+**Keychron tabs missing from the GUI?** You need all three of: a custom configurator (not upstream Vial), firmware built with Keychron extensions on, and — for the Analog Matrix tab specifically — an actual Hall Effect board.
+
+---
+
+## FAQ
+
+**Can I go back to stock firmware afterward?**
+Yes. Flash the stock `.bin` from Keychron's site the same way you'd flash any other firmware (QMK Toolbox or `dfu-util`). You'll lose Vial-specific settings (keymaps, macros) in the process, but nothing about the hardware changes.
+
+**Will I lose my current keymap when I flash?**
+Your existing (stock/VIA) keymap doesn't carry over automatically — you'll be setting it up fresh in Vial. If you're updating an already-Vial-flashed board, though, the built-in flasher backs up and restores your Vial layout automatically.
+
+**Does this void my warranty?**
+No — Keychron publishes their firmware source themselves, so flashing custom firmware built from it is normal use of that source, not some unsupported hack. This project just isn't Keychron-endorsed or officially supported by them.
+
+**Do I need to know how to code?**
+No. Compiling is copy-paste commands; day-to-day configuration is entirely GUI-based once you're set up.
+
+**My board isn't in the supported list — can I still use this?**
+Not out of the box, but ports are welcome — see [Contributing](#contributing).
 
 ---
 
 ## Contributing
 
-Contributions and ports for additional keyboard models are welcome:
-1. Fork the target repository ([vial-qmk](https://github.com/tymon3310/vial-qmk), [pipette-desktop](https://github.com/tymon3310/pipette-desktop), or [vial-gui](https://github.com/tymon3310/vial-gui)) or [pipette-desktop](https://github.com/tymon3310/pipette-desktop).
-2. Create a feature branch.
-3. Submit a pull request.
+Want to port a new keyboard, or just fix something that's broken? Pull requests welcome.
 
-### Adding a New Keyboard Port
-1. Create the keyboard directory under `keyboards/keychron/<model>/` in `vial-qmk`.
-2. Add the `keymaps/vial/` folder containing `keymap.c`, `config.h` (with unique `VIAL_KEYBOARD_UID`), `vial.json`, and `rules.mk`.
-3. Generate a unique UID: `python3 util/vial_generate_keyboard_uid.py`.
-4. Compile and verify matrix mapping on hardware.
+1. Fork whichever repo you're changing ([vial-qmk](https://github.com/tymon3310/vial-qmk), [pipette-desktop](https://github.com/tymon3310/pipette-desktop), or [vial-gui](https://github.com/tymon3310/vial-gui)).
+2. Branch, make your changes.
+3. Open a PR.
+
+**Adding a new keyboard port:**
+1. New directory under `keyboards/keychron/<model>/` in `vial-qmk`.
+2. Add a `keymaps/vial/` folder with `keymap.c`, `config.h` (needs a unique `VIAL_KEYBOARD_UID`), `vial.json`, and `rules.mk`.
+3. Generate the UID: `python3 util/vial_generate_keyboard_uid.py`.
+4. Compile and actually test the matrix mapping on real hardware before opening the PR.
 
 ---
 
 ## License
 
-- **vial-qmk**: GPL-2.0 (inherited from QMK)
-- **vial-gui**: GPL-2.0 (inherited from Vial)
-- **pipette-desktop**: GPL-3.0 (inherited from Pipette)
-- **Documentation**: MIT
-
----
+- `vial-qmk`: GPL-2.0 (inherited from QMK)
+- `vial-gui`: GPL-2.0 (inherited from Vial)
+- `pipette-desktop`: GPL-3.0 (inherited from Pipette)
+- Documentation: MIT
 
 ## Credits
 
-- [QMK Firmware](https://qmk.fm/)
-- [Vial](https://get.vial.today/)
-- [Keychron](https://github.com/Keychron/qmk_firmware)
-- [Pipette](https://github.com/darakuneko/pipette-desktop)
-- Community contributors and testers
+[QMK](https://qmk.fm/) · [Vial](https://get.vial.today/) · [Keychron](https://github.com/Keychron/qmk_firmware) · [Pipette](https://github.com/darakuneko/pipette-desktop) · everyone who's tested a board or filed an issue
+
+## A note on testing
+
+Daily driver here is a **Keychron V5 Max (ANSI Encoder)** — that's what gets tested first on every change. Everything else in the tree is maintained against Keychron's upstream source and community PRs, so if something's off on your specific board, open an issue (or ping me on the [Keychron Discord](https://discord.com/invite/HAYbRrTsjN)) rather than assuming it's just broken.
 
 ---
 
-## Hardware Testing Note
-
-Daily development and hardware verification are conducted on a **Keychron V5 Max (ANSI Encoder)**. Other targets in the tree are maintained against Keychron upstream firmware source definitions and community pull requests. If you notice any model-specific anomalies, please open an issue or pull request (or message me on official [Keychron Discord server](https://discord.com/invite/HAYbRrTsjN)).
+*Detailed feature specs (exact debounce ranges, actuation modes, RGB options, etc.) have moved to [`docs/features.md`](docs/features.md) to keep this page scannable.*

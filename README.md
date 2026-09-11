@@ -2,13 +2,13 @@
 
 Stock Keychron firmware locks you into VIA and their web launcher (`launcher.keychron.com`) for anything interesting — SOCD, per-key RGB, Hall Effect tuning. Fine if that's all you want, but it means no real Vial: no tap dance, no combos, no dynamic macros, no offline desktop GUI.
 
-Most stock Keychron boards can't run Vial natively — the exception is wired-only models, which can actually run upstream `vial-qmk` as-is. Everything else (wireless boards, and anyone who wants the Keychron-specific tabs — RGB, SOCD, Hall Effect, the wireless bridge) needs this fork.
+Most stock Keychron keyboards can't run Vial natively — the exception is wired-only models, which can actually run upstream `vial-qmk` as-is. Everything else (wireless keyboards, and anyone who wants the Keychron-specific tabs — RGB, SOCD, Hall Effect, the wireless bridge) needs this fork.
 
-This project gets you actual Vial on Keychron and Lemokey boards — full remapping, macros, tap dance, combos, 2.4 GHz wireless bridge support, RGB, and Hall Effect switch tuning, all together.
+This project gets you actual Vial on Keychron and Lemokey keyboards — full remapping, macros, tap dance, combos, 2.4 GHz wireless bridge support, RGB, and Hall Effect switch tuning, all together.
 
 ## What to expect
 
-- **Time:** 15–30 minutes if your board's already on the supported list and you're comfortable with a terminal. Longer if you're setting up QMK/WSL for the first time.
+- **Time:** 15–30 minutes if your keyboard's already on the supported list and you're comfortable with a terminal. Longer if you're setting up QMK/WSL for the first time.
 - **Reversible:** yes. You can flash back to stock Keychron firmware later if you want the official launcher back — nothing here is one-way.
 - **Risk:** low, if you follow the flashing steps as written. The main way to actually cause trouble is interrupting a flash mid-write — don't unplug during that step.
 - **Not required:** you don't need to know QMK or C. Compiling firmware is copy-paste; everyday use is all GUI.
@@ -20,7 +20,7 @@ If that sounds fine, here's where to go:
 | If you want to... | Use this |
 |---|---|
 | **Just get flashing** | Skip to [Getting Started](#getting-started) |
-| **Check if your board is supported** | [Supported Keyboards](#supported-keyboards) |
+| **Check if your keyboard is supported** | [Supported Keyboards](#supported-keyboards) |
 | **See what each configurator does** | [Configurators](#configurators) |
 | **Something's not working** | [Troubleshooting](#troubleshooting) / [FAQ](#faq) |
 
@@ -36,10 +36,10 @@ A hybrid fork — [vial-kb/vial-qmk](https://github.com/vial-kb/vial-qmk) merged
 
 | Branch | Base | Status | Use it if... |
 |---|---|---|---|
-| [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | [2025q3](https://github.com/Keychron/qmk_firmware/tree/2025q3) | **Active, default** | Your board is on the list below under this branch |
-| [`vial-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-keychron) | [wls_2025q1](https://github.com/keychron/qmk_firmware/tree/wls_2025q1) | Legacy | Your board hasn't been ported to the newer base yet |
+| [`vial-updated-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron) | [2025q3](https://github.com/Keychron/qmk_firmware/tree/2025q3) | **Active, default** | Your keyboard is on the list below under this branch |
+| [`vial-keychron`](https://github.com/tymon3310/vial-qmk/tree/vial-keychron) | [wls_2025q1](https://github.com/keychron/qmk_firmware/tree/wls_2025q1) | Legacy | Your keyboard hasn't been ported to the newer base yet |
 
-Boards migrate from the legacy branch to the updated one as Keychron pushes changes upstream — keeps things from turning into a merge-conflict nightmare.
+Keyboards migrate from the legacy branch to the updated one as Keychron pushes changes upstream — keeps things from turning into a merge-conflict nightmare. That said, the legacy branch itself isn't kept in sync with ongoing upstream wls_2025q1 changes after its initial fork point. The only time it gets updated is with community pull request.
 
 ---
 
@@ -58,7 +58,7 @@ All of these talk the same protocol and support the same Keychron-specific featu
 
 ## Supported Keyboards
 
-Every board below works with Vial once it's flashed. The Keychron-specific tabs (wireless bridge, RGB, SOCD, Hall Effect) only show up if you're using Pipette or the custom `vial-gui` — upstream Vial won't have them.
+Every keyboard below works with Vial once it's flashed. The Keychron-specific tabs (wireless bridge, RGB, SOCD, Hall Effect) only show up if you're using Pipette or the custom `vial-gui` — upstream Vial won't have them.
 
 Covers Q / Q Pro / Q Max / Q HE, V / V Max / V 8K, K Pro / K Max / K HE / K Version, C Pro / C Pro V2 / C Pro 8K, R Series, S / X, and Lemokey HE.
 
@@ -263,6 +263,7 @@ Covers Q / Q Pro / Q Max / Q HE, V / V Max / V 8K, K Pro / K Max / K HE / K Vers
 |---|---|---|
 | [S1](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/s1) | ansi/rgb, ansi/white | vial-updated-keychron |
 | [X0](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/x0) | red | vial-updated-keychron |
+| [C100 8K](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/c100_8k) | --- | vial-updated-keychron |
 
 ### Lemokey (Keychron Sub-brand)
 
@@ -291,7 +292,7 @@ pipx install qmk
 qmk setup https://github.com/tymon3310/vial-qmk.git -b vial-updated-keychron # swap the branch for vial-keychron if needed
 ```
 
-Then compile and flash for your board (example: V5 Max, ANSI Encoder) — this one command does both:
+Then compile and flash for your keyboard (example: V5 Max, ANSI Encoder) — this one command does both:
 
 ```bash
 qmk flash -kb keychron/v5_max/ansi_encoder -km vial
@@ -364,14 +365,14 @@ You'll need `dfu-util` installed:
 
 **Keyboard not showing up in Vial?** 90% of the time it's one of these:
 
-1. It's still running stock firmware. Unless you're on a wired-only board using pure upstream `vial-qmk`, stock only works with VIA / the Keychron web launcher — Vial won't see it at all until you flash the firmware from this fork.
-2. The physical switch on the board isn't set to **Cable**, or you're not connected via the Keychron Link **2.4 GHz** dongle. Bluetooth doesn't support raw HID, so it won't work for configuration either way.
+1. It's still running stock firmware. Unless you're on a wired-only keyboard using pure upstream `vial-qmk`, stock only works with VIA / the Keychron web launcher — Vial won't see it at all until you flash the firmware from this fork.
+2. The physical switch on the keyboard isn't set to **Cable**, or you're not connected via the Keychron Link **2.4 GHz** dongle. Bluetooth doesn't support raw HID, so it won't work for configuration either way.
 3. On Linux, you probably need udev permissions:
    ```bash
    export USER_GID=`id -g`; sudo --preserve-env=USER_GID sh -c 'echo "KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", ATTRS{serial}==\"*vial:f64c2b3c*\", MODE=\"0660\", GROUP=\"$USER_GID\", TAG+=\"uaccess\", TAG+=\"udev-acl\"" > /etc/udev/rules.d/59-vial.rules && udevadm control --reload && udevadm trigger'
    ```
 
-**Keychron tabs missing from the GUI?** You need all three of: a custom configurator (not upstream Vial), firmware built with Keychron extensions on, and — for the Analog Matrix tab specifically — an actual Hall Effect board.
+**Keychron tabs missing from the GUI?** You need all three of: a custom configurator (not upstream Vial), firmware built with Keychron extensions on, and — for the Analog Matrix tab specifically — an actual Hall Effect keyboard.
 
 ---
 
@@ -381,7 +382,7 @@ You'll need `dfu-util` installed:
 Yes. Flash the stock `.bin` from Keychron's site the same way you'd flash any other firmware (QMK Toolbox or `dfu-util`). You'll lose Vial-specific settings (keymaps, macros) in the process, but nothing about the hardware changes.
 
 **Will I lose my current keymap when I flash?**
-Your existing (stock/VIA) keymap doesn't carry over automatically — you'll be setting it up fresh in Vial. If you're updating an already-Vial-flashed board, though, the built-in flasher backs up and restores your Vial layout automatically.
+Your existing (stock/VIA) keymap doesn't carry over automatically — you'll be setting it up fresh in Vial. If you're updating an already-Vial-flashed keyboard, though, the built-in flasher backs up and restores your Vial layout automatically.
 
 **Does this void my warranty?**
 No — Keychron publishes their firmware source themselves, so flashing custom firmware built from it is normal use of that source, not some unsupported hack. This project just isn't Keychron-endorsed or officially supported by them.
@@ -389,7 +390,7 @@ No — Keychron publishes their firmware source themselves, so flashing custom f
 **Do I need to know how to code?**
 No. Compiling is copy-paste commands; day-to-day configuration is entirely GUI-based once you're set up.
 
-**My board isn't in the supported list — can I still use this?**
+**My keyboard isn't in the supported list — can I still use this?**
 Not out of the box, but ports are welcome — see [Contributing](#contributing).
 
 ---
@@ -419,12 +420,9 @@ Want to port a new keyboard, or just fix something that's broken? Pull requests 
 
 ## Credits
 
-[QMK](https://qmk.fm/) · [Vial](https://get.vial.today/) · [Keychron](https://github.com/Keychron/qmk_firmware) · [Pipette](https://github.com/darakuneko/pipette-desktop) · everyone who's tested a board or filed an issue
+[QMK](https://qmk.fm/) · [Vial](https://get.vial.today/) · [Keychron](https://github.com/Keychron/qmk_firmware) · [Pipette](https://github.com/darakuneko/pipette-desktop) · everyone who's tested a keyboard or filed an issue
 
 ## A note on testing
 
-Daily driver here is a **Keychron V5 Max (ANSI Encoder)** — that's what gets tested first on every change. Everything else in the tree is maintained against Keychron's upstream source and community PRs, so if something's off on your specific board, open an issue (or ping me on the [Keychron Discord](https://discord.com/invite/HAYbRrTsjN)) rather than assuming it's just broken.
+Daily driver here is a **Keychron V5 Max (ANSI Encoder)** — that's what gets tested first on every change. Everything else in the tree is maintained against Keychron's upstream source and community PRs, so if something's off on your specific keyboard, open an issue (or ping me on the [Keychron Discord](https://discord.com/invite/HAYbRrTsjN)) rather than assuming it's just broken.
 
----
-
-*Detailed feature specs (exact debounce ranges, actuation modes, RGB options, etc.) have moved to [`docs/features.md`](docs/features.md) to keep this page scannable.*

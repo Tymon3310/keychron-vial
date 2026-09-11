@@ -1,5 +1,7 @@
 # Feature Reference
 
+> **NOTE**: Most of the features below only work on the `vial-updated-keychron` branch of the firmware. If your keyboard is on the legacy `vial-keychron` branch, you won't see these features in the configurator.
+
 Full details on everything the Keychron-specific configurators support. For the short version, see the [README](../README.md).
 
 ## Standard Vial stuff you'd expect
@@ -20,6 +22,7 @@ Configure your keyboard through the Keychron Link dongle, no cable needed. Every
 
 ## Keychron settings
 
+> Most of features below should work almost the same as they do in the Keychron Launcher.
 - **Debounce** — 1–20ms.
 - **NKRO** — toggle on/off/adaptive.
 - **Report rate** — 125Hz up to 8000Hz on supported boards.

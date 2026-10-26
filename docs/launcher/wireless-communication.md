@@ -72,18 +72,22 @@ Before using wireless features, the Launcher queries the keyboard's support
 bitmap via `KC_GET_SUPPORT_FEATURE` (`0xA2`). The response is a multi-byte
 bitmask parsed bit-by-bit:
 
-| Bit Position | Flag Name            | Description                          |
-|-------------|----------------------|--------------------------------------|
-| `[1][1]`    | `Support_Rf`         | RF (wireless 2.4 GHz) support       |
-| `[8]`       | `Support_Sleep`      | Sleep / power management             |
-| `[9]`       | `Support_PollRate`   | Polling rate adjustment              |
-| `[17]`      | `Performance_Mode`   | Performance mode selection           |
-| `[1][0]`    | `Support_Le`         | LED control support                  |
-| `[6]`       | `Support_DEBOUNCE`   | Debounce adjustment                  |
-| `[7]`       | `Support_Snap`       | Snap Tap / SOCD support              |
-| `[16]`      | `Bootloader_Jump`    | Jump-to-bootloader command           |
-| `[18]`      | `Support_Toggle`     | Toggle key support                   |
-| `[12]`      | `Upload_Default_Layer` | Upload default layer support       |
+For protocol > 3 (the "V4" layout) the radio flags come from the 16-bit word
+at `data[3..4]` and everything else from the 24-bit word at `data[6..8]`
+(full table in [command-map.md](command-map.md#v4-support-feature-bitmap)):
+
+| Word / bit | Flag Name            | Description                          |
+|------------|----------------------|--------------------------------------|
+| A bit 0    | `Support_Le`         | Bluetooth (`FEATURE_BLUETOOTH` in the firmware) |
+| A bit 1    | `Support_Rf`         | 2.4 GHz RF                            |
+| B bit 6    | `Support_DEBOUNCE`   | Debounce adjustment                  |
+| B bit 7    | `Support_Snap`       | Snap Tap / SOCD                       |
+| B bit 8    | `Support_Sleep`      | Sleep / power management             |
+| B bit 9    | `Support_PollRate`   | Polling rate adjustment              |
+| B bit 12   | `Upload_Default_Layer` | Upload default layer               |
+| B bit 16   | `Bootloader_Jump`    | Jump-to-bootloader command           |
+| B bit 17   | `Performance_Mode`   | Performance mode selection           |
+| B bit 18   | `Support_Latch`      | Latch (toggle) keys                  |
 
 The `Support_Rf` flag gates all wireless-specific settings in the Launcher UI.
 
@@ -343,6 +347,48 @@ The `LAYER_CHANGE`, `ANGLE_CHANGE`, and `DPI_CHANGE` events are emitted by
 diffing the trackball/mouse state monitor stream (`0xA3`-marked reports
 carrying layer, orientation units, and DPI; see [mouse-protocol.md](mouse-protocol.md)).
 `I18N_CHANGE` signals a language change on the device.
+
+---
+
+## Dynamic Receiver Event Listener & Sub-Device Mapping
+
+2.4 GHz receivers (dongles) dynamically report when paired wireless peripherals
+connect, disconnect, or wake from sleep:
+
+### 1. Listener Activation
+
+The Launcher arms the receiver event listener by sending a 32-byte report on
+report ID 0 with command byte `188` (`0xBC`):
+
+```js
+const report = new Uint8Array(32);
+report[0] = 188; // 0xBC
+device.sendReport(0, report);
+```
+
+### 2. Event Filtering
+
+The Launcher attaches an `inputreport` listener inspecting byte 0 of incoming
+reports:
+- Byte 0 == `188` (`0xBC`): Receiver state changed / peripheral event.
+- Byte 0 == `226` (`0xE2`): Peripheral link status notification.
+
+### 3. Dynamic Sub-Device Query & Assistant Sync
+
+Upon receiving `0xBC` or `0xE2`, the Launcher triggers a debounced refresh:
+1. Queries receiver sub-devices via `getKReciverState()` across the receiver's
+   endpoints (`0xFF60`/`0x61`, `0xFFC1`/`0x01`, `0xFF0A`/`0x01`).
+2. Updates `pairedDeviceCards` with the active sub-device's `vpid`, `uid` (`${receiverVpid}_${subDeviceVpid}`),
+   and `deviceType` (`"keyboard" | "mouse" | "trackball"`).
+3. Pushes the mapping to Keychron Assistant via WebSocket:
+   ```json
+   {
+     "cmd": "SetReceiverVpidMap",
+     "data": "{\"receiver_vpid\":12345,\"device_vpid\":67890,\"device_type\":\"mouse\"}"
+   }
+   ```
+   If no sub-device is currently active, it issues `ClearReceiverVpidMap`.
+4. On browser unload (`pagehide`), it immediately issues `ClearReceiverVpidMap` for all cached dongles.
 
 ---
 

@@ -5,7 +5,7 @@ configure connected devices through tool calls. This document records the
 architecture, backend endpoints, and the complete tool catalog.
 
 > **Source:** Reverse-engineered from the Keychron Launcher JavaScript bundle
-> (snapshot in `/src/keychron-launcher`).
+> (`https://launcher.keychron.com`).
 
 ## Overview
 
@@ -20,46 +20,76 @@ architecture, backend endpoints, and the complete tool catalog.
 
 ## Models and Backend
 
-| Model ID             | Provider  | Temperature | Thinking |
-|----------------------|-----------|-------------|----------|
-| `deepseek-v4-pro`    | deepseek  | 0.1         | disabled |
-| `deepseek-v4-flash`  | deepseek  | 0.1         | disabled |
+| Model ID                      | Provider  | Temperature | Thinking |
+|-------------------------------|-----------|-------------|----------|
+| `deepseek-v4-flash`           | deepseek  | 0.1         | configurable toggle |
+| `deepseek-v4-flash-vision-exp`| deepseek  | 0.1         | configurable toggle |
+
+*(Note: `deepseek-v4-pro` was removed in favor of `deepseek-v4-flash-vision-exp` for vision experiments).*
 
 - **API base:** `https://launcher.keychron.cn/api` (OpenAI-compatible
   proxy; no provider API keys are embedded).
-- DeepSeek-specific extension: requests carry
-  `thinking: { type: "disabled" }`, and assistant messages replay
-  `reasoning_content` when thinking is enabled.
-- Telemetry: question statistics are posted to
-  `https://erpapik.keychron.cn/launcher/vapi/ai-question-statistics`.
-- Knowledge-base search (`search_knowledge_base`) queries the brand's
-  `knowledgeBaseApi` host (e.g. `https://launcher.keychron.cn`); the FAQ /
-  product knowledge base is fetched from there. A UI easter egg (5 clicks
-  on the title bar within 2 s) reveals the LLM token-usage meter.
+- **Thinking Mode:** DeepSeek requests carry `thinking: { type: "disabled" | "enabled" }`
+  toggled via the UI button (`supportsDeepThinking` / `deepThinkingEnabled`). When enabled,
+  assistant messages capture and render `reasoning_content`.
+- **Telemetry:**
+  - Question statistics are posted to `https://erpapik.keychron.cn/launcher/vapi/ai-question-statistics`.
+  - Prompt cache statistics are posted to `https://erpapik.keychron.cn/launcher/vapi/ai-prompt-cache-statistics`.
+- **Knowledge-base search:** queries the brand's `knowledgeBaseApi` host (e.g. `https://launcher.keychron.cn`).
+- **Token Meter Easter Egg:** 5 clicks on the chat panel title bar within 2 seconds
+  unlocks the live LLM token-usage meter (`inputTokens`, `outputTokens`, `totalTokens`).
 
-## Keychron Assistant Companion App
+## AI Per-Key RGB Lighting Generator (`ai-light`)
 
-Quick-start app launching and key-binding storage are delegated to a native
-companion app ("Keychron Assistant", expected version ≥ 1.1.5):
+In addition to the conversational chat agent, the Launcher embeds an AI lighting
+generator component (`ai-light`) inside the per-key RGB backlight configuration view:
 
-- **Transport:** WebSocket to `ws://localhost:40003`
-  (a legacy config value `ws://localhost:23333` also exists).
-- **Framing:** JSON messages `{ evt_type: "Common" | "QuickStart",
-  evt_data: { cmd: string, data: string(JSON) } }`.
-- **Commands:**
+- **Purpose:** Generates custom single-character or glyph illumination patterns
+  on the keyboard matrix using natural language prompting.
+- **Backend:** Calls `https://launcher.keychron.cn/api/v1/chat/completions`
+  with model `deepseek-chat` and `temperature: 0.3`.
+- **Matrix Prompting:** Translates the connected keyboard's matrix layout (`row` and `col` counts)
+  into a system prompt requesting a JSON coordinate array:
+  `{"coordinates": [[row, col], ...]}`.
+- **Hardware Application:** Converts returned coordinate pairs to hardware LED indexes
+  via `toRegionKey()` and saves the pattern to keyboard memory via `saveRegion(new Region({keys, color}))`.
 
-| Command                | Direction | Data payload |
-|------------------------|-----------|--------------|
-| `GetVersion`           | both      | `{ version }` |
-| `Get`                  | both      | app-list fetch pages: `{ action: "FetchStart"\|"Fetch"\|..., count, data }` |
-| `SpawnAppByPath`       | → app     | `{ path }` |
-| `AddKeyBind` / `RemoveKeyBind` / `ClearKeyBind` | → app | key + binding descriptor |
-| `SetReceiverVpidMap`   | → app     | `{ receiver_vpid, device_vpid, device_type }` |
-| `ClearReceiverVpidMap` | → app     | `{ receiver_vpid }` |
+---
 
-- The receiver VPID map tells Assistant which dongle belongs to which
-  device so quick-start keys work over 2.4 GHz; the launcher pushes the map
-  on connect and clears it on page unload.
+## Keychron Assistant Companion App Integration
+
+Quick-start app launching, smooth scrolling, multi-device cross-screen sharing,
+and key-binding storage are delegated to the native companion desktop app
+("Keychron Assistant").
+
+The Launcher web app opens a local WebSocket connection to `ws://localhost:40003`
+to bridge browser sandboxing and OS-level operations.
+
+### Integration Roles
+
+- **Quick-Start Keybinding Storage:** When a user maps a physical key to launch an app or URL
+  (using slots `KC_F16`--`KC_F24` or `0x7f00` range), the QMK keycode is written to the device,
+  while the action payload (executable path, URL, icon) is pushed to Keychron Assistant.
+- **2.4 GHz Dongle / Receiver VPID Mapping:** The Launcher dynamically informs Assistant which
+  wireless peripheral is active behind a 2.4 GHz receiver (`SetReceiverVpidMap`), allowing
+  QuickStart key events received by the dongle to trigger the correct desktop binding.
+- **Trackball Support:** QuickStart bindings are fully supported on Trackballs
+  (`trackball/assist` route), utilizing slots `KC_F16`--`KC_F20`.
+- **AI Key Configuration Sync:** Manages hardware-triggered AI prompt workflows (`evt_type: "AIKey"`),
+  linking custom keys with prompt templates and target AI models.
+- **Smooth Scrolling (MOS):** Synchronizes smooth scrolling physics, acceleration, and modifier-key
+  shortcuts (`evt_type: "Mos"`) with the native mouse daemon.
+- **System Actions (`SysCmd`):** Spawns local applications or opens operating system mouse settings.
+
+> **Full Native Protocol Documentation:**
+> For the complete native architecture, IPC commands, and low-level protocol specifications,
+> refer to the dedicated [`assist/`](../assist/) documentation suite:
+> - [`assist/overview.md`](../assist/overview.md) -- Architecture, Tauri v2 backend, and storage schemas
+> - [`assist/websocket-protocol.md`](../assist/websocket-protocol.md) -- Authoritative command reference for all 6 event namespaces
+> - [`assist/ai-key-and-mos.md`](../assist/ai-key-and-mos.md) -- AI prompt templates and MOS scroll acceleration
+> - [`assist/cross-screen-protocol.md`](../assist/cross-screen-protocol.md) -- Virtual KVM screen sharing protocol
+> - [`assist/file-transfer-protocol.md`](../assist/file-transfer-protocol.md) -- Peer-to-peer reliable file transfer
+
 
 ### Quick-Start Bindings
 
@@ -151,6 +181,7 @@ Notable capability strings surfaced by these tools:
 
 ## Related Documents
 
+- [Keychron Assistant Docs](../assist/README.md) -- native companion desktop daemon architecture, protocols, and services
 - [Launcher Overview](overview.md) -- architecture and transport
 - [Command Map](command-map.md) -- underlying command IDs
 - [Mouse / Trackball Protocol](mouse-protocol.md)

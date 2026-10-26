@@ -1,6 +1,6 @@
 # DFU Protocols
 
-The Keychron Launcher supports **five distinct firmware update paths**,
+The Keychron Launcher supports **several firmware update paths**,
 each targeting different hardware. This document describes all of them as
 reverse-engineered from the Launcher JavaScript bundle.
 
@@ -29,16 +29,69 @@ If an update is available, the API returns a JSON response containing a download
 
 ## DFU Path Summary
 
-| # | Class | Target Hardware | Transport | Trigger |
-|---|-------|-----------------|-----------|---------|
-| 1 | STM32 DFU | STM32 MCU | WebUSB (`dfu`/`dfuse` library) | Device name contains "STM" or "DFU in FS Mode" |
-| 2 | STM32WB Bulk | STM32WB MCU | WebUSB bulk transfer (endpoint 1) | Device name contains "WB" |
-| 3 | Nordic nRF | nRF wireless SoC | HID serial (SLIP/HCI, 115200 baud) | Device name contains "PCA" |
-| 4 | XJ (Xinji) | XJ-based devices | HID report ID 1 | Device name contains "XJ" |
-| 5 | XJ New | Newer XJ devices | HID report ID 0 | Device name contains "XJ_NEW" |
+The firmware page first looks at the product definition's `bootloader`
+field: `PCA`, `XJ`, `XJ_NEW`, `Nations` and `NXP` have their own flashers,
+`KLD` and `telink` use the `AA 55` DFU page (see [zmk-support.md](zmk-support.md#firmware-updates));
+anything else goes through WebUSB, where the flasher class is chosen by the
+USB device's product name.
 
-Additionally, a **Bluetooth DFU** protocol exists for updating the wireless
-module firmware over the keyboard's USB HID connection.
+| # | Class | Target Hardware | Transport | Selected by |
+|---|-------|-----------------|-----------|-------------|
+| 1 | STM32 DFU | STM32 MCU | WebUSB (`dfu`/`dfuse` library) | WebUSB device name contains "STM" or "DFU in FS Mode" |
+| 2 | STM32WB Bulk | STM32WB MCU | WebUSB bulk transfer (endpoint 1) | WebUSB device name contains "WB" |
+| 3 | Nordic nRF | nRF SoC (e.g. B Pro keyboards) | Web Serial (SLIP/HCI, 115200 baud) | `bootloader` = `PCA` |
+| 4 | XJ (Xinji) | XJ-based devices | HID report ID 1 (VID `0x34B7`) | `bootloader` = `XJ` |
+| 5 | XJ New | Newer XJ devices | HID report ID 0 | `bootloader` = `XJ_NEW` |
+| 6 | Realtek CFU | Realtek MCU / Optical Sensor | HID report IDs 45 (`0x2D`) & 42 (`0x2A`) | Device `VID 0x0BDA` (3034), `PID 0x4762` (18274) |
+| 7 | Nations (GMJS) | Nations N32 MCU ("Keychron N32 DFU Device") | HID, 64-byte reports | `bootloader` = `Nations` |
+| 8 | NXP blhost | NXP LPC5516 | HID, NXP `blhost` command framing | `bootloader` = `NXP` |
+| 9 | `AA 55` firmware DFU | Realtek RTL8762G (Ultra, `KLD`) and Telink boards | HID usage page `0x8C`, reports `0xB2`/`0xB1` | `bootloader` = `KLD` or `telink` (firmware page routes `firmware/kld`, `firmware/telink`) |
+
+Additionally:
+- **Bluetooth DFU:** Updates wireless module firmware over the keyboard's USB HID connection.
+- **GMJS Bootloader:** GMJS flashing (`updateByGmjs`) accepts both `VID 0x19F5` (6645) and Keychron `VID 0x3434` (13364).
+
+### NXP blhost Commands
+
+The NXP path speaks the standard NXP MCU bootloader (`blhost`) protocol over
+HID. Commands are built as
+`[tag, flags, 0, paramCount, param0 (u32 LE), param1 (u32 LE), ...]`. In
+replies, `data[1..2]` is the payload length and the payload starts at
+`data[3]`; a 32-bit status at payload offset 4 must be `0`. Timeout is 10 s.
+
+### Nations (GMJS) Framing
+
+Firmware is cut into 128-byte blocks. Each block is sent as
+`[1, 1, seq, len, data..., cksum]` (`cksum` = two's complement of the byte
+sum), split over 64-byte reports. The device acknowledges each block with
+`data[0] = 1, data[1] = 1`; after the last block the host sends
+`[1, 1, seq, 0, cksum]` to finish.
+
+### Bootloader Name Query
+
+When the keyboard advertises `Bootloader_Jump`, the firmware page asks it for
+the name of the bootloader it will jump to, and shows that name in the
+"select your device" step:
+
+```
+Request : [0xA7, 0x02, 0x03]
+Response: data[0] = 0xA7, data[1] = 0x02
+          data[4]      = name length n
+          data[5..5+n) = ASCII name
+```
+
+Display names:
+
+| Name reported | Shown as |
+|---------------|----------|
+| `HPM DFU Device` | `HPM DFU Device/L0_HE_8K OTA` |
+| `LPC5516` | `LPC5516 / USB COMPOSITE DEVICE` (NXP, flashed with the `NXP`/blhost path) |
+| `Keychron N32 DFU Device` | `N32 DFU Device` when the board's bootloader type is `Nations` |
+
+The bootloader type in the product definition picks the flasher:
+`PCA` (Nordic serial over Web Serial), `XJ`, `XJ_NEW`, `Nations` (`updateByGmjs`), `NXP`
+(`updateByBlHost`, HID blhost), otherwise WebUSB DFU. `KLD`/`telink` boards
+use a separate page with the `AA 55` DFU.
 
 ### DFU Event Enum
 
@@ -136,14 +189,15 @@ Total packet size: 12-byte header + 256 bytes data = 268 bytes.
 
 ## 3. Nordic nRF DFU (SLIP/HCI)
 
-Updates the Nordic nRF wireless SoC (e.g., nRF52840) using a serial
-protocol over HID with SLIP framing.
+Updates Nordic nRF chips (e.g. the nRF52840 in B Pro keyboards) with the
+legacy Nordic serial DFU protocol and SLIP framing. The firmware is a Nordic
+DFU `.zip` (`manifest.json`, init packet `.dat`, application `.bin`).
 
 ### Transport
 
-- Opens HID device at **115200 baud** (serial over HID)
-- Report ID: `0xC0` (192)
-- Uses SLIP encoding for packet framing
+- Web Serial: `navigator.serial.requestPort()`, opened at **115200 baud**
+- Written through the port's `writable` stream (no HID reports)
+- SLIP framing; each packet ends with `0xC0`
 
 ### SLIP Encoding
 
@@ -271,11 +325,58 @@ Firmware data is sent in 64-byte chunks (matching the HID report size).
 
 ---
 
+## 6. Realtek Component Firmware Update (CFU)
+
+Used for Realtek MCU and optical sensor updates (e.g. `VID 0x0BDA` / 3034, `PID 0x4762` / 18274).
+It implements Microsoft's Component Firmware Update (CFU) protocol over WebHID.
+
+### Package Format
+
+Distributed as a ZIP archive containing two binary parts:
+- `*offer*.bin`: Handshake and version manifest.
+- `*payload*.bin`: Firmware binary blocks.
+
+### Step 1: Offer Transmission (Report ID 45 / 0x2D)
+
+Sends the offer buffer to report ID 45:
+
+```js
+await device.sendReport(45, offer);
+```
+
+### Step 2: Chunked Payload Transmission (Report ID 42 / 0x2A)
+
+The payload binary is divided into sequential blocks of up to 52 bytes:
+
+```
+Byte  Field           Description
+----  -----           -----------
+ 0    flags           0x80 for first chunk, 0x40 for last chunk, 0x00 for intermediate
+ 1    length          Payload chunk length (up to 52 bytes)
+ 2-3  sequence        Sequence number (LE16, chunk index a)
+ 4-7  byte_offset     Firmware byte offset (LE32, 52 * a)
+ 8..  data            Payload data bytes (up to 52 bytes)
+```
+
+Each packet is 60 bytes total (8-byte header + up to 52 bytes data).
+Packets are sent on report ID 42 with a 10ms pacing delay between reports.
+
+---
+
 ## Bluetooth Module DFU
 
 Updates the Bluetooth/2.4 GHz wireless module (e.g., LKBT51) firmware.
 This is sent *over the keyboard's USB HID connection* -- the main MCU acts
 as a passthrough to the wireless module.
+
+This is the same `AA 55/56` protocol that Keychron's standalone Windows
+updater uses for `.kfw` files; see [../firmware/kfw-format.md](../firmware/kfw-format.md)
+for the file format and the updater's view of the protocol.
+
+Before flashing, the Launcher reads the module model with `0x60` and checks
+that the model string appears as plain ASCII somewhere in the selected file.
+It does not parse `.kfw` containers (whose header is nibble-swapped) and
+sends the file's bytes as they are.
 
 ### Packet Format
 
@@ -326,8 +427,9 @@ Byte  Field               Description
 4. **Start Update** (0x63) -- begin transfer (includes DFU version in payload)
 5. **Write File** (0x64) -- send firmware in 16-byte chunks, sequential
    packet numbering, up to 5 retries on failure (1500ms timeout)
-6. **Verify** (0x65) -- send CRC32 of entire firmware (4 bytes, sent twice,
-   big-endian byte order from hex string)
+6. **Verify** (0x65) -- `[AA 55 0B F4 01 65 crc×2 sum_lo sum_hi]`: the CRC32
+   of the whole file, little-endian, sent twice. The reply is accepted when it
+   matches `AA 57 04 FB .. A3 .. 65 0000` (non-zero status = CRC error).
 7. **Switch** (0x66) -- boot into new firmware
 
 ### Write File Packet (0x64) -- Version 0
@@ -382,7 +484,8 @@ Response: Filter for data[0]==0xAA && data[1]==0x55 && data[7]==110
 
 ### CRC32
 
-Standard CRC32 with polynomial `0xEDB88320`:
+CRC32 with polynomial `0xEDB88320`, init `0xFFFFFFFF` and **no final XOR**
+(the same variant as the `.kfw` header):
 
 ```
 for each byte:
@@ -391,7 +494,7 @@ for each byte:
         if lookup & 1: lookup = (lookup >>> 1) XOR 0xEDB88320
         else:          lookup = lookup >>> 1
     crc = (crc >>> 8) XOR lookup
-return crc XOR 0xFFFFFFFF
+return crc            # = zlib.crc32(data) XOR 0xFFFFFFFF
 ```
 
 ### `byteNor(n)`
@@ -411,8 +514,9 @@ byteNor(n, bits=8):
 |-----------|------------------------|
 | 0         | XJ New, BLE DFU (keyboard), VIA tunneled |
 | 1         | XJ (original)          |
-| 178       | BLE DFU (via HID)      |
-| 192       | Nordic nRF SLIP/HCI    |
+| 178 / 177 | `AA 55` DFU out / in (usage page `0x8C`: modules, receivers, `KLD`/`telink` keyboards) |
+
+The Nordic `PCA` path uses Web Serial, not HID reports.
 
 ---
 

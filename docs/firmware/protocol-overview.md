@@ -35,9 +35,9 @@ under `keyboards/keychron/common/`.
 
 ### GUI side
 
-The GUI implements the protocol in `protocol/keychron.py` as the
-`ProtocolKeychron` mixin class, which is mixed into the `Keyboard` class
-alongside VIA/Vial protocol mixins.
+The Vial GUI fork implements the protocol in a `ProtocolKeychron` mixin,
+which is mixed into its `Keyboard` class alongside the VIA/Vial protocol
+mixins.
 
 ### Transport
 
@@ -161,6 +161,7 @@ set in the primary flags **or** `MISC_DEBOUNCE` is set in the misc flags.
 - [RGB Protocol](rgb-protocol.md) -- 0xA8 sub-protocol
 - [Analog Matrix Protocol](analog-matrix-protocol.md) -- 0xA9 sub-protocol
 - [Wireless DFU & Factory Test](wireless-dfu-factory.md) -- 0xAA, 0xAB
+- [Wireless Module Firmware Files](kfw-format.md) -- `.kfw` / receiver `.bin` formats, updater protocol
 - [Data Structures](data-structures.md) -- struct/bitfield reference
 
 ### Launcher Reverse-Engineering
@@ -168,7 +169,7 @@ set in the primary flags **or** `MISC_DEBOUNCE` is set in the misc flags.
 - [Command Map Comparison](../launcher/command-map.md) -- firmware vs Launcher naming
 - [Screen Protocol](../launcher/screen-protocol.md) -- 0xAC (not in our firmware)
 - [Bridge / Dongle Protocol](../launcher/bridge-dongle-protocol.md) -- FR commands
-- [DFU Protocols](../launcher/dfu-protocols.md) -- all 5 firmware update paths
+- [DFU Protocols](../launcher/dfu-protocols.md) -- firmware update paths
 - [Mouse / Trackball Protocol](../launcher/mouse-protocol.md) -- NAPE commands
 - [Analog Matrix Extras](../launcher/analog-matrix-extras.md) -- Launcher-only AMC commands
 - [Wireless Communication](../launcher/wireless-communication.md) -- sleep, battery, performance modes, monitor events

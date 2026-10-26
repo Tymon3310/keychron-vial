@@ -31,6 +31,8 @@ and does not exist in our firmware fork.
 | `GUIF_CTRL_SET_COUNT`               | 12  | `0x0C` | Write | Set count (purpose unclear) |
 | `GUIF_CTL_OPCODE_GETTIME`           | 15  | `0x0F` | Read  | Get RTC time               |
 | `GUIF_CTL_OPCODE_SETTIME`           | 16  | `0x10` | Write | Set RTC time               |
+| `GUIF_CTL_OPCODE_SET_FONT_COLOR`    | 32  | `0x20` | Write | Set clock/text colour |
+| `GUIF_CTL_OPCODE_SET_WALLPAPER`     | 33  | `0x21` | Write | Select built-in wallpaper |
 | `GUIF_CTL_OPCODE_RESPONSE`          | 119 | `0x77` | Read  | Response acknowledgment    |
 
 ---
@@ -169,6 +171,24 @@ Response:
   Byte 7  = minute
   Byte 8  = second
 ```
+
+---
+
+## Appearance (0x20 / 0x21)
+
+Short 32-byte packets with **no checksum**;
+the Launcher does not wait for a reply.
+
+```
+Set font colour: [0xAC, 0x20, rgb565_hi, rgb565_lo]
+  rgb565 = (r >> 3) << 11 | (g >> 2) << 5 | (b >> 3)   from a #RRGGBB string
+Set wallpaper:   [0xAC, 0x21, id]
+  UI choice 1 → id 0, 2 → 2, 3 → 3, 4 → 4  (id 1 is never sent)
+```
+
+The screen page shows these controls only for `3537:1203` (vpId
+892801539, vendor ID `0x3537`). The custom image upload block is limited to `3434:040E` and the theme block to `3434:040E` and
+`3434:049F`.
 
 ---
 

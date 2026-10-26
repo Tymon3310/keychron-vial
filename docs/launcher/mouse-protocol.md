@@ -143,7 +143,76 @@ independent X and Y DPI values. The Launcher shows:
 - DPI value per profile
 - Maximum report rate supported
 
-### Orientation (Trackball)
+#### Trackball DPI Gears and Custom DPI
+
+Trackballs receive enhanced DPI stage controls:
+- **DPI Gears (`gearLevelNum`):** Selectable number of active DPI stages (e.g. 1 to 5 stages)
+  configured via `getDpiGearValue()` and `setDpiGearValue(levelCount)`.
+- **Custom DPI Input:** Direct integer DPI input via `cumstemDPIValue` and `saveCumstemDPI()`.
+- **Dedicated Polling Rate Gears:** Trackballs query `pollingGearsSupport` and allow switching
+  polling rate stages (`pollingRateLevel`) independently.
+
+### Lift-Off Distance (LOD) & Multi-Level Slider
+
+Mice support configurable Lift-Off Distance (LOD). The advance settings module
+(`mouse/advance`) introduces an interactive vertical drag-and-drop LOD slider:
+
+- **Slider Mode (`useLodSlider`):** Automatically engaged when the device exposes
+  more than 3 discrete LOD levels (`lodOptions.length > 3`).
+- **Interactive Visualizer:** Renders an animated mouse elevation diagram where the mouse graphic
+  displaces vertically according to `--lod-mouse-offset` and displays a height indicator
+  `--lod-arrow-height`.
+- **Multi-Level Hardware Flag (`lodLevelSupport`):**
+  When supported by device firmware, the payload sets:
+  ```js
+  setSysFeature({
+    lod: lodLevelSupport ? 0 : (lod ?? 0),
+    lodLevel: lodLevelSupport ? (lod ?? 0) : 0,
+    sensor: [wave, line, motion, fps20k],
+    scrollDir: +!!scrollDir
+  })
+  ```
+
+### Left Click Lock Keycode (`KC_MS_BTN1_LOCK`)
+
+A latching left-click action:
+- **Identifier:** `KC_MS_BTN1_LOCK` (labeled `mouse.key.leftLock`)
+- **Behavior:** Toggles a persistent latch on the primary mouse button (Button 1 / Left Click),
+  allowing click-and-drag actions without continuously holding the physical button.
+
+### Receiver Pairing Vendor IDs
+
+Mice paired via 2.4 GHz receivers can write custom pairing keys. Pair-key
+support is checked for these vendor IDs:
+- Supports `VID 0x3434` (13364, Keychron standard)
+- Supports `VID 0x362D` (13869, secondary OEM / partner vendor ID)
+
+---
+
+## Trackball First-Class Support & QuickStart
+
+Trackballs are their own product category (`Product Category 3: Trackball`):
+
+- **Dedicated Module:** Handled by route `/trackball/assist`.
+- **QuickStart Action Binding:**
+  - Physical trackball buttons can be rebound to `KC_F16`--`KC_F20`.
+  - When pressed, Keychron Assistant intercepts the keycode and launches a registered application
+    (`KeyBindType.App`) or opens a target URL (`KeyBindType.Url`).
+  - Physical keycodes are restored on unbinding using `restorePhysicalKey()` and the device's
+    `defaultKeyCodes` map.
+- **Interactive Diagram Customization:**
+  - **Layer Renaming:** Users can rename trackball layers inline via `layer-rename` and `layer-name-input`
+    (persisted to local storage).
+  - **QuickStart Overlay:** `applyQuickStartLabels()` dynamically replaces the QMK keycode labels on the
+    trackball diagram with the bound application name or URL.
+  - **Casing Color Cover:** Supports selectable shell/housing colors (`colorCovers`, `switchColor`)
+    saved per device ID.
+  - **Battery & Charging:** Live battery percentage and charging state rendered directly over the trackball graphic.
+- **Dynamic Device Renaming:** Trackball custom names are queried and mapped via `loadTrackballCustomNames()`.
+
+---
+
+## Orientation (Trackball)
 
 The trackball sensor orientation can be rotated to match the physical
 mounting angle. Get/set via `NAPE_GET_ORI` / `NAPE_SET_ORI`.
@@ -230,6 +299,136 @@ For wireless mice, battery state can be queried:
 
 Mice support multiple saved profiles (DPI, button mapping, etc.), similar
 to keyboard analog matrix profiles.
+
+---
+
+## Keyboard-Integrated Pointing Device
+
+Keyboards can carry a trackball or touchpad. They
+stay `Keyboard` devices (VIA raw HID, `0xFF60`) and get extra pages:
+
+| Page | Shown when | Commands |
+|------|-----------|----------|
+| `angle` | backend `o_menu` contains `ANGLE` | `Get/Set_Layer_Ori` |
+| `pointer` (DPI) | backend `o_menu` contains `POINTER_DPI` | `*_Dpi*`, `*_Layer_Dpi*`, `*_Custom_Dpi` |
+| `advance` → keyset tabs `modtap`, `simultaneous`, `trackball`, `touchpad` | backend `ks_menu` list | `*_Tapholds`, `*_Combos`, `*_Gesture`, `*_Force_Gesture_Scroll`, `*_Auto_Mouse*`, `*_Touch_Speed` |
+
+All of these go through the nested `[0xA7, 0x20, sub, ...]` group described in
+[command-map.md](command-map.md#nape-settings-group-0xa7--0x20). Feature
+objects are always created on keyboards (`feature.combo`, `tapHold`,
+`gesture`, `touch`, `autoMouse`, `angle`, `dpi`); the backend flags decide
+whether the UI uses them.
+
+**Auto-mouse layer:** fields are `threshold`, `timeoutMs`, `layer` and up to
+four `holdKeys` (`0xFF` = unused). By the names (QMK-style auto mouse layer),
+the keyboard switches to `layer` once movement passes `threshold` and leaves
+it after `timeoutMs`; the exact firmware behaviour is not visible in the
+Launcher.
+
+## Feature Flags
+
+The 8K/Nordic base-info packet carries four feature bytes. Flags the
+Launcher reads:
+
+| Byte | Bit | Flag |
+|------|-----|------|
+| `feature1Flag` | 0 | `scrollSupport` |
+| | 1 | `debounceSupport` |
+| | 3 | `MaxAndStepSupport` |
+| | 4 | `pollingGearsSupport` |
+| | 5 | `profileSupport` |
+| | 6 | `rouseOriginSupport` |
+| | 7 | `fps20kSupport` |
+| `feature2Flag` | 1 | `pairKeySupport` |
+| | 2 | `angleSupport` |
+| | 3 / 5 / 6 | `triggerSenseSupport` = `"ALL"` / `"LIGHT"` / `"MAGNETIC"` (first set bit wins) |
+| `feature3Flag` | 0 | `dpiSeparateSupport` |
+| | 1 | `reportRateSeparateSupport` |
+| | 7 | `reportRate7LevelSupport` |
+| `feature4Flag` | 2 | `motorSupport` |
+| | 4 | `lodLevelSupport` |
+
+## Trigger Sense (HE Mouse Buttons)
+
+Mice with `triggerSenseSupport` get the `mouse/he` page: travel presets
+("easy / recommended / hard"), rapid trigger, motor, LED/PD lighting toggle
+and a live "scope" plot of travel and optical beam state. Not supported on
+`1k`/`4k`.
+
+63-byte payloads on report ID **179 (`0xB3`)**, 22 bytes per button:
+
+```
+Get:  [0x65]                         → data[0] = 0x65, data[1] = count,
+                                        then count × 22-byte sections at data[2]
+Set:  [0x55, count, sections...]     → ACK data[0] = 0xE4 && data[2] = 0x55
+
+Section (offset from section start):
+  +0      index
+  +1..2   deadBand[0], deadBand[1]
+  +3..4   percentPoint[0], percentPoint[1]
+  +5..8   scalePoint[0], scalePoint[1]   (LE16 each; UI keeps [1] = max(5, [0] - 10))
+  +9      percentValue
+  +10..11 scaleValue (LE16)
+  +12     low nibble = triggerMode, high nibble = rtEnable
+  +13..16 rtValue[0], rtValue[1]         (LE16 each, press / release)
+  +17     adcFlag: 1 → +18..21 = two LE16 ADC readings
+                   2 → +18 = irTrigger
+```
+
+### IR / HE Mode Button Function
+
+Buttons (on the mouse or on a configurable receiver) can be bound to custom
+function type **15** (`CustomFunction`) with sub-type **3** (`IrHeMode`).
+It switches buttons between optical (IR) and magnetic (HE) sensing:
+
+```
+key params = [3, target, action]
+  target: 0 = left button, 2 = right button, 204 (0xCC) = both
+  action: 0 = toggle, 1 = IR, 2 = HE
+```
+
+UI names: `modeToggleAll`, `modeIrLeft`, `modeHeRight`, and so on.
+
+## Mouse Key Functions
+
+Key function types used by `set key` (`[0x30, index, 0, type, params...]` on
+report 179 for 8K devices, `[0x62, index]` get on report 82 for older ones):
+
+| Type | Name |
+|------|------|
+| 0 | `Remove` |
+| 1 | `Mouse` |
+| 2 | `Keyboard` |
+| 3 | `Media` |
+| 4 | `Macro` |
+| 5 | `Dpi` |
+| 6 | `Light` |
+| 7 | `Game` |
+| 8 | `ShortCut` |
+| 9 | `Disable` |
+| 10 | `Profile` |
+| 13 | `PollingRate` |
+| 15 | `CustomFunction` (see above) |
+
+## Game Presets
+
+The `mouse/profile` page offers one-click presets. Levels are indices
+(polling rate and LOD indices into the device's tables; trigger-travel and
+rapid-trigger levels only apply to HE mice):
+
+| ID | Game | DPI | Polling | LOD | Debounce | Trigger travel | Rapid trigger |
+|----|------|-----|---------|-----|----------|----------------|---------------|
+| m001 | CS 2 | 800 | 3 | 3 | 0 | 4 | 0 |
+| m002 | Apex | 1600 | 5 | 1 | 0 | 5 | 2 |
+| m003 | Fortnite | 1600 | 5 | 1 | 0 | 5 | 0 |
+| m004 | Valorant | 800 | 3 | 3 | 0 | 4 | 2 |
+| m005 | Marvel Rivals | 1600 | 5 | 1 | 0 | 5 | 2 |
+| m007 | PUBG | 800 | 3 | 3 | 0 | 4 | 0 |
+| m009 | Battlefield | 1600 | 5 | 3 | 0 | 4 | 0 |
+| m012 | Delta Force | 1600 | 5 | 3 | 0 | 4 | 2 |
+
+Names exist for m006 (Overwatch), m008 (Call of Duty), m010 (DOTA2) and
+m011 (LOL) but have no preset values.
 
 ---
 

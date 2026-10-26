@@ -93,7 +93,7 @@ Response: data[1] = 9, data[2] = 12 (UUID length),
 
 ### Key Observations
 
-1. **`KC_MISC_CMD_GROUP` (0xA7)**: The Launcher and firmware now use the same name `KC_MISC_CMD_GROUP`. In older versions, the Launcher called this `KC_OTHER_SETTING_VERSION`, which hints that the command was originally for querying the "other settings" protocol version (sub-cmd `0x01`), and the misc sub-commands were added later.
+1. **`KC_MISC_CMD_GROUP` (0xA7)**: The Launcher and firmware use the same name. Sub-command `0x01` returns the misc protocol version.
 
 2. **`KC_HE` (0xA9)**: The Launcher calls this "Hall Effect" (`HE`), while the
    firmware uses "Analog Matrix" (`ANALOG_MATRIX`). Both refer to the same
@@ -145,14 +145,14 @@ The `AMC_GET_VERSION` (0xA9 / 0x01) response carries the HE command-set
 version in `data[2]` and a feature bitmap in `data[4]`. The Launcher
 checks six bits:
 
-| Bit | Feature              | Introduced |
-|-----|----------------------|------------|
-| 0   | `switchAxis`         | earlier    |
-| 1   | `resetSingleKey`     | earlier    |
-| 2   | `dkr`                | earlier    |
-| 3   | `turbo`              |            |
-| 4   | `gamepadDisable`     |            |
-| 5   | `supportMechanical`  |            |
+| Bit | Feature              |
+|-----|----------------------|
+| 0   | `switchAxis`         |
+| 1   | `resetSingleKey`     |
+| 2   | `dkr`                |
+| 3   | `turbo`              |
+| 4   | `gamepadDisable`     |
+| 5   | `supportMechanical`  |
 
 `supportMechanical` enables an additional "HE mechanical" query
 (sub-command **82 / `0x52`**, see below). The Launcher also dispatches
@@ -229,6 +229,91 @@ SET_LAYER_ORI : [0xA7, 57, layer, angle/45]
 
 See [mouse-protocol.md](mouse-protocol.md).
 
+## NAPE Settings Group (0xA7 / 0x20)
+
+**Keyboards** with a built-in trackball or touchpad use a nested command
+group: byte 1 is the fixed group ID
+`0x20` (`Nape_Settings`) and byte 2 selects the operation. Every response
+echoes `[0xA7, 0x20, sub]` and carries a status in `data[3]` (`0` = OK)
+for set/delete commands. Timeout is 500 ms.
+
+Standalone trackballs still use the flat NAPE set above. The first two bytes
+collide (`[0xA7, 0x20]` is also flat `NAPE_GET_ORI`), so the device class
+decides which layout is used.
+
+| Sub | Hex | Name | Request (after `0xA7, 0x20, sub`) | Response |
+|-----|-----|------|-----------------------------------|----------|
+| 1  | `0x01` | `Get_Dpi` | -- | `data[3]` = current DPI stage |
+| 2  | `0x02` | `Set_Dpi` | `stage` | status |
+| 3  | `0x03` | `Set_Dpi_Value` | `stage, dpi_lo, dpi_hi` | status |
+| 4  | `0x04` | `Get_Dpi_Value` | `stage` | `data[3..4]` = DPI (LE16) |
+| 5  | `0x05` | `Get_Dpi_Counts` | -- | `data[3]` = number of stages |
+| 6  | `0x06` | `Set_Dpi_Counts` | `count` | status |
+| 7  | `0x07` | `Set_Tapholds` | `layer, row, col, tap(LE16), hold(LE16), tapTerm(LE16)` | status |
+| 8  | `0x08` | `Get_Tapholds` | `layer, row, col` | `data[6..7]` tap, `data[8..9]` hold, `data[10..11]` tapTerm |
+| 9  | `0x09` | `Set_Combos` | `index, timeout(LE16), layerMask, pos[4], tap(LE16), held(LE16)` | status |
+| 10 | `0x0A` | `Get_Combos` | `index` | same layout as Set, from `data[4]` |
+| 11 | `0x0B` | `Set_Gesture` | `up, down, left, right` (4 × LE16 keycodes) | status |
+| 12 | `0x0C` | `Get_Gesture` | -- | `data[3..10]` = up, down, left, right |
+| 14 | `0x0E` | `Del_Combos` | `index` | status |
+| 15 | `0x0F` | `Del_Tapholds` | `layer, row, col` | status |
+| 18 | `0x12` | `Set_Force_Gesture_Scroll` | `gesture(0/1), scroll(0/1)` | status |
+| 19 | `0x13` | `Get_Force_Gesture_Scroll` | -- | `data[3]` gesture, `data[4]` scroll |
+| 20 | `0x14` | `Get_Ori` | -- | `data[3..4]` = angle (LE16, degrees) |
+| 21 | `0x15` | `Set_Ori` | `angle(LE16)` | status |
+| 22 | `0x16` | `Get_Custom_Dpi` | -- | `data[3..4]` = DPI (LE16) |
+| 23 | `0x17` | `Set_Custom_Dpi` | `dpi(LE16)` | status |
+| 24 | `0x18` | `Get_Layer_Ori` | `layer` | `data[3..4]` = angle (LE16) |
+| 25 | `0x19` | `Set_Layer_Ori` | `layer, angle(LE16)` | status |
+| 29 | `0x1D` | `Get_Layer_Dpi` | `layer` | `data[3]` = stage |
+| 30 | `0x1E` | `Set_Layer_Dpi` | `layer, stage` | status |
+| 31 | `0x1F` | `Get_Layer_Dpi_Value` | `layer, stage` | `data[3..4]` = DPI (LE16) |
+| 32 | `0x20` | `Set_Layer_Dpi_Value` | `layer, stage, dpi(LE16)` | status |
+| 33 | `0x21` | `Get_Auto_Mouse` | -- | `data[3]` = enabled |
+| 34 | `0x22` | `Set_Auto_Mouse` | `enabled` | status |
+| 35 | `0x23` | `Get_Auto_Mouse_Params` | -- | `data[3]` threshold, `data[4..5]` timeout ms, `data[6]` layer, `data[7..10]` hold keys |
+| 36 | `0x24` | `Set_Auto_Mouse_Params` | `threshold, timeout(LE16), layer, holdKeys[4]` (unused = `0xFF`) | status |
+| 37 | `0x25` | `Get_Touch_Speed` | -- | `data[3]` = speed |
+| 38 | `0x26` | `Set_Touch_Speed` | `speed` | status |
+
+Notes:
+
+- Unlike the trackball's 45° steps, keyboard angles are plain degrees
+  0..359 on the wire. The keyboard `angle` page shows −90..+90 per layer and
+  converts with `device = (page + 65 + 360) % 360` (`deviceZero = 65`, so a
+  page angle of 0° is 65° on the wire).
+- Combo `positions` are 4 key indices (unused = `0xFF`); the UI allows 2–4 keys and up to 30 combos. Tap-hold `tapTerm`
+  defaults to 200 ms and moves in 50 ms steps.
+- Tap-hold writes are serialised through a promise queue; the firmware is
+  expected to answer each one before the next is sent.
+- The "keyset" page (`advance` route) shows tabs per product flag:
+  `toggle` (`Support_Latch`), `snap` (`Support_Snap`), and `modtap`,
+  `simultaneous`, `trackball`, `touchpad` from the backend `ks_menu` list
+  (see [overview.md](overview.md#product-dictionary-flags)).
+- In the trackball tab, special keys are found **by name** in the board's
+  `customKeycodes`: `GESTURE`, `SCROLL`, and `LC-HOLD`/`LC_HOLD` (left-click
+  lock). A Vial port that wants these to show up must keep those names.
+
+### Mouse / Trackball Special Keycodes
+
+The Launcher maps high-level pointer and navigation functions to custom keycodes:
+
+| Keycode | Identifier | Description |
+|---------|------------|-------------|
+| `CUSTOM(28)`--`CUSTOM(35)` | `0°`--`315°` | Quantized orientation angles (45° increments) |
+| `CUSTOM(37)` | `mouse.key.nextDpi` | Next DPI stage |
+| `CUSTOM(38)` | `mouse.key.prevDpi` | Previous DPI stage |
+| `CUSTOM(39)` | `mouse.key.prevPollingRate` | Previous polling rate stage |
+| `CUSTOM(40)` | `mouse.key.nextPollingRate` | Next polling rate stage |
+| `CUSTOM(43)` | `trackball.key.direction` | Trackball direction / orientation toggle |
+| `CUSTOM(44)` | `mouse.key.dpiLoop` | Cycle through DPI stages |
+| `CUSTOM(45)` | `mouse.key.loopPollingRate`| Cycle through polling rate stages |
+| `CUSTOM(46)` | `mouse.key.leftDouble` | Double-click left mouse button |
+| `CUSTOM(47)` | `mouse.key.customDpi` | Custom DPI toggle |
+| `MO(9)` | `trackball.key.gesture` | Momentary hold for trackball gesture layer |
+| `MO(10)` | `trackball.key.scroll` | Momentary hold for trackball scroll layer |
+| `KC_MS_BTN1_LOCK` | `mouse.key.leftLock` | Left Click Lock (latches primary button down) |
+
 ## New Keyboard Misc (0xA7) Sub-Commands
 
 The Keychron Launcher exercises several `KC_MISC_CMD_GROUP` sub-commands above
@@ -243,6 +328,7 @@ The Keychron Launcher exercises several `KC_MISC_CMD_GROUP` sub-commands above
 | 24 | `0x18` | Latch SetToggle | `[0xA7, 24, 1, layer, row, col, type, repeat]` | Set one latch key; sent per key with ~50 ms spacing. Type: 0=DELETE, 1=KEY, 2=TURBO, 3=MACRO |
 | 27 | `0x1B` | Macro repeat Get | `[0xA7, 27, 0, macro_count]` → `data[5 .. 5+count)` = repeat counts | Per-macro repeat count (1--100), gated on `Support_Macro_Repeat` |
 | 28 | `0x1C` | Macro repeat Set | `[0xA7, 28, 1, macro_index, times]` | Set one macro's repeat count |
+| 2 (+3) | `0x02 0x03` | Get DFU/bootloader name | `[0xA7, 2, 3]` → `data[4]` = length, `data[5..]` = ASCII name | Used by the firmware page to label the bootloader (see [dfu-protocols.md](dfu-protocols.md#bootloader-name-query)) |
 
 Latch keys ("toggle keys", marketed as *Magnet toggle*) let a key latch
 on/off like Caps Lock: types are regular key latches (`KEY`), macro latches
@@ -253,12 +339,16 @@ feature is advertised via bit 18 of the V4 support-feature bitmap.
 
 For keyboards reporting protocol version > 3 in `KC_GET_PROTOCOL_VERSION`
 (`data[1]`; `data[3]` holds the "instruction set"), `KC_GET_SUPPORT_FEATURE`
-(0xA2) switches from the legacy single-byte bitmap to a wide format:
+(0xA2) switches from the legacy single-byte bitmap to a wide format with two
+little-endian words. Only the two radio bits come from the first word;
+everything else is in the second:
 
 ```
-data[3..4] (LE 16-bit) → binary string, reversed → bits:
+word A = data[3..4] (LE 16-bit):
   bit 0  Support_Le
   bit 1  Support_Rf
+word B = data[6..8] (LE 24-bit):
+  bit 0  Get_Default_Layer
   bit 2  Support_Keychron_Rgb
   bit 6  Support_DEBOUNCE
   bit 7  Support_Snap          (Snap Tap / SOCD keyset)
@@ -269,12 +359,30 @@ data[3..4] (LE 16-bit) → binary string, reversed → bits:
   bit 17 Performance_Mode
   bit 18 Support_Latch         (latch/toggle keys)
   bit 20 Support_Macro_Repeat
-data[6..8] (LE 24-bit) → second word:
-  bit 0  Get_Default_Layer
 ```
+
+`data[5]` is not read.
 
 Legacy (protocol ≤ 3) devices keep the old byte-wide layout documented in
 [firmware/misc-commands.md](../firmware/misc-commands.md).
+
+## OS Key Switch (client-side)
+
+Enabled when the backend product flag `km_os_switch` is `true`. Nothing new
+is sent to the firmware: the Launcher rewrites layer 0 with normal
+`DYNAMIC_KEYMAP_SET_KEYCODE` calls.
+
+1. It looks up the board's `customKeycodes` entries named `Left Option`,
+   `Left Cmd`, `Right Option`, `Right Cmd` (case-insensitive). The keycode is
+   `QK_KB + index`. If `Left Option` or `Left Cmd` is missing the feature is
+   off.
+2. It reads layer 0 at `[row 3, col 1]` and `[row 3, col 2]`. Option + Cmd
+   there means the keymap is in Mac mode; `KC_LGUI` + `KC_LALT` means Windows.
+3. If that differs from the host OS (from the user agent), it writes the
+   other pair to those two keys and swaps every `KC_LALT/LGUI/RALT/RGUI` ↔
+   Option/Cmd custom keycode elsewhere in layer 0.
+
+Seen state is kept in `localStorage` (`kc_os_key_switch_seen_*`).
 
 ## RGB Sub-Commands (Launcher names)
 

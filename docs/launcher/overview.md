@@ -13,13 +13,15 @@ configuration tool for keyboards, mice, trackballs, and 2.4 GHz dongles.
 > **Note:** These documents have been verified against the decompiled 
 > source code and are *NOT* confirmed to be 100% accurate.
 
+
 ## Application Stack
 
-- **Framework:** Angular (minified, single-bundle deployment, with chunk splitting)
-- **Transport:** WebHID API exclusively -- no WebBluetooth, no WebSerial
-- **AI assistant:** LangChain tool-calling agent (see [ai-assistant.md](ai-assistant.md))
-- **Companion app:** "Keychron Assistant" desktop helper over WebSocket `ws://localhost:40003`
-- **Firmware packages:** JSZip/pako for ZIP firmware archives
+- **Framework:** Angular (minified, chunk-split architecture)
+- **Transport:** WebHID for configuration; WebUSB for STM32 DFU firmware updates; Web Serial for Nordic (`PCA`) firmware updates. No WebBluetooth.
+- **Multi-Device Sharing:** Keychron Cross (`/cross`) for cross-PC cursor flow, clipboard sync, and file transfer (see [cross-screen.md](cross-screen.md))
+- **AI assistant:** LangChain tool-calling agent with DeepSeek models + interactive AI Per-Key RGB lighting generator (`ai-light`, see [ai-assistant.md](ai-assistant.md))
+- **Companion app:** "Keychron Assistant" desktop helper over WebSocket `ws://localhost:40003` (see [../assist/README.md](../assist/README.md))
+- **Firmware packages:** JSZip/pako for ZIP firmware archives, supporting STM32, STM32WB, Nordic, XJ, and Realtek CFU
 - **Code editor:** ACE editor (embedded, for JSON/keymap editing)
 - **Backend APIs:**
   - `https://launcher.keychron.com/api/` (main backend for metadata and layout JSONs)
@@ -47,12 +49,11 @@ The Keychron Launcher codebase explicitly supports devices beyond the core Keych
 
 Certain features (like mouse scrolling settings or specific DFU update tabs) are enabled or disabled depending on the active sub-brand domain.
 
-Additionally, the Launcher contains explicit support for **ZMK-based** firmware models over WebHID:
-
-- **Keychron Ultra Series** (e.g. `Q Ultra`, `V Ultra`): Next-generation wireless custom mechanical keyboards featuring 8K wireless polling rates and extended battery life.
-- **Keychron B Pro Series** (e.g. `B1 Pro`, `B6 Pro`): Ultra-slim / low-profile wireless models.
-
-See [zmk-support.md](zmk-support.md) for full details on instruction set detection and ZMK protocol offsets.
+Not every keyboard runs Keychron QMK. The **Ultra** series (Realtek
+RTL8762G) and the **B Pro** series (Nordic nRF52840) run Keychron's ZMK fork,
+some boards run Telink or other proprietary firmware, and the Launcher tells
+them apart by the "instruction set" in the `0xA0` reply and the definition's
+`bootloader` field. See [zmk-support.md](zmk-support.md).
 
 ## WebHID Transport
 
@@ -89,7 +90,6 @@ Different report IDs are used depending on the device type and protocol:
 | 1         | `0x01` | XJ chip erase/flash protocol       |
 | 178       | `0xB2` | Bluetooth DFU reports              |
 | 181       | `0xB5` | Mouse reports                      |
-| 192       | `0xC0` | Nordic SLIP/HCI DFU                |
 
 ### Transceiver Classes
 
@@ -120,12 +120,13 @@ Otherwise                                         → "4k"
 
 ## Vendor and Product IDs
 
-### Keychron Vendor ID
+### Vendor IDs
 
-`0x3434` (13364 decimal) -- used for all Keychron keyboards, mice, and dongles.
-
-A second vendor ID `0x34B7` (13495) is used for "XJ" devices (Xinji-based
-hardware with a different flashing protocol).
+- `0x3434` (13364 decimal) -- used for all Keychron keyboards, mice, and dongles.
+- `0x34B7` (13495 decimal) -- used for "XJ" devices (Xinji-based hardware with custom flashing protocol).
+- `0x362D` (13869 decimal) -- secondary vendor ID evaluated for pair-key matching and wireless dongle associations.
+- `0x0BDA` (3034 decimal) -- Realtek Semiconductor vendor ID used for Component Firmware Updates (CFU).
+- `0x3537` (13623 decimal) -- `3537:1203` is the only device offered screen wallpaper/font-colour settings.
 
 ### Known Product IDs
 
@@ -156,6 +157,41 @@ hardware with a different flashing protocol).
 | `0x0A33` | Keyboard (monkeyPatch) |
 | `0x0A35` | Keyboard (monkeyPatch) |
 | `0x0437` | Keyboard |
+
+## Pages (Routes)
+
+| Route | Device | Purpose |
+|-------|--------|---------|
+| `keymap`, `macro`, `light`, `screen` | Keyboard | Keymap, macros, lighting, display |
+| `magnet`, `axis` | Keyboard (HE) | Hall Effect travel/rapid trigger, analog axis |
+| `advance` | Keyboard | Sleep, polling rate, debounce, and the "keyset" tabs (toggle, snap, mod-tap, simultaneous, trackball, touchpad) |
+| `angle`, `pointer` | Keyboard with trackball/touchpad | Pointer angle per layer, DPI stages |
+| `assist` | Keyboard | Quick-start bindings via Keychron Assistant |
+| `firmware`, `test`, `doctor` | Keyboard | Firmware update, key test, diagnostics |
+| `mouse/key`, `mouse/macro`, `mouse/light`, `mouse/advance`, `mouse/scroll`, `mouse/angle`, `mouse/he`, `mouse/profile`, `mouse/pointer`, `mouse/firmware`, `mouse/assist` | Mouse | |
+| `trackball/key`, `trackball/macro`, `trackball/dpi`, `trackball/advance`, `trackball/firmware`, `trackball/assist` | Trackball | |
+| `bridge/key`, `bridge/light` | Configurable 8K receiver | Receiver buttons and lighting |
+| `cross` | -- | Keychron Cross (needs Keychron Assistant) |
+| `json`, `exp-tools`, `issue`, `help` | -- | Load a JSON definition, experimental tools, feedback, help |
+
+## Product Dictionary Flags
+
+Product info from `GET /api/merchandise/product/vpId/{vpId}` includes
+`product.dict`, a list of `{dictKey, dictValue}` pairs. Values are parsed as
+JSON when possible; list values may also be comma-separated strings. Flags
+the UI checks:
+
+| `dictKey` | Type | Effect |
+|-----------|------|--------|
+| `o_menu` | list | Extra keyboard menu pages: `ANGLE` → `angle`, `POINTER_DPI` → `pointer` |
+| `ks_menu` | list | Keyset tabs: `modtap`, `simultaneous`, `trackball`, `touchpad` |
+| `km_os_switch` | bool | Enables the OS key switch (see [command-map.md](command-map.md#os-key-switch-client-side)) |
+| `km_showBtn` | bool | Shows the mouse basic keys (clicks, scroll, gesture, scroll layer, left-click lock) in the keyboard keymap editor |
+| `o_onboarding` | bool | `false` disables the guided onboarding flows |
+| `update_desc` | string | Custom text for the firmware update guide |
+
+Because these come from the backend, Keychron can switch features on per
+product without shipping a new Launcher build.
 
 ## Connection and Device Enums
 
@@ -253,12 +289,12 @@ support both v2 and v3 firmware builds.
 - [Command Map Comparison](command-map.md) -- firmware vs Launcher naming
 - [Screen Protocol](screen-protocol.md) -- 0xAC flash filesystem and RTC
 - [Bridge / Dongle Protocol](bridge-dongle-protocol.md) -- FR commands, VIA tunneling
-- [DFU Protocols](dfu-protocols.md) -- all 5 firmware update paths
+- [DFU Protocols](dfu-protocols.md) -- firmware update paths
 - [Mouse / Trackball Protocol](mouse-protocol.md) -- NAPE commands, polling rates, kc_lite, haptic motor
 - [Analog Matrix Extras](analog-matrix-extras.md) -- Launcher-only AMC commands
 - [Wireless Communication](wireless-communication.md) -- sleep, battery, performance modes, dual polling rates, monitor events
 - [AI Assistant](ai-assistant.md) -- LangChain agent, tool catalog, Assistant companion app
-- [ZMK Support](zmk-support.md) -- Instruction set detection, Zephyr RTOS adaptations (Ultra and B Pro series)
+- [ZMK and Other Non-QMK Keyboards](zmk-support.md) -- instruction sets, Keychron ZMK (Ultra, B Pro), Telink, debounce variants, firmware updates
 
 ### Firmware Protocol Docs
 - [Firmware Protocol Overview](../firmware/protocol-overview.md)

@@ -4,7 +4,7 @@ These two command groups handle wireless module firmware updates and factory
 testing. They are less commonly used by end-user-facing GUI code.
 
 > **See also:** The [Launcher DFU Protocols](../launcher/dfu-protocols.md)
-> document details all 5 firmware update paths reverse-engineered from the
+> document details the firmware update paths reverse-engineered from the
 > Keychron Launcher, including the Bluetooth DFU packet format, Nordic nRF
 > DFU over SLIP/HCI, STM32 WebDFU, and more.
 
@@ -13,10 +13,21 @@ testing. They are less commonly used by end-user-facing GUI code.
 The Wireless DFU command (`KC_WIRELESS_DFU = 0xAA`) is used for over-the-air
 firmware updates of the Bluetooth/2.4 GHz wireless module (lkbt51 or ckbt51).
 
+### Passthrough
+
+The `0xAA` command byte is also the first byte of the module's DFU framing
+(`AA 55|56 LEN ~LEN SEQ CMD DATA... SUM`), so the whole raw HID report is the
+DFU packet. `keychron_raw_hid.c` hands it to `lkbt51_dfu_rx()` (LKBT51) or
+`ckbt51_dfu_rx()` (CKBT51), which check the header and checksum and forward it
+to the module. It is accepted **only over USB**, not over a wireless link.
+
+The packet format, commands and the `.kfw` firmware files are described in
+[kfw-format.md](kfw-format.md).
+
 ### Notes
 
-- The wireless module is a separate SoC that communicates with the main MCU
-  over UART.
+- The wireless module is a separate SoC. LKBT51 talks to the main MCU over
+  SPI, CKBT51 over UART.
 - DFU for the wireless module is handled by the module's own bootloader,
   with the main MCU acting as a passthrough for HID data.
 - The GUI-side implementation for wireless DFU is separate from the STM32
@@ -101,8 +112,8 @@ See also [launcher/command-map.md](../launcher/command-map.md).
 
 ## STM32 DFU Flashing (GUI-side)
 
-While not part of the HID protocol, the GUI includes an STM32 DFU flasher
-(`editor/dfu_flasher.py`) for keyboards with STM32 MCUs. This is triggered
+While not part of the HID protocol, the Vial GUI fork includes an STM32 DFU
+flasher for keyboards with STM32 MCUs. This is triggered
 when:
 
 1. The `MISC_DFU_INFO` flag is set in the misc feature mask, **or**

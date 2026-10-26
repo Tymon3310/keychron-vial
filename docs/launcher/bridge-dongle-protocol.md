@@ -242,6 +242,60 @@ checking response bytes `[6,7]` for `[0x34, 0x34]` or `[0x2D, 0x36]`.
 
 ---
 
+## Configurable 8K Receiver ("bridge config")
+
+Some 8K receivers have their own buttons and
+lighting and can be opened as a device of their own (route `bridge/key`,
+`bridge/light`). The first product named in the code is
+**Keychron Z6 Ultra 8K** (its card stays in the list when it is unplugged).
+
+### Detection
+
+1. Paired-device scan finds a mouse behind a receiver (`receiverVpid` set).
+2. The Launcher opens the receiver's HID interface (`0xFFC1`, then `0xFF0A`,
+   then `0x8C`) and sends the 8K version query on report **181 (`0xB5`)**:
+
+   ```
+   Request : 20 bytes, data[0] = 0x02, data[1] = 0
+   Response: data[0] = 0x02
+             data[1..2]  version (LE16)
+             data[3..4]  VID (LE16)      data[5..6] PID (LE16)
+             data[7]     minor<<4 | patch   data[8] major  → frVersion
+             data[9]     low 3 bits = workMode
+             data[10]    bridgeSupport
+             data[11..13], data[15]  feature1..feature4 flags
+   ```
+
+3. The receiver is configurable when `bridgeSupport & 0x10` and
+   `version >= 6`. The device card then gets a toggle between **device**
+   mode (configure the mouse through the receiver, as before) and
+   **receiver** mode (configure the receiver itself). The choice is stored
+   per receiver vpId in `localStorage` key `RECEIVER_CONNECT_MODES`.
+4. In receiver mode the Launcher loads
+   `https://launcher.keychron.com/static/device/<vpId>/json/v3.json` (key
+   list, protocol) and creates a `Receiver` device with protocol `8k`,
+   `workMode 0`.
+
+### Commands
+
+The receiver uses the 8K mouse command set:
+
+| Purpose | Report | Request | Response |
+|---------|--------|---------|----------|
+| Get all keys | 179 (`0xB3`) | `[0x32]` (63 bytes) | `data[0] = 0x32`, `data[1]` = count, then variable-length entries; key index = low 5 bits of each entry's first byte, entry length = `2 + (first >> 5)` |
+| Get key | 179 | `[0x31, index]` | `data[0] = 0x31`, `data[1]` = index, `data[3]` = function type, `data[4..]` = params |
+| Set key | 179 | `[0x30, index, 0, type, params...]` | ACK `data[0] = 0xE4, data[1] = 0, data[2] = 0x30` |
+| Get light | 181 (`0xB5`) | `[0x20, target]` (20 bytes) | `data[1]` target, `data[4]` mode, `data[5]` brightness, `data[6]` speed, `data[7..9]` RGB |
+| Set light | 181 | `[0x24, target, i, l, s, r, g, b]` (code names `i/l/s`, most likely mode / brightness / speed) | -- |
+| Light changed (async) | -- | -- | `data[0] = 0xE1`: `data[1]` mode, `data[3]` speed, `data[4]` brightness, `data[5..7]` RGB |
+
+Key function types are the mouse ones (see
+[mouse-protocol.md](mouse-protocol.md#mouse-key-functions)), including the
+new `CustomFunction`/`IrHeMode` type. Keys with index > 4 are always read
+individually after "get all".
+
+---
+
 ## Related Documents
 
 - [Launcher Overview](overview.md)

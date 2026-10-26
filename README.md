@@ -264,6 +264,7 @@ Covers Q / Q Pro / Q Max / Q HE, V / V Max / V 8K, K Pro / K Max / K HE / K Vers
 
 | Keyboard | Layouts | Branch |
 |---|---|---|
+| [J5](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/j5) | ansi, ansi_encoder | vial-updated-keychron |
 | [S1](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/s1) | ansi/rgb, ansi/white | vial-updated-keychron |
 | [X0](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/x0) | red | vial-updated-keychron |
 | [C100 8K](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/c100_8k) | --- | vial-updated-keychron |

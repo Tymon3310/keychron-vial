@@ -18,15 +18,15 @@ Configure your keyboard through the Keychron Link dongle, no cable needed. Every
 - Works with both the USB-A (`3434:D030`) and USB-C (`3434:D031`) dongles.
 - The GUI finds the paired keyboard automatically.
 - Plugged in via USB *and* the dongle's active? USB wins, no fighting for control.
-- Needs the wireless XOR patch in the firmware — it works around some quirky buffer handling in the LKBT51 module.
+- Needs the wireless XOR patch in the firmware, which keeps raw HID packets free of the byte values (0xF0–0xFF) that crash the LKBT51 wireless module.
 
 ## Keychron settings
 
 > Most of features below should work almost the same as they do in the Keychron Launcher.
-- **Debounce** — 1–20ms.
-- **NKRO** — toggle on/off/adaptive.
-- **Report rate** — 125Hz up to 8000Hz on supported boards.
-- **Wireless low-power tuning** — sleep timers and power-saving behavior.
+- **Debounce**: 1–20ms.
+- **NKRO**: toggle on/off/adaptive.
+- **Report rate**: 125Hz up to 8000Hz on supported boards.
+- **Wireless low-power tuning**: sleep timers and power-saving behavior.
 
 ## Snap Click (SOCD)
 
@@ -43,14 +43,14 @@ Set up opposing key pairs (A+D, W+S, whatever) and pick how conflicts resolve: l
 
 The deep end. Multiple saved profiles you can swap per game or workflow.
 
-- **Global** — inherit default profile actuation.
-- **Regular** — fixed actuation point, 0.1–4.0mm.
-- **Rapid Trigger** — independent press/release thresholds (0.1–4.0mm) with bottom deadzone filtering.
-- **Dynamic Keystroke (DKS)** — two travel zones (shallow/deep), each mapped to up to 4 actions (press, release, tap, re-press).
-- **Gamepad/XInput** — assign switches to HID joystick axes or Xbox 360 inputs, with custom 4-point response curves.
-- **Toggle** — key toggles held state on each press.
-- **HE SOCD** — Hall Effect-specific resolution (deeper travel wins, last input wins, or neutral) across up to 20 pairs.
-- **Calibration & live monitor** — real-time per-key travel depth, manual or auto-calibration on power-on.
+- **Global**: inherit default profile actuation.
+- **Regular**: fixed actuation point, 0.1–4.0mm.
+- **Rapid Trigger**: independent press/release thresholds (0.1–4.0mm) with bottom deadzone filtering.
+- **Dynamic Keystroke (DKS)**: two travel zones (shallow/deep), each mapped to up to 4 actions (press, release, tap, re-press).
+- **Gamepad/XInput**: assign switches to HID joystick axes or Xbox 360 inputs, with custom 4-point response curves.
+- **Toggle**: key toggles held state on each press.
+- **HE SOCD**: Hall Effect-specific resolution (deeper travel wins, last input wins, or neutral) across up to 20 pairs.
+- **Calibration & live monitor**: real-time per-key travel depth, manual or auto-calibration on power-on.
 
 ## Firmware flashing, built in
 

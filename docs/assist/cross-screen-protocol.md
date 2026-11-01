@@ -46,10 +46,10 @@ without requiring internet access or cloud relay infrastructure.
 
 ### Transport Parameters
 
-- **Discovery Port:** `7654` — beacons only (`DISCOVER_JSON:` / legacy `DISCOVER:`),
+- **Discovery Port:** `7654`: beacons only (`DISCOVER_JSON:` / legacy `DISCOVER:`),
   sent to IPv4 multicast `239.255.255.250:7654` plus subnet and limited
   broadcast, answered on the same port.
-- **Pairing/Session Port:** `40001` — everything else (`RequestPair`,
+- **Pairing/Session Port:** `40001`: everything else (`RequestPair`,
   `RequestConfirm`, input events, file transfer, heartbeats). Seen in
   traffic from a Windows peer; the number is not stored as a constant in
   the binary.

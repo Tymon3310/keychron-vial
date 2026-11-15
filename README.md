@@ -229,7 +229,7 @@ Every keyboard below works with any Vial app once flashed. The Keychron settings
 |---|---|---|
 | [C1 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/c1_pro) | ansi/rgb, ansi/white | vial-updated-keychron |
 | [C2 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/c2_pro) | ansi/rgb, ansi/white | vial-updated-keychron |
-| [C3 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/c3_pro) | ansi/red, ansi/rgb | vial-updated-keychron |
+| [C3 PRO](https://github.com/tymon3310/vial-qmk/tree/vial-updated-keychron/keyboards/keychron/c3_pro) | ansi/red, ansi/rgb, iso/red_pid0431, iso/red_pid0534, iso/rgb_pid0434, iso/rgb_pid0535, jis/red, jis/rgb | vial-updated-keychron |
 
 ### C Pro V2 Series
 

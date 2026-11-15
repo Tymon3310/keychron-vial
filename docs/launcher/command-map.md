@@ -215,8 +215,55 @@ Sent under `KC_MISC_CMD_GROUP` (0xA7) with sub-command values
 | 50    | `0x32` | `Set_Force_Gesture_Scroll`       |
 | 51    | `0x33` | `Get_Force_Gesture_Scroll`       |
 | 52    | `0x34` | `KC_USER_CMD_NAPE_SET_ORI`       |
+| 53    | `0x35` | `KC_USER_CMD_NAPE_GET_DEFAULT_LAYER` |
+| 54    | `0x36` | `KC_USER_CMD_NAPE_GET_CUSTOM_DPI` |
+| 55    | `0x37` | `KC_USER_CMD_NAPE_SET_CUSTOM_DPI` |
 | 56    | `0x38` | `KC_USER_CMD_NAPE_GET_LAYER_ORI` |
 | 57    | `0x39` | `KC_USER_CMD_NAPE_SET_LAYER_ORI` |
+| 58    | `0x3A` | `KC_USER_CMD_NAPE_GET_SCROLL_DPI` |
+| 59    | `0x3B` | `KC_USER_CMD_NAPE_SET_SCROLL_DPI` |
+| 60    | `0x3C` | `KC_USER_CMD_NAPE_GET_DPI_COUNTS` |
+| 61    | `0x3D` | `KC_USER_CMD_NAPE_SET_DPI_COUNTS` |
+| 62    | `0x3E` | `KC_USER_CMD_NAPE_GET_LAYER_DPI_VALUE` |
+| 63    | `0x3F` | `KC_USER_CMD_NAPE_SET_LAYER_DPI_VALUE` |
+| 64    | `0x40` | `KC_USER_CMD_NAPE_GET_LAYER_DPI` |
+| 65    | `0x41` | `KC_USER_CMD_NAPE_SET_LAYER_DPI` |
+| 66    | `0x42` | `KC_USER_CMD_NAPE_GET_ANGLE` |
+| 67    | `0x43` | `KC_USER_CMD_NAPE_SET_ANGLE` |
+| 68    | `0x44` | `KC_USER_CMD_NAPE_GET_LAYER_ANGLE` |
+| 69    | `0x45` | `KC_USER_CMD_NAPE_SET_LAYER_ANGLE` |
+| 70    | `0x46` | `KC_USER_CMD_NAPE_RESET_LAYER_DPI` |
+| 71    | `0x47` | `KC_USER_CMD_NAPE_RESET_LAYER_ANGLE` |
+| 72    | `0x48` | `KC_USER_CMD_NAPE_GET_LAYER_DPI_COUNTS` |
+| 73    | `0x49` | `KC_USER_CMD_NAPE_SET_LAYER_DPI_COUNTS` |
+
+Commands 50, 51, 53--55 and 58--61 are defined in the Launcher's enum but
+have no call sites in the Launcher; their packet layout is not confirmed.
+
+### Fine angle and per-layer DPI (0x42--0x49)
+
+All packets are 32 bytes, byte 0 = `0xA7`, byte 1 = sub-command. Responses
+are filtered on `data[0] == 0xA7 && data[1] == sub-command`. For writes,
+`data[2]` is a status byte (0 = OK). Angles are plain degrees (0--359),
+16-bit little endian.
+
+```
+GET_ANGLE             : [0xA7, 66]                          → data[2..3] = angle (LE)
+SET_ANGLE             : [0xA7, 67, angle_lo, angle_hi]      → data[2] = status
+GET_LAYER_ANGLE       : [0xA7, 68, layer]                   → data[2] = status, data[3..4] = angle (LE)
+SET_LAYER_ANGLE       : [0xA7, 69, layer, angle_lo, angle_hi] → data[2] = status
+RESET_LAYER_ANGLE     : [0xA7, 71]                          → data[2] = status (all layers)
+GET_LAYER_DPI_VALUE   : [0xA7, 62, layer, slot]             → data[2] = status, data[5..6] = DPI (LE)
+SET_LAYER_DPI_VALUE   : [0xA7, 63, layer, slot, dpi_lo, dpi_hi] → data[2] = status
+GET_LAYER_DPI         : [0xA7, 64, layer]                   → data[2] = selected DPI slot
+SET_LAYER_DPI         : [0xA7, 65, layer, slot]             → data[2] = status
+GET_LAYER_DPI_COUNTS  : [0xA7, 72, layer]                   → data[2] = number of DPI slots
+SET_LAYER_DPI_COUNTS  : [0xA7, 73, layer, count]            → data[2] = status
+RESET_LAYER_DPI       : [0xA7, 70]                          → data[2] = status (all layers)
+```
+
+The angle commands supersede the 45-degree steps of `GET/SET_LAYER_ORI`
+for trackballs that expose the fine-angle UI.
 
 The two new layer-orientation commands read/write the trackball rotation
 angle **per mouse layer** (the global commands 32/52 remain for the default

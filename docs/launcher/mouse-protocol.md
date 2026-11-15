@@ -124,6 +124,86 @@ in the `0x20`--`0x39` range.
 | `KC_USER_CMD_NAPE_GET_LAYER_ORI`  | `0x38` | Read  | Get per-layer orientation |
 | `KC_USER_CMD_NAPE_SET_LAYER_ORI`  | `0x39` | Write | Set per-layer orientation |
 
+### Trackball pointer, angle and per-layer DPI
+
+The trackball settings are split into pages: `trackball/pointer` (with
+sub-pages `dpi`, `pollingrate` and `legacy`) and `trackball/angle`. The angle
+page uses a dial (full circle, fine angle in degrees) and can be set per
+mouse layer. Per-layer DPI (slot value, selected slot, slot count) and
+per-layer angle are read and written with sub-commands `0x3E`--`0x49`; see
+[command-map.md](command-map.md#fine-angle-and-per-layer-dpi-0x420x49) for
+the packet layouts. Dynamic DPI and scroll guard are covered below.
+
+### Dynamic DPI (8K mice)
+
+An acceleration curve that scales DPI by pointer speed. The Launcher shows
+the page only for 8K-protocol mice whose base info has feature byte 15
+(`feature4Flag`) bit 5 (`0x20`) set. The curve is stored per profile.
+
+Packets use report ID **179 (`0xB3`)**, 63-byte payload (the ID is written
+separately, see [Mouse Report IDs](#mouse-report-ids)):
+
+```
+GET : [0x4F, profile]
+      reply (filter data[0]==0x4F && data[1]==profile):
+        data[1]      profile
+        data[2] & 1  enabled
+        data[3]      mode
+        data[5]      point count N
+        data[6+4i .. 7+4i]  speed (LE16)     for i in 0..N-1
+        data[8+4i]          gain  (u8)
+
+SET : [0x4E, profile, enabled, mode, 0, N, then N * {speed_lo, speed_hi, gain}]
+      (same 4-byte point stride as GET: speed at 6+4i, gain at 8+4i)
+```
+
+`mode` values: `0` custom, `1` classic, `2` natural, `3` jump. Modes 1--3 are
+presets of five points each that the Launcher copies into the point list:
+
+| Mode | Points (speed, gain) |
+|------|----------------------|
+| classic | (0,16) (40,24) (80,32) (140,44) (200,56) |
+| natural | (0,16) (20,48) (80,48) (120,48) (200,48) |
+| jump | (0,16) (14,16) (30,48) (95,48) (200,48) |
+
+The editor clamps `speed` to 0--200 (first point fixed at 0, points strictly
+increasing) and `gain` to 0--56. A gain of 16 is the unscaled baseline in all
+three presets; treating it as 1.0x is an inference from the preset values, not
+confirmed. Custom-mode points are also cached by the Launcher in browser
+storage, so switching to a preset does not lose them.
+
+Live speed preview (report ID **181 / `0xB5`**, 20-byte payload):
+
+```
+request : [0xAA]
+reply   : data[0]==0xAA
+          data[1] 1 or 2 → speed = (data[2] | data[3] << 8) / 10
+          data[1] 3      → the Launcher re-sends the request
+```
+
+The preview only runs while the page is visible and the mouse is awake.
+
+### Scroll Guard
+
+Suppresses accidental wheel events for a short time after a direction change.
+Shown when feature byte 16 (`feature5Flag`) bit 0 is set. Report ID **181
+(`0xB5`)**, 20-byte payload:
+
+```
+GET : [0x6A, profile]
+      reply (filter data[0]==0x6A):
+        data[2] == 3         → enabled (anything else → disabled)
+        data[3] | data[4]<<8 → time (LE16)
+
+SET : [0x5A, profile, status, time_lo, time_hi, time_lo, time_hi]
+      status = 3 (enabled) or 0 (disabled); time is written twice
+      ack: data[0]==0xE4 && data[2]==0x5A
+```
+
+The default time in the UI is 500; the bundle does not label the unit
+(milliseconds is likely). Why the time is repeated at offsets 5--6 is
+unknown (possibly a second wheel direction).
+
 ### Additional Mouse Sub-Commands
 
 | Sub-cmd | Hex    | Direction | Description |

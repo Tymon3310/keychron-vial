@@ -169,7 +169,7 @@ Otherwise                                         → "4k"
 | `assist` | Keyboard | Quick-start bindings via Keychron Assistant |
 | `firmware`, `test`, `doctor` | Keyboard | Firmware update, key test, diagnostics |
 | `mouse/key`, `mouse/macro`, `mouse/light`, `mouse/advance`, `mouse/scroll`, `mouse/angle`, `mouse/he`, `mouse/profile`, `mouse/pointer`, `mouse/firmware`, `mouse/assist` | Mouse | |
-| `trackball/key`, `trackball/macro`, `trackball/dpi`, `trackball/advance`, `trackball/firmware`, `trackball/assist` | Trackball | |
+| `trackball/key`, `trackball/macro`, `trackball/pointer` (sub-pages `dpi`, `pollingrate`, `legacy`), `trackball/angle`, `trackball/advance`, `trackball/firmware`, `trackball/assist` | Trackball | |
 | `bridge/key`, `bridge/light` | Configurable 8K receiver | Receiver buttons and lighting |
 | `cross` | -- | Keychron Cross (needs Keychron Assistant) |
 | `json`, `exp-tools`, `issue`, `help` | -- | Load a JSON definition, experimental tools, feedback, help |
@@ -304,3 +304,31 @@ support both v2 and v3 firmware builds.
 - [Analog Matrix Protocol](../firmware/analog-matrix-protocol.md) -- 0xA9
 - [Wireless DFU & Factory Test](../firmware/wireless-dfu-factory.md) -- 0xAA, 0xAB
 - [Data Structures](../firmware/data-structures.md)
+
+## Template Devices (AI Macropad)
+
+Products whose product record carries a `template_id` (currently `temp_1`,
+route `temp/ctrlGamepad`, product id `0x3434:0x0464`) get a guided setup and
+a profile bar on the keymap page. This is entirely client side: no extra HID
+command exists.
+
+- **Layout:** four non-encoder keys, in layout order: accept, dictation,
+  new chat, reject.
+- **Built-in profiles `codex` and `claude`:** both start from the keymap
+  currently on the device and overwrite those four keys with
+  `Enter`, `Cmd+H` / `Win+H` (dictation), `Cmd+N` / `Ctrl+N` (new chat) and
+  `Esc`. The macOS variants are chosen by the browser's OS.
+- **Custom profiles:** up to five (`custom-1` .. `custom-5`), renameable
+  (30 characters). Creating one snapshots the current keymap.
+- **Storage:** profiles are full per-layer snapshots (`row`, `col`, 16-bit
+  keycode for every layer) kept in browser local storage under
+  `keymap-profiles:v2:temp_1:<device id>:<mac|other>`. Nothing is stored on
+  the keyboard.
+- **Switching:** the Launcher snapshots the current keymap, then writes only
+  the keys that differ with ordinary keymap-set commands; on any error it
+  writes the snapshot back. Editing a layer updates the active profile.
+- **Reset:** "Reset" on this product with `codex` or `claude` active
+  rewrites that profile's template instead of the factory keymap, after
+  clearing Quick Start bindings.
+- **Dictation help:** on macOS the Launcher shows an extra three-step dialog
+  explaining how to bind the system dictation shortcut.
